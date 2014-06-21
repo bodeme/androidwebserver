@@ -3,7 +3,7 @@
       package="com.bolutions.webserver"
       android:versionName="1.0.1" android:versionCode="101">
       
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/ic_launcher" android:label="@string/app_name">
         <activity android:name=".StartActivity"
                   android:label="@string/app_name">
             <intent-filter>

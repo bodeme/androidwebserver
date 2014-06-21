@@ -113,7 +113,7 @@ public class ServerService extends Service {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
         if (notification == null) {
-	        notification = new Notification(R.drawable.icon, text, System.currentTimeMillis());
+	        notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
 	        notification.setLatestEventInfo(this, getString(R.string.app_name), text, contentIntent);
 	
 	        mNM.notify(NOTIFICATION_ID, notification);
