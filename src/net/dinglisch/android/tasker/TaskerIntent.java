@@ -1,4 +1,4 @@
-package com.bolutions.webserver;
+package net.dinglisch.android.tasker;
 
 //Version 1.3.3
 

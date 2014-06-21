@@ -23,6 +23,7 @@ import java.net.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.dinglisch.android.tasker.TaskerIntent;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
