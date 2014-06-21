@@ -111,7 +111,7 @@ class ServerHandler extends Thread {
 		  int projNameCol = c.getColumnIndex("project_name");
 
 		  while(c.moveToNext()) {
-			  text = text + "<li>" + c.getString(projNameCol) + ": " + c.getString(nameCol) + "</li>";
+			  text = text + "<li><a href=\"/tasker/"+c.getString(nameCol)+"\">" + c.getString(projNameCol) + ": " + c.getString(nameCol) + "</a></li>";
 		  }
 		  c.close();
 	  } else {
