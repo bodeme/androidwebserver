@@ -1,7 +1,7 @@
-Android Webserver
-=================
+Webserver for Android
+=====================
 
-Smallest android webserver. Works only when connected to a wifi-network. Use at your own risk and feel free to contribute :-)
+Smallest webserver for android. Works only when connected to a wifi-network. Use at your own risk and feel free to contribute :-)
 
 Twitter: [@bodeme](https://twitter.com/bodeme)
 
