@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Small Android Webserver</string>
-    <string name="app_name">Android Webserver</string>
+    <string name="hello">Smallest Webserver for Android</string>
+    <string name="app_name">Webserver for Android</string>
 </resources>
