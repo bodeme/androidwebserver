@@ -112,15 +112,13 @@ public class ServerService extends Service {
         CharSequence text = message;
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
-        if (notification == null) {
-	        notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
-	        notification.setLatestEventInfo(this, getString(R.string.app_name), text, contentIntent);
-	
-	        mNM.notify(NOTIFICATION_ID, notification);
-        } else {
-        	notification.setLatestEventInfo(this, getString(R.string.app_name), text, contentIntent);
-        	mNM.notify(NOTIFICATION_ID, notification);
-        }
+        Notification.Builder builder = new Notification.Builder(this)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(text)
+            .setContentIntent(contentIntent);
+        notification = builder.build();
+        mNM.notify(NOTIFICATION_ID, notification);
     }
     
     @Override
