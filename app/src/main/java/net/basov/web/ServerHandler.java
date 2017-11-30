@@ -77,9 +77,11 @@ class ServerHandler extends Thread {
   }
   
   private void send(String text) {
-	  String header = getHeaderBase();
-	  header = header.replace("%code%", "200 ok");	    	  
-	  header = header.replace("%length%", "" + text.length());	  
+      String header = context.getString(R.string.header,
+              context.getString(R.string.rc200),
+              text.length(),
+              "text/html"
+      );
 	  try {
 	      out = new PrintWriter(toClient.getOutputStream(), true);
 	      out.print(header);
@@ -88,11 +90,12 @@ class ServerHandler extends Thread {
 		  Server.remove(toClient);
 		  toClient.close();
 	  } catch (Exception e) {
-	    	
+
 	  }
   }
   
   private void showHtml(String dokument) {
+      Integer rc = 200;
     // Standard-Doc
 	if (dokument.equals("")) {
 		dokument = "index.html";
@@ -100,6 +103,7 @@ class ServerHandler extends Thread {
 	
 	// Don't allow directory traversal
 	if (dokument.indexOf("..") != -1) {
+	    rc = 403;
 		dokument = "403.html";
 	}
 	
@@ -110,31 +114,26 @@ class ServerHandler extends Thread {
 	
 	if(dokument.charAt(dokument.length()-1) == '/') {
 		dokument = documentRoot + "404.html";
+		rc = 404;
 	}
 	
-	String header = getHeaderBase();
-	header = header.replace("%code%", "403 Forbidden");
-
 	try {
     	File f = new File(dokument);
         if (!f.exists()) {
-        	header = getHeaderBase();
-        	header = header.replace("%code%", "404 File not found");
-        	dokument = "404.html";
+            dokument = documentRoot + "404.html";
+            rc = 404;
         }
     }
     catch (Exception e) {}
 
-    if (!dokument.equals(documentRoot + "403.html")) {
-    	header = getHeaderBase().replace("%code%", "200 OK");
-    }
-	
     Log.d("Webserver", "Serving " + dokument);
     
     try {
       File f = new File(dokument);
       if (f.exists()) {
-    	  BufferedInputStream in = new BufferedInputStream(new FileInputStream(dokument));
+          Log.d("Webserver", "Send " + dokument + ", rc:" + rc);
+
+          BufferedInputStream in = new BufferedInputStream(new FileInputStream(dokument));
     	  BufferedOutputStream out = new BufferedOutputStream(toClient.getOutputStream());
     	  ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
     	  
@@ -145,20 +144,42 @@ class ServerHandler extends Thread {
     	  }
 
     	  tempOut.flush();
-    	  header = header.replace("%length%", ""+tempOut.size());
 
+          String rcStr;
+          switch (rc) {
+              case 404:
+                  rcStr = context.getString(R.string.rc404);
+                  break;
+              case 403:
+                  rcStr = context.getString(R.string.rc403);
+                  break;
+              case 200:
+                  rcStr = context.getString(R.string.rc200);
+                  break;
+              default:
+                  rcStr = context.getString(R.string.rc500);
+                  break;
+          }
+
+          String header = context.getString(R.string.header,
+                  rcStr,
+                  tempOut.size(),
+                  "text/html"
+          );
     	  out.write(header.getBytes());
     	  out.write(tempOut.toByteArray());
     	  out.flush();
       } else {
-          // Send HTML-File (Ascii, not as a stream)
-    	  header = getHeaderBase();
-    	  header = header.replace("%code%", "404 File not found");	    	  
-    	  header = header.replace("%length%", ""+"404 - File not Found".length());	    	  
-          out = new PrintWriter(toClient.getOutputStream(), true);
-          out.print(header);
-    	  out.print("404 - File not Found");
-    	  out.flush();
+            String rc404 = context.getString(R.string.rc404);
+            String header = context.getString(R.string.header,
+				  rc404,
+				  rc404.length(),
+				  "text/html"
+				  );
+            out = new PrintWriter(toClient.getOutputStream(), true);
+            out.print(header);
+            out.print(rc404);
+            out.flush();
       }
 
       Server.remove(toClient);
@@ -166,13 +187,5 @@ class ServerHandler extends Thread {
     } catch (Exception e) {
     	
     }
-  }
-  
-  private String getHeaderBase() {
-	  return  "HTTP/1.1 %code%\n"+
-		"Server: AndroidWebserver/1.0\n"+
-		"Content-Length: %length%\n"+
-		"Connection: close\n"+
-		"Content-Type: text/html; charset=utf-8\n\n";
   }
 }

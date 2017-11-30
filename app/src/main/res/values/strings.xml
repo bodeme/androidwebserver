@@ -2,4 +2,20 @@
 <resources>
     <string name="hello">Smallest Webserver for Android</string>
     <string name="app_name">Webserver for Android</string>
+    <!--
+    %1$d    result code
+    %2%d    content length
+    %3$s    content type
+    -->
+    <string name="header"><![CDATA["HTTP/1.1 %1$s
+Server: AndroidWebserver/1.0
+Content-Length: %2$d
+Connection: close
+Content-Type: %3$s; charset=utf-8
+
+"]]></string>
+    <string name="rc500">500 Internal server error</string>
+    <string name="rc404">404 File not found</string>
+    <string name="rc403">403 Forbidden</string>
+    <string name="rc200">200 OK</string>
 </resources>
