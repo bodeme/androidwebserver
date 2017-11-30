@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2017 Mikhail Basov
  * Copyright (C) 2009-2014 Markus Bode
  * 
  * Licensed under the GNU General Public License v3
@@ -18,21 +19,17 @@
  *
  */
 
-package com.bolutions.webserver;
+package net.basov.web;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;

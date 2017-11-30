@@ -1,6 +1,7 @@
 /*
+ * Copyright (C) 2017 Mikhail Basov
  * Copyright (C) 2009-2014 Markus Bode
- * 
+ *
  * Licensed under the GNU General Public License v3
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
  *
  */
 
-package com.bolutions.webserver;
+package net.basov.web;
 
 import java.io.IOException;
 import java.net.InetAddress;

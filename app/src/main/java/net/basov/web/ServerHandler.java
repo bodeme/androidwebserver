@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2017 Mikhail Basov
  * Copyright (C) 2009-2014 Markus Bode
  * 
  * Licensed under the GNU General Public License v3
@@ -17,16 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.bolutions.webserver;
-import java.io.*;
-import java.net.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package net.basov.web;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-import net.dinglisch.android.tasker.TaskerIntent;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
 
 class ServerHandler extends Thread {
@@ -70,55 +73,7 @@ class ServerHandler extends Thread {
     	catch (Exception ex){}
     }
     
-    Pattern taskerPattern = Pattern.compile("tasker/(.+)");
-    Matcher taskerMatcher = taskerPattern.matcher(dokument);
-
-    if(taskerMatcher.matches()) {
-    	try {
-			dokument = java.net.URLDecoder.decode(taskerMatcher.group(1), "UTF-8");
-	    	sendTasker(dokument);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-	    	showHtml("403.html");
-		}
-    } else if(dokument.equals("tasker/")) {
-    	listTaskerTasks();
-    } else {
-    	showHtml(dokument);
-    }
-  }
-  
-  private void sendTasker(String taskName) {
-	  if(TaskerIntent.testStatus(context).equals(TaskerIntent.Status.OK)) {
-		  TaskerIntent i = new TaskerIntent(taskName);
-		  context.sendBroadcast(i);
-
-	      send("Sent intent \"" + taskName + "\" to tasker.");
-	  } else {
-	      send("Could not sent intent \"" + taskName + "\" to tasker (" + 
-	    		  TaskerIntent.testStatus(context) + ").");
-	  }
-  }
-  
-  private void listTaskerTasks() {
-	  Cursor c = context.getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), null, null, null, null);
-
-	  String text = "Found tasks:<ul>";
-	  if(c != null) {
-		  Log.d("Webserver", "Cursor is not null");
-		  int nameCol = c.getColumnIndex("name");
-		  int projNameCol = c.getColumnIndex("project_name");
-
-		  while(c.moveToNext()) {
-			  text = text + "<li><a href=\"/tasker/"+c.getString(nameCol)+"\">" + c.getString(projNameCol) + ": " + c.getString(nameCol) + "</a></li>";
-		  }
-		  c.close();
-	  } else {
-		  Log.d("Webserver", "Cursor is null");
-	  }
-	  text = text + "</ul>";
-	  send(text);
+   	showHtml(dokument);
   }
   
   private void send(String text) {
@@ -218,6 +173,6 @@ class ServerHandler extends Thread {
 		"Server: AndroidWebserver/1.0\n"+
 		"Content-Length: %length%\n"+
 		"Connection: close\n"+
-		"Content-Type: text/html; charset=iso-8859-1\n\n";
+		"Content-Type: text/html; charset=utf-8\n\n";
   }
 }

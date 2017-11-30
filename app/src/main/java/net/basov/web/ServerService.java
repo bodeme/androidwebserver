@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2009-2014 Markus Bode
  * Copyright (C) 2017 Mikhail Basov
+ * Copyright (C) 2009-2014 Markus Bode
  *
  * Licensed under the GNU General Public License v3
  * 
@@ -19,11 +19,10 @@
  *
  */
 
-package com.bolutions.webserver;
+package net.basov.web;
 
 
 import android.app.AlertDialog;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -38,7 +37,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ServerService extends Service {
