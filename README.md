@@ -1,17 +1,10 @@
-Webserver for Android
-=====================
+### Lightweight Web Serwer (lWS) 
 
-Smallest webserver for android. Works only when connected to a wifi-network. Use at your own risk and feel free to contribute :-)
+Simple as possible. Lightweight as possible. Open source. 
+This project based on [another open source project](https://github.com/bodeme/androidwebserver)
+Unfortunately, original project didn't maintened for 3 years.
 
-Twitter: [@bodeme](https://twitter.com/bodeme)
+### License
+lWS is licensed under the [GPLv3 License](COPYING) because original project
 
-License
-=======
-Android Webserver is licensed under the [GPLv3 License](COPYING).
 
-Features
-========
-* GET-Requests
-* Handling of ASCII and BINARY Files
-* Tasker: List all tasks (http://example.org/tasker/)
-* Tasker: Execute task (http://example.org/tasker/taskname)
