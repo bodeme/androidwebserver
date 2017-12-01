@@ -132,6 +132,7 @@ class ServerHandler extends Thread {
         try {
             String rcStr;
             String header;
+            String contType;
             ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
             BufferedOutputStream outStream = new BufferedOutputStream(toClient.getOutputStream());
             BufferedInputStream in;
@@ -143,11 +144,7 @@ class ServerHandler extends Thread {
 
                 rcStr = context.getString(R.string.rc200);
 
-                header = context.getString(R.string.header,
-                      rcStr,
-                      tempOut.size(),
-                      getMIMETypeForDocument(dokument)
-                );
+                contType = getMIMETypeForDocument(dokument);
             } else {
                 String errAsset = "";
                 AssetManager am = context.getAssets();
@@ -166,13 +163,8 @@ class ServerHandler extends Thread {
                         break;
                 }
 
+                contType = "text/html";
                 in = new BufferedInputStream(am.open(errAsset));
-
-                header = context.getString(R.string.header,
-                      rcStr,
-                      tempOut.size(),
-                      "text/html"
-                );
 
             }
 
@@ -183,6 +175,13 @@ class ServerHandler extends Thread {
             }
 
             tempOut.flush();
+
+            header = context.getString(R.string.header,
+                    rcStr,
+                    tempOut.size(),
+                    contType
+            );
+
 
             outStream.write(header.getBytes());
             outStream.write(tempOut.toByteArray());
