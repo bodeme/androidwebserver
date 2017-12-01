@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -150,7 +151,7 @@ class ServerHandler extends Thread {
           String header = context.getString(R.string.header,
                   rcStr,
                   tempOut.size(),
-                  "text/html"
+                  getMIMETypeForDocument(dokument)
           );
     	  outStream.write(header.getBytes());
     	  outStream.write(tempOut.toByteArray());
@@ -197,5 +198,20 @@ class ServerHandler extends Thread {
     } catch (Exception e) {
     	
     }
+  }
+
+  private String getMIMETypeForDocument(String document) {
+      final HashMap<String,String> MIME = new HashMap<String, String>(){
+          {
+              put("html","text/html");
+              put("css", "text/css");
+              put("js", "text/javascript");
+              put("gif", "image/gif");
+              put("png", "image/png");
+              put("jpg","image/jpeg");
+              put("bmp","image/bmp");
+          }
+      };
+      return MIME.get(document.substring(document.lastIndexOf(".")+1));
   }
 }
