@@ -50,131 +50,128 @@ public class StartActivity extends Activity {
     private static TextView mLog;
     private static ScrollView mScroll;
     private String documentRoot;
-    
+
     private String lastMessage = "";
 
-	private ServerService mBoundService;
-	
+    private ServerService mBoundService;
+
     final Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			Bundle b = msg.getData();
-			log(b.getString("msg"));
-		}
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle b = msg.getData();
+            log(b.getString("msg"));
+        }
     };
 
-    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         mToggleButton = (ToggleButton) findViewById(R.id.toggle);
         port = (EditText) findViewById(R.id.port);
         mLog = (TextView) findViewById(R.id.log);
         mScroll = (ScrollView) findViewById(R.id.ScrollView01);
-        
+
         documentRoot = getDocRoot();
-        
+
         if(null != documentRoot) {
-	        try {
-		        if (!(new File(documentRoot)).exists()) {
-		        	(new File(documentRoot)).mkdir();
-		        	Log.d("Webserver", "Created " + documentRoot);
-		         	BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
-		         	bout.write("<html><head><title>lightweight WebServer</title>");
-		         	bout.write("</head>");
-		         	bout.write("<body>Welcome to lWS.");
-		         	bout.write("<br/><br/>Document root " + documentRoot );
-		         	bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">Github</a>");
-		         	bout.write("</body></html>");
-		         	bout.flush();
-		         	bout.close();
-		        	Log.d("lWS", "Created html files");
-		        }
-	        } catch (Exception e) {
-	        	Log.v("ERROR",e.getMessage());
-	        }
-	        
-	        log("");
-	        log("Document-Root: " + documentRoot);
+            try {
+                if (!(new File(documentRoot)).exists()) {
+                    (new File(documentRoot)).mkdir();
+                    Log.d("Webserver", "Created " + documentRoot);
+                     BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
+                     bout.write("<html><head><title>lightweight WebServer</title>");
+                     bout.write("</head>");
+                     bout.write("<body>Welcome to lWS.");
+                     bout.write("<br/><br/>Document root " + documentRoot );
+                     bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">Github</a>");
+                     bout.write("</body></html>");
+                     bout.flush();
+                     bout.close();
+                    Log.d("lWS", "Created html files");
+                }
+            } catch (Exception e) {
+                Log.v("ERROR",e.getMessage());
+            }
+
+            log("");
+            log("Document-Root: " + documentRoot);
         } else {
             log("Error: Document-Root could not be found.");
         }
-        
+
         mToggleButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				if(mToggleButton.isChecked()) {
-					startServer(mHandler, documentRoot, new Integer(port.getText().toString()));
-				} else {
-					stopServer();
-				}
-			}
-		});
+            public void onClick(View arg0) {
+                if(mToggleButton.isChecked()) {
+                    startServer(mHandler, documentRoot, new Integer(port.getText().toString()));
+                } else {
+                    stopServer();
+                }
+            }
+        });
 
         doBindService();
     }
 
     public static void log( String s ) {
-    	mLog.append(s + "\n");
-    	mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        mLog.append(s + "\n");
+        mScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
-    
+
     private void startServer(Handler handler, String documentRoot, int port) {
-    	if (mBoundService == null) {
-	        Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
-		} else {
-			mBoundService.startServer(handler, documentRoot, port);
-		}
+        if (mBoundService == null) {
+            Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
+        } else {
+            mBoundService.startServer(handler, documentRoot, port);
+        }
     }
-    
+
     private void stopServer() { 
-    	if (mBoundService == null) {
-	        Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
-		} else {
-			mBoundService.stopServer();
-		}
+        if (mBoundService == null) {
+            Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
+        } else {
+            mBoundService.stopServer();
+        }
     }
-    
+
     private ServiceConnection mConnection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder service) {
-	        mBoundService = ((ServerService.LocalBinder)service).getService();
-	        Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
-	        mBoundService.updateNotifiction(lastMessage);
-	        
-	        mToggleButton.setChecked(mBoundService.isRunning());
-	    }
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mBoundService = ((ServerService.LocalBinder)service).getService();
+            Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
+            mBoundService.updateNotifiction(lastMessage);
 
-	    public void onServiceDisconnected(ComponentName className) {
-	        mBoundService = null;
-	        Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
-	    }
-	};
-    
-	private void doUnbindService() {
-    	if (mBoundService != null) {
-	        unbindService(mConnection);
-	    }
-	}
-	
-	private void doBindService() {
-	    bindService(new Intent(StartActivity.this, ServerService.class), mConnection, Context.BIND_AUTO_CREATE);
-	}
+            mToggleButton.setChecked(mBoundService.isRunning());
+        }
 
+        public void onServiceDisconnected(ComponentName className) {
+            mBoundService = null;
+            Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
+        }
+    };
 
-	@Override
-	protected void onDestroy() {
-	    super.onDestroy();
-	    doUnbindService();
-	}
-	
+    private void doUnbindService() {
+        if (mBoundService != null) {
+            unbindService(mConnection);
+        }
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-	
-	private String getDocRoot() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + "/androidwebserver/";
-	}
+    private void doBindService() {
+        bindService(new Intent(StartActivity.this, ServerService.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private String getDocRoot() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/androidwebserver/";
+    }
 }
