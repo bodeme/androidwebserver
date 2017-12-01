@@ -113,9 +113,10 @@ class ServerHandler extends Thread {
 	dokument = documentRoot + dokument;
 	Log.d("Webserver", "Got " + dokument);
 	dokument = dokument.replaceAll("[/]+","/");
-	
+
+	// This is directory
 	if(dokument.charAt(dokument.length()-1) == '/') {
-		rc = 404;
+	    dokument = dokument + "/index.html";
 	}
 	
 	try {
@@ -130,32 +131,23 @@ class ServerHandler extends Thread {
 
     try {
       String rcStr;
-      File f = new File(dokument);
+      String header;
       ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
       BufferedOutputStream outStream = new BufferedOutputStream(toClient.getOutputStream());
+      BufferedInputStream in;
 
       if (rc == 200) {
           Log.d("lWS", "Send " + dokument + ", rc:" + rc);
 
-          BufferedInputStream in = new BufferedInputStream(new FileInputStream(dokument));
+          in = new BufferedInputStream(new FileInputStream(dokument));
+
           rcStr = context.getString(R.string.rc200);
 
-    	  byte[] buf = new byte[4096];
-    	  int count = 0;
-    	  while ((count = in.read(buf)) != -1){
-    		  tempOut.write(buf, 0, count);
-    	  }
-
-    	  tempOut.flush();
-
-          String header = context.getString(R.string.header,
+          header = context.getString(R.string.header,
                   rcStr,
                   tempOut.size(),
                   getMIMETypeForDocument(dokument)
           );
-    	  outStream.write(header.getBytes());
-    	  outStream.write(tempOut.toByteArray());
-    	  outStream.flush();
       } else {
           String errAsset = "";
           AssetManager am = context.getAssets();
@@ -173,25 +165,28 @@ class ServerHandler extends Thread {
                   rcStr = context.getString(R.string.rc500);
                   break;
           }
-          BufferedInputStream in = new BufferedInputStream(am.open(errAsset));
 
-          byte[] buf = new byte[4096];
-          int count = 0;
-          while ((count = in.read(buf)) != -1){
-              tempOut.write(buf, 0, count);
-          }
-          tempOut.flush();
+          in = new BufferedInputStream(am.open(errAsset));
 
-          String header = context.getString(R.string.header,
+          header = context.getString(R.string.header,
                   rcStr,
                   tempOut.size(),
                   "text/html"
           );
 
-          outStream.write(header.getBytes());
-          outStream.write(tempOut.toByteArray());
-          outStream.flush();
       }
+
+      byte[] buf = new byte[4096];
+      int count = 0;
+      while ((count = in.read(buf)) != -1){
+          tempOut.write(buf, 0, count);
+      }
+
+      tempOut.flush();
+
+      outStream.write(header.getBytes());
+      outStream.write(tempOut.toByteArray());
+      outStream.flush();
 
       Server.remove(toClient);
       toClient.close();
@@ -206,12 +201,23 @@ class ServerHandler extends Thread {
               put("html","text/html");
               put("css", "text/css");
               put("js", "text/javascript");
+              put("txt","text/plain");
+              put("md","text/markdown");
               put("gif", "image/gif");
               put("png", "image/png");
               put("jpg","image/jpeg");
               put("bmp","image/bmp");
+              put("svg","image/svg+xml");
+              put("zip","application/zip");
+              put("gz","application/gzip");
+              put("tgz","application/gzip");
+              put("pdf","application/pdf");
           }
       };
-      return MIME.get(document.substring(document.lastIndexOf(".")+1));
+      return MIME.get(
+                document.substring(
+                      document.lastIndexOf(".")+1
+                ).toLowerCase()
+      );
   }
 }
