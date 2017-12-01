@@ -1,6 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
+    def last_tag = getGitRevParseInfo("describe --tags --abbrev=0")
+    def commit_count = getGitRevParseInfo("rev-list --count ${last_tag}..")
+    def current_commit = getGitRevParseInfo("rev-parse --short")
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = "lWS." + versionName + ".apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+
+    }
+
     compileSdkVersion 25
     buildToolsVersion "26.0.2"
 
@@ -12,10 +27,49 @@ android {
         versionName "00.00.10"
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'mvb_key'
+            storeFile file('../../.keys/mvb-release.keystore')
+            v2SigningEnabled false
+        }
+        debug {
+            storeFile file('../../.keys/mvb-debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
+    }
+    
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            zipAlignEnabled true
+            applicationIdSuffix '.r'
+            versionNameSuffix "r-g" + current_commit
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+            signingConfig signingConfigs.release
+        }
+        betta {
+            applicationIdSuffix '.b'
+            versionNameSuffix "b-g" + current_commit
+            debuggable true
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            debuggable true
+            versionNameSuffix 'a-' + commit_count + "-g" + current_commit
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+            signingConfig signingConfigs.debug
         }
     }
 }
+
+def getGitRevParseInfo (what) {
+    def cmd = "git " + what + " HEAD"
+    def proc = cmd.execute ()
+    proc.text.trim ()
+}
+
