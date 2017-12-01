@@ -1,4 +1,4 @@
-### Lightweight Web Serwer (lWS) 
+### Lightweight Web Server (lWS) 
 
 Simple as possible. Lightweight as possible. Open source. 
 This project based on [another open source project](https://github.com/bodeme/androidwebserver)
