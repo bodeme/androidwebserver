@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 class ServerHandler extends Thread {
@@ -95,7 +96,8 @@ class ServerHandler extends Thread {
   }
   
   private void showHtml(String dokument) {
-      Integer rc = 200;
+    Integer rc = 200;
+
     // Standard-Doc
 	if (dokument.equals("")) {
 		dokument = "index.html";
@@ -104,7 +106,6 @@ class ServerHandler extends Thread {
 	// Don't allow directory traversal
 	if (dokument.indexOf("..") != -1) {
 	    rc = 403;
-		dokument = "403.html";
 	}
 	
 	// Search for files in docroot
@@ -113,30 +114,31 @@ class ServerHandler extends Thread {
 	dokument = dokument.replaceAll("[/]+","/");
 	
 	if(dokument.charAt(dokument.length()-1) == '/') {
-		dokument = documentRoot + "404.html";
 		rc = 404;
 	}
 	
 	try {
     	File f = new File(dokument);
         if (!f.exists()) {
-            dokument = documentRoot + "404.html";
             rc = 404;
         }
     }
     catch (Exception e) {}
 
-    Log.d("Webserver", "Serving " + dokument);
-    
+    Log.d("lWS", "Serving " + dokument);
+
     try {
+      String rcStr;
       File f = new File(dokument);
-      if (f.exists()) {
-          Log.d("Webserver", "Send " + dokument + ", rc:" + rc);
+      ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
+      BufferedOutputStream outStream = new BufferedOutputStream(toClient.getOutputStream());
+
+      if (rc == 200) {
+          Log.d("lWS", "Send " + dokument + ", rc:" + rc);
 
           BufferedInputStream in = new BufferedInputStream(new FileInputStream(dokument));
-    	  BufferedOutputStream out = new BufferedOutputStream(toClient.getOutputStream());
-    	  ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
-    	  
+          rcStr = context.getString(R.string.rc200);
+
     	  byte[] buf = new byte[4096];
     	  int count = 0;
     	  while ((count = in.read(buf)) != -1){
@@ -145,41 +147,49 @@ class ServerHandler extends Thread {
 
     	  tempOut.flush();
 
-          String rcStr;
+          String header = context.getString(R.string.header,
+                  rcStr,
+                  tempOut.size(),
+                  "text/html"
+          );
+    	  outStream.write(header.getBytes());
+    	  outStream.write(tempOut.toByteArray());
+    	  outStream.flush();
+      } else {
+          String errAsset = "";
+          AssetManager am = context.getAssets();
           switch (rc) {
               case 404:
                   rcStr = context.getString(R.string.rc404);
+                  errAsset = "404.html";
                   break;
               case 403:
                   rcStr = context.getString(R.string.rc403);
-                  break;
-              case 200:
-                  rcStr = context.getString(R.string.rc200);
+                  errAsset = "403.html";
                   break;
               default:
+                  errAsset = "500.html";
                   rcStr = context.getString(R.string.rc500);
                   break;
           }
+          BufferedInputStream in = new BufferedInputStream(am.open(errAsset));
+
+          byte[] buf = new byte[4096];
+          int count = 0;
+          while ((count = in.read(buf)) != -1){
+              tempOut.write(buf, 0, count);
+          }
+          tempOut.flush();
 
           String header = context.getString(R.string.header,
                   rcStr,
                   tempOut.size(),
                   "text/html"
           );
-    	  out.write(header.getBytes());
-    	  out.write(tempOut.toByteArray());
-    	  out.flush();
-      } else {
-            String rc404 = context.getString(R.string.rc404);
-            String header = context.getString(R.string.header,
-				  rc404,
-				  rc404.length(),
-				  "text/html"
-				  );
-            out = new PrintWriter(toClient.getOutputStream(), true);
-            out.print(header);
-            out.print(rc404);
-            out.flush();
+
+          outStream.write(header.getBytes());
+          outStream.write(tempOut.toByteArray());
+          outStream.flush();
       }
 
       Server.remove(toClient);

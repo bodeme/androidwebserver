@@ -82,34 +82,20 @@ public class StartActivity extends Activity {
 		        	(new File(documentRoot)).mkdir();
 		        	Log.d("Webserver", "Created " + documentRoot);
 		         	BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
-		         	bout.write("<html><head><title>Android Webserver</title>");
+		         	bout.write("<html><head><title>lightweight WebServer</title>");
 		         	bout.write("</head>");
-		         	bout.write("<body>Willkommen auf dem Android Webserver.");
-		         	bout.write("<br><br>Die HTML-Dateien liegen in " + documentRoot + ", der Sourcecode dieser App auf ");
-		         	bout.write("<a href=\"https://github.com/bodeme/androidwebserver\">Github</a>");
+		         	bout.write("<body>Welcome to lWS.");
+		         	bout.write("<br/><br/>Document root " + documentRoot );
+		         	bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">Github</a>");
 		         	bout.write("</body></html>");
 		         	bout.flush();
 		         	bout.close();
-		         	bout = new BufferedWriter(new FileWriter(documentRoot + "403.html"));
-		         	bout.write("<html><head><title>Error 403</title>");
-		         	bout.write("</head>");
-		         	bout.write("<body>403 - Forbidden</body></html>");
-		         	bout.flush();
-		         	bout.close();
-		         	bout = new BufferedWriter(new FileWriter(documentRoot + "404.html"));
-		         	bout.write("<html><head><title>Error 404</title>");
-		         	bout.write("</head>");
-		         	bout.write("<body>404 - File not found</body></html>");
-		         	bout.flush();
-		         	bout.close();
-		        	Log.d("Webserver", "Created html files");
+		        	Log.d("lWS", "Created html files");
 		        }
 	        } catch (Exception e) {
 	        	Log.v("ERROR",e.getMessage());
 	        }
 	        
-	        log("");
-	        log("Please mail suggestions to fef9560@b0d3.de");
 	        log("");
 	        log("Document-Root: " + documentRoot);
         } else {
