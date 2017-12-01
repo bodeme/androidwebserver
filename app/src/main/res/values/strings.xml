@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Smallest Webserver for Android</string>
-    <string name="app_name">Webserver for Android</string>
+    <string name="hello">lightweight Web Server (lWG) for Android</string>
+    <string name="app_name">lightweight Web Server (lWS)</string>
     <!--
     %1$d    result code
     %2%d    content length

@@ -78,7 +78,7 @@ public class ServerService extends Service {
 	        Intent i = new Intent(this, StartActivity.class);
 	        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
 
-	        updateNotifiction("Webserver is running on port " + ipAddress + ":" + port);
+	        updateNotifiction("Running on " + ipAddress + ":" + port);
 	        
 	    	Message msg = new Message();
 	    	Bundle b = new Bundle();
@@ -113,7 +113,7 @@ public class ServerService extends Service {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
         notification = new Notification.Builder(this)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.ic_http_black_24dp)
             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
             .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
