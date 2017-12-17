@@ -54,6 +54,8 @@ public class StartActivity extends Activity {
     private String lastMessage = "";
 
     private ServerService mBoundService;
+	
+	private ServiceConnection mConnection;
 
     final Handler mHandler = new Handler() {
         @Override
@@ -110,8 +112,33 @@ public class StartActivity extends Activity {
                 }
             }
         });
+		
+		mConnection = new ServiceConnection() {
+			public void onServiceConnected(ComponentName className, IBinder service) {
+				mBoundService = ((ServerService.LocalBinder)service).getService();
+				Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
+				mBoundService.updateNotifiction(lastMessage);
 
-        doBindService();
+				mToggleButton.setChecked(mBoundService.isRunning());
+			}
+
+			public void onServiceDisconnected(ComponentName className) {
+				mBoundService = null;
+				Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
+			}
+		};
+		
+		doBindService();
+		
+		if(mBoundService != null)
+			mToggleButton.setChecked(mBoundService.isRunning());
+    }
+	
+    private void doUnbindService() {
+        if (mBoundService != null) {
+            getApplicationContext().unbindService(mConnection);
+        }
+    
     }
 
     public static void log( String s ) {
@@ -135,40 +162,20 @@ public class StartActivity extends Activity {
         }
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((ServerService.LocalBinder)service).getService();
-            Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
-            mBoundService.updateNotifiction(lastMessage);
-
-            mToggleButton.setChecked(mBoundService.isRunning());
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            mBoundService = null;
-            Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private void doUnbindService() {
-        if (mBoundService != null) {
-            unbindService(mConnection);
-        }
-    }
-
     private void doBindService() {
-        bindService(new Intent(StartActivity.this, ServerService.class), mConnection, Context.BIND_AUTO_CREATE);
+        getApplicationContext().bindService(new Intent(StartActivity.this, ServerService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
+		doUnbindService();
         super.onDestroy();
-        doUnbindService();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+		doBindService();
     }
 
     private String getDocRoot() {

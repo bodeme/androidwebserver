@@ -49,8 +49,7 @@ public class ServerService extends Service {
 
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        showNotification();
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);      
     }
 
     private void showNotification() {
@@ -73,10 +72,6 @@ public class ServerService extends Service {
 
             server = new Server(handler, documentRoot, ipAddress, port, getApplicationContext());
             server.start();
-
-            Intent i = new Intent(this, StartActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
-
             updateNotifiction("Running on " + ipAddress + ":" + port);
 
             Message msg = new Message();
@@ -100,14 +95,16 @@ public class ServerService extends Service {
     }
 
     public void stopServer() {
+		isRunning = false;
+		mNM.cancel(NOTIFICATION_ID);
         if(null != server) {
             server.stopServer();
-            server.interrupt();
-            isRunning = false;
+            server.interrupt();          	
         }
     }
 
     public void updateNotifiction(String message) {
+		if(null == message || message.length()==0) return;
         CharSequence text = message;
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
@@ -139,4 +136,19 @@ public class ServerService extends Service {
     public boolean isRunning() {
         return isRunning;
     }
+
+	@Override
+	public void onDestroy() {
+		stopServer();
+		stopSelf();
+		super.onDestroy();
+	}
+
+	@Override
+	public void onTaskRemoved(Intent rootIntent) {
+		stopServer();
+		stopSelf();
+		super.onTaskRemoved(rootIntent);
+	}
+
 }
