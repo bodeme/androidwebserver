@@ -54,8 +54,8 @@ public class StartActivity extends Activity {
     private String lastMessage = "";
 
     private ServerService mBoundService;
-	
-	private ServiceConnection mConnection;
+
+    private ServiceConnection mConnection;
 
     final Handler mHandler = new Handler() {
         @Override
@@ -112,33 +112,33 @@ public class StartActivity extends Activity {
                 }
             }
         });
-		
-		mConnection = new ServiceConnection() {
-			public void onServiceConnected(ComponentName className, IBinder service) {
-				mBoundService = ((ServerService.LocalBinder)service).getService();
-				Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
-				mBoundService.updateNotifiction(lastMessage);
 
-				mToggleButton.setChecked(mBoundService.isRunning());
-			}
+        mConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                mBoundService = ((ServerService.LocalBinder)service).getService();
+                Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
+                mBoundService.updateNotifiction(lastMessage);
 
-			public void onServiceDisconnected(ComponentName className) {
-				mBoundService = null;
-				Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
-			}
-		};
-		
-		doBindService();
-		
-		if(mBoundService != null)
-			mToggleButton.setChecked(mBoundService.isRunning());
+                mToggleButton.setChecked(mBoundService.isRunning());
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mBoundService = null;
+                Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        doBindService();
+
+        if(mBoundService != null)
+            mToggleButton.setChecked(mBoundService.isRunning());
     }
-	
+
     private void doUnbindService() {
         if (mBoundService != null) {
             getApplicationContext().unbindService(mConnection);
         }
-    
+
     }
 
     public static void log( String s ) {
@@ -168,14 +168,14 @@ public class StartActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-		doUnbindService();
+        doUnbindService();
         super.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-		doBindService();
+        doBindService();
     }
 
     private String getDocRoot() {

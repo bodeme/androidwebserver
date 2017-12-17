@@ -95,8 +95,8 @@ public class ServerService extends Service {
     }
 
     public void stopServer() {
-		isRunning = false;
-		mNM.cancel(NOTIFICATION_ID);
+        isRunning = false;
+        mNM.cancel(NOTIFICATION_ID);
         if(null != server) {
             server.stopServer();
             server.interrupt();          	
@@ -104,7 +104,7 @@ public class ServerService extends Service {
     }
 
     public void updateNotifiction(String message) {
-		if(null == message || message.length()==0) return;
+        if(null == message || message.length()==0) return;
         CharSequence text = message;
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
@@ -137,18 +137,18 @@ public class ServerService extends Service {
         return isRunning;
     }
 
-	@Override
-	public void onDestroy() {
-		stopServer();
-		stopSelf();
-		super.onDestroy();
-	}
+    @Override
+    public void onDestroy() {
+        stopServer();
+        stopSelf();
+        super.onDestroy();
+    }
 
-	@Override
-	public void onTaskRemoved(Intent rootIntent) {
-		stopServer();
-		stopSelf();
-		super.onTaskRemoved(rootIntent);
-	}
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        stopServer();
+        stopSelf();
+        super.onTaskRemoved(rootIntent);
+    }
 
 }
