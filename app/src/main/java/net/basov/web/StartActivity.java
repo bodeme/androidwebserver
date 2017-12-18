@@ -44,6 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import static net.basov.web.Constants.*;
+
 public class StartActivity extends Activity {
     private ToggleButton mToggleButton;
     private EditText port;
@@ -81,7 +83,7 @@ public class StartActivity extends Activity {
             try {
                 if (!(new File(documentRoot)).exists()) {
                     (new File(documentRoot)).mkdir();
-                    Log.d("Webserver", "Created " + documentRoot);
+                    Log.d(LOG_TAG, "Created " + documentRoot);
                      BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
                      bout.write("<html><head><title>lightweight WebServer</title>");
                      bout.write("</head>");
@@ -91,10 +93,10 @@ public class StartActivity extends Activity {
                      bout.write("</body></html>");
                      bout.flush();
                      bout.close();
-                    Log.d("lWS", "Created html files");
+                    Log.d(LOG_TAG, "Created html files");
                 }
             } catch (Exception e) {
-                Log.v("ERROR",e.getMessage());
+                Log.v(LOG_TAG,e.getMessage());
             }
 
             log("");

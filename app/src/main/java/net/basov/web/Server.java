@@ -33,6 +33,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import static net.basov.web.Constants.*;
+
 public class Server extends Thread {
     private ServerSocket listener = null;
     private boolean running = true;
@@ -63,7 +65,7 @@ public class Server extends Thread {
                 clientList.add(client);
             } catch (IOException e) {
                 send(e.getMessage());
-                Log.e("Webserver", e.getMessage());
+                Log.e(LOG_TAG, e.getMessage());
             }
         }
     }
@@ -74,7 +76,7 @@ public class Server extends Thread {
             listener.close();
         } catch (IOException e) {
             send(e.getMessage());
-            Log.e("Webserver", e.getMessage());
+            Log.e("lWS", e.getMessage());
         }
     }
 

@@ -36,6 +36,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import static net.basov.web.Constants.*;
+
 class ServerHandler extends Thread {
     private BufferedReader in;
     private PrintWriter out;
@@ -111,7 +113,7 @@ class ServerHandler extends Thread {
 
         // Search for files in docroot
         dokument = documentRoot + dokument;
-        Log.d("Webserver", "Got " + dokument);
+        Log.d(LOG_TAG, "Got " + dokument);
         dokument = dokument.replaceAll("[/]+","/");
 
         // This is directory
@@ -127,7 +129,7 @@ class ServerHandler extends Thread {
         }
         catch (Exception e) {}
 
-        Log.d("lWS", "Serving " + dokument);
+        Log.d(LOG_TAG, "Serving " + dokument);
 
         try {
             String rcStr;
@@ -138,7 +140,7 @@ class ServerHandler extends Thread {
             BufferedInputStream in;
 
             if (rc == 200) {
-                Log.d("lWS", "Send " + dokument + ", rc:" + rc);
+                Log.d(LOG_TAG, "Send " + dokument + ", rc:" + rc);
 
                 in = new BufferedInputStream(new FileInputStream(dokument));
 

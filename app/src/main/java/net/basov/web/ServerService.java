@@ -38,9 +38,10 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import static net.basov.web.Constants.*;
+
 public class ServerService extends Service {
 
-    private int NOTIFICATION_ID = 4711;
     private NotificationManager mNM;
     private String message;
     private Notification notification;
@@ -82,7 +83,7 @@ public class ServerService extends Service {
 
         } catch (Exception e) {
             isRunning = false;
-            Log.e("Webserver", e.getMessage());
+            Log.e(LOG_TAG, e.getMessage());
             updateNotifiction("Error: " + e.getMessage());
         }
     }
