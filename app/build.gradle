@@ -23,8 +23,8 @@ android {
         applicationId "net.basov.lws"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 101
-        versionName "00.01.01"
+        versionCode 200
+        versionName "00.02.00"
     }
 
     signingConfigs {
