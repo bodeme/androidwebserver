@@ -43,19 +43,14 @@ import static net.basov.web.Constants.*;
 public class ServerService extends Service {
 
     private NotificationManager mNM;
-    private String message;
     private Notification notification;
     private Server server;
     private boolean isRunning = false;
+    private String ipAddress;
 
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);      
-    }
-
-    private void showNotification() {
-        updateNotifiction("");
-        startForeground(NOTIFICATION_ID, notification);
     }
 
     public void startServer(Handler handler, String documentRoot, int port) {
@@ -64,7 +59,7 @@ public class ServerService extends Service {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
-            String ipAddress = intToIp(wifiInfo.getIpAddress());
+            ipAddress = intToIp(wifiInfo.getIpAddress());
 
             if( wifiInfo.getSupplicantState() != SupplicantState.COMPLETED) {
                 new AlertDialog.Builder(this).setTitle("Error").setMessage("Please connect to a WIFI-network for starting the webserver.").setPositiveButton("OK", null).show();
@@ -151,5 +146,7 @@ public class ServerService extends Service {
         stopSelf();
         super.onTaskRemoved(rootIntent);
     }
+
+    public String getIpAddress() { return ipAddress; }
 
 }

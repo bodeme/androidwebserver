@@ -30,15 +30,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +51,6 @@ import static net.basov.web.Constants.*;
 
 public class StartActivity extends Activity {
     private ToggleButton mToggleButton;
-    private EditText port;
     private static TextView mLog;
     private static ScrollView mScroll;
     private String documentRoot;
@@ -73,11 +75,24 @@ public class StartActivity extends Activity {
         setContentView(R.layout.main);
 
         mToggleButton = (ToggleButton) findViewById(R.id.toggle);
-        port = (EditText) findViewById(R.id.port);
         mLog = (TextView) findViewById(R.id.log);
         mScroll = (ScrollView) findViewById(R.id.ScrollView01);
 
-        documentRoot = getDocRoot();
+        Button button = (Button) findViewById(R.id.buttonSettings);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
+                StartActivity.this.startActivityForResult(i, PREFERENCES_REQUEST);
+            }
+        });
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        documentRoot = sharedPreferences.getString(
+                getString(R.string.pk_document_root),
+                getFilesDir(this).getPath()
+                        + "/html/"
+        );
 
         if(null != documentRoot) {
             try {
@@ -100,15 +115,24 @@ public class StartActivity extends Activity {
             }
 
             log("");
-            log("Document-Root: " + documentRoot);
         } else {
             log("Error: Document-Root could not be found.");
         }
 
+        final String port = sharedPreferences.getString(
+                getString(R.string.pk_port),
+                "8080"
+        );
+
         mToggleButton.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
                 if(mToggleButton.isChecked()) {
-                    startServer(mHandler, documentRoot, new Integer(port.getText().toString()));
+                    startServer(
+                            mHandler,
+                            documentRoot,
+                            Integer.valueOf(port)
+                    );
+                    refreshMainScreen();
                 } else {
                     stopServer();
                 }
@@ -120,8 +144,7 @@ public class StartActivity extends Activity {
                 mBoundService = ((ServerService.LocalBinder)service).getService();
                 Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
                 mBoundService.updateNotifiction(lastMessage);
-
-                mToggleButton.setChecked(mBoundService.isRunning());
+                refreshMainScreen();
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -132,8 +155,7 @@ public class StartActivity extends Activity {
 
         doBindService();
 
-        if(mBoundService != null)
-            mToggleButton.setChecked(mBoundService.isRunning());
+        refreshMainScreen();
     }
 
     private void doUnbindService() {
@@ -180,7 +202,60 @@ public class StartActivity extends Activity {
         doBindService();
     }
 
-    private String getDocRoot() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/androidwebserver/";
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PREFERENCES_REQUEST) {
+            SharedPreferences defSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            if (defSharedPref.getBoolean(getString(R.string.pk_pref_changed), false)) {
+                SharedPreferences.Editor editor = defSharedPref.edit();
+                refreshMainScreen();
+                editor.putBoolean(getString(R.string.pk_pref_changed), false);
+                editor.commit();
+            }
+        }
+    }
+
+    public void refreshMainScreen() {
+        final TextView viewDirectoryRoot = (TextView) findViewById(R.id.document_root);
+        final TextView viewAddress = (TextView) findViewById(R.id.address);
+        final TextView viewPort = (TextView) findViewById(R.id.port);
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        documentRoot = sharedPreferences.getString(
+                getString(R.string.pk_document_root),
+                getFilesDir(this).getPath()
+                        + "/html/"
+        );
+        viewDirectoryRoot.setText(documentRoot);
+
+        final String port = sharedPreferences.getString(
+                getString(R.string.pk_port),
+                "8080"
+        );
+        viewPort.setText(port);
+
+        if(mBoundService != null) {
+            mToggleButton.setChecked(mBoundService.isRunning());
+            viewAddress.setText(mBoundService.getIpAddress());
+        }
+    }
+
+
+    public static File getFilesDir(Context c) {
+        File filesDir;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            if (Build.VERSION.SDK_INT <= 18)
+                filesDir = new File(Environment.getExternalStorageDirectory()
+                        + "/Android/data/"
+                        + c.getPackageName()
+                        +"/files"
+                );
+            else
+                filesDir = c.getExternalFilesDir(null);
+        } else {
+            filesDir = c.getFilesDir();
+        }
+        return filesDir;
     }
 }

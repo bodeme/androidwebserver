@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">lightweight Web Server (lWS) for Android</string>
-    <string name="app_name">lightweight Web Server (lWS)</string>
+    <string name="app_name">lWS</string>
     <!--
     %1$d    result code
     %2%d    content length
@@ -18,4 +18,7 @@ Content-Type: %3$s; charset=utf-8
     <string name="rc404">404 File not found</string>
     <string name="rc403">403 Forbidden</string>
     <string name="rc200">200 OK</string>
+    <string name="pk_document_root">prefDocumentRoot</string>
+    <string name="pk_port">prefProt</string>
+    <string name="pk_pref_changed">prefChanged</string>
 </resources>

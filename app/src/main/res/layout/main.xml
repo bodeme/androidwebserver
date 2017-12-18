@@ -12,11 +12,45 @@
         android:padding="10dp"
         android:text="@string/hello" />
 
-    <EditText
-        android:id="@+id/port"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Document root: " />
+    <TextView
+        android:id="@+id/document_root"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="8080" />
+        android:text="Unset" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address: " />
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unset" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=": " />
+        <TextView
+            android:id="@+id/port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unset" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings" />
 
     <ToggleButton
         android:text="ToggleButton01"

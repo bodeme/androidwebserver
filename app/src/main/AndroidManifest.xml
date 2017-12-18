@@ -12,6 +12,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".PreferencesActivity"
+            android:label="Preferences">
+            <intent-filter>
+                <action android:name=".Preferences" />
+                <category android:name="android.intent.category.PREFERENCE" />
+            </intent-filter>
+        </activity>
+
+
         <service android:name=".ServerService"
             android:exported="false"
             android:stopWithTask="false"/>
