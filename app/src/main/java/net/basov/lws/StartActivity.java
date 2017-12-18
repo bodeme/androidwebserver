@@ -132,10 +132,10 @@ public class StartActivity extends Activity {
                             documentRoot,
                             Integer.valueOf(port)
                     );
-                    refreshMainScreen();
                 } else {
                     stopServer();
                 }
+                refreshMainScreen();
             }
         });
 
@@ -238,6 +238,8 @@ public class StartActivity extends Activity {
         if(mBoundService != null) {
             mToggleButton.setChecked(mBoundService.isRunning());
             viewAddress.setText(mBoundService.getIpAddress());
+        } else {
+            viewAddress.setText("");
         }
     }
 

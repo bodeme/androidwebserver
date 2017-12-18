@@ -46,7 +46,7 @@ public class ServerService extends Service {
     private Notification notification;
     private Server server;
     private boolean isRunning = false;
-    private String ipAddress;
+    private String ipAddress = "";
 
     @Override
     public void onCreate() {
@@ -93,6 +93,7 @@ public class ServerService extends Service {
     public void stopServer() {
         isRunning = false;
         mNM.cancel(NOTIFICATION_ID);
+        ipAddress = "";
         if(null != server) {
             server.stopServer();
             server.interrupt();          	
