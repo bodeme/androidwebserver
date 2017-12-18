@@ -119,19 +119,10 @@ public class StartActivity extends Activity {
             log("Error: Document-Root could not be found.");
         }
 
-        final String port = sharedPreferences.getString(
-                getString(R.string.pk_port),
-                "8080"
-        );
-
         mToggleButton.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
                 if(mToggleButton.isChecked()) {
-                    startServer(
-                            mHandler,
-                            documentRoot,
-                            Integer.valueOf(port)
-                    );
+                    startServer( mHandler, documentRoot );
                 } else {
                     stopServer();
                 }
@@ -170,11 +161,11 @@ public class StartActivity extends Activity {
         mScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
 
-    private void startServer(Handler handler, String documentRoot, int port) {
+    private void startServer(Handler handler, String documentRoot) {
         if (mBoundService == null) {
             Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
         } else {
-            mBoundService.startServer(handler, documentRoot, port);
+            mBoundService.startServer(handler, documentRoot);
         }
     }
 

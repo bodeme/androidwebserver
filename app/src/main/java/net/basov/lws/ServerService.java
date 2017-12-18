@@ -27,6 +27,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
@@ -36,6 +37,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import static net.basov.lws.Constants.*;
@@ -53,11 +55,19 @@ public class ServerService extends Service {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);      
     }
 
-    public void startServer(Handler handler, String documentRoot, int port) {
+    public void startServer(Handler handler, String documentRoot) {
         try {
             isRunning = true;
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            final SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            int port = Integer.valueOf(
+                    sharedPreferences.getString(
+                            getString(R.string.pk_port),
+                            "8080"
+                    )
+            );
 
             ipAddress = intToIp(wifiInfo.getIpAddress());
 
