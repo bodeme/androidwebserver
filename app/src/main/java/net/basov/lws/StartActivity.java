@@ -87,7 +87,8 @@ public class StartActivity extends Activity {
             }
         });
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
         documentRoot = sharedPreferences.getString(
                 getString(R.string.pk_document_root),
                 getFilesDir(this).getPath()
@@ -133,14 +134,22 @@ public class StartActivity extends Activity {
         mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 mBoundService = ((ServerService.LocalBinder)service).getService();
-                Toast.makeText(StartActivity.this, "Service connected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        StartActivity.this,
+                        "Service connected",
+                        Toast.LENGTH_SHORT
+                ).show();
                 mBoundService.updateNotifiction(lastMessage);
                 refreshMainScreen();
             }
 
             public void onServiceDisconnected(ComponentName className) {
                 mBoundService = null;
-                Toast.makeText(StartActivity.this, "Service disconnected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        StartActivity.this,
+                        "Service disconnected",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         };
 
@@ -163,7 +172,11 @@ public class StartActivity extends Activity {
 
     private void startServer(Handler handler, String documentRoot) {
         if (mBoundService == null) {
-            Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    StartActivity.this,
+                    "Service not connected",
+                    Toast.LENGTH_SHORT
+            ).show();
         } else {
             mBoundService.startServer(handler, documentRoot);
         }
@@ -171,14 +184,25 @@ public class StartActivity extends Activity {
 
     private void stopServer() { 
         if (mBoundService == null) {
-            Toast.makeText(StartActivity.this, "Service not connected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    StartActivity.this,
+                    "Service not connected",
+                    Toast.LENGTH_SHORT
+            ).show();
         } else {
             mBoundService.stopServer();
         }
     }
 
     private void doBindService() {
-        getApplicationContext().bindService(new Intent(StartActivity.this, ServerService.class), mConnection, Context.BIND_AUTO_CREATE);
+        getApplicationContext()
+                .bindService(
+                        new Intent(
+                                StartActivity.this,
+                                ServerService.class),
+                        mConnection,
+                        Context.BIND_AUTO_CREATE
+                );
     }
 
     @Override
@@ -196,7 +220,8 @@ public class StartActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PREFERENCES_REQUEST) {
-            SharedPreferences defSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences defSharedPref =
+                    PreferenceManager.getDefaultSharedPreferences(this);
             if (defSharedPref.getBoolean(getString(R.string.pk_pref_changed), false)) {
                 SharedPreferences.Editor editor = defSharedPref.edit();
                 refreshMainScreen();
@@ -211,7 +236,8 @@ public class StartActivity extends Activity {
         final TextView viewAddress = (TextView) findViewById(R.id.address);
         final TextView viewPort = (TextView) findViewById(R.id.port);
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
 
         documentRoot = sharedPreferences.getString(
                 getString(R.string.pk_document_root),

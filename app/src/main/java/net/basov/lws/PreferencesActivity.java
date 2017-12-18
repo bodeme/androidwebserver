@@ -38,7 +38,8 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences defSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences defSharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
 
         Preference prefDocumetRoot = findPreference(getString(R.string.pk_document_root));
         prefDocumetRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
@@ -65,7 +66,8 @@ public class PreferencesActivity extends PreferenceActivity implements
     @Override
     public void onDestroy(){
         super.onDestroy();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
     }
 
@@ -85,5 +87,3 @@ public class PreferencesActivity extends PreferenceActivity implements
         }
     }
 }
-
-

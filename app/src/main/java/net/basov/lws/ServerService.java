@@ -58,7 +58,8 @@ public class ServerService extends Service {
     public void startServer(Handler handler, String documentRoot) {
         try {
             isRunning = true;
-            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            WifiManager wifiManager =
+                    (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             final SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -72,7 +73,12 @@ public class ServerService extends Service {
             ipAddress = intToIp(wifiInfo.getIpAddress());
 
             if( wifiInfo.getSupplicantState() != SupplicantState.COMPLETED) {
-                new AlertDialog.Builder(this).setTitle("Error").setMessage("Please connect to a WIFI-network for starting the webserver.").setPositiveButton("OK", null).show();
+                new AlertDialog
+                        .Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Please connect to a WIFI-network for starting the webserver.")
+                        .setPositiveButton("OK", null)
+                        .show();
                 throw new Exception("Please connect to a WIFI-network.");
             }
 
@@ -114,7 +120,12 @@ public class ServerService extends Service {
         if(null == message || message.length()==0) return;
         CharSequence text = message;
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                this,
+                0,
+                new Intent(this, StartActivity.class),
+                0
+        );
         notification = new Notification.Builder(this)
             .setSmallIcon(R.drawable.ic_http_black_24dp)
             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
