@@ -2,6 +2,11 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <CheckBoxPreference
+        android:key="@string/pk_use_directory_pick"
+        android:singleLine="true"
+        android:title="Use OI File Manager"
+        android:summary="to directory pick"/>
     <EditTextPreference
         android:key="@string/pk_document_root"
         android:singleLine="true"

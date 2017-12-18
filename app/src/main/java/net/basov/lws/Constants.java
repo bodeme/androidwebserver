@@ -27,4 +27,5 @@ public final class Constants {
     public static final String LOG_TAG = "lWS";
     public static final int NOTIFICATION_ID = 690927;
     public static final int PREFERENCES_REQUEST = 653;
+    public static final int DIRECTORY_REQUEST = 170;
 }

@@ -23,11 +23,16 @@ package net.basov.lws;
  * Created by mvb on 6/22/17.
  */
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+
+import static net.basov.lws.Constants.*;
 
 public class PreferencesActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -43,10 +48,42 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         Preference prefDocumetRoot = findPreference(getString(R.string.pk_document_root));
         prefDocumetRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
+        if(defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), true)) {
+            prefDocumetRoot.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ((EditTextPreference) preference).getDialog().dismiss();
+                    Intent intent = new Intent("org.openintents.action.PICK_DIRECTORY");
+                    intent.putExtra("org.openintents.extra.BUTTON_TEXT", "Select document root");
+                    startActivityForResult(intent, DIRECTORY_REQUEST);
+                    return true;
+                }
+            });
+        }
 
         Preference prefPort = findPreference(getString(R.string.pk_port));
         prefPort.setSummary(defSharedPref.getString(getString(R.string.pk_port), "8080"));
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DIRECTORY_REQUEST && data != null) {
+            String newValue = null;
+            Uri uri = data.getData();
+            if (uri != null) {
+                String path = uri.toString();
+                if (path.toLowerCase().startsWith("file://")) {
+                    newValue = path.replace("file://","") + "/";
+                }
+            }
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.pk_document_root), newValue);
+            editor.commit();
+            recreate();
+        }
     }
 
     @Override
@@ -83,7 +120,13 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         String pref_port = getString(R.string.pk_port);
         if (pref_port.equals(key)) {
-            pref.setSummary(sharedPreferences.getString(pref_port,"8081"));
+            pref.setSummary(sharedPreferences.getString(pref_port,"8080"));
         }
+
+        String pref_use_directory_pick = getString(R.string.pk_use_directory_pick);
+        if (pref_use_directory_pick.equals(key)) {
+            recreate();
+        }
+
     }
 }

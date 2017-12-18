@@ -14,11 +14,15 @@ Connection: close
 Content-Type: %3$s; charset=utf-8
 
 "]]></string>
+
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>
     <string name="rc403">403 Forbidden</string>
     <string name="rc200">200 OK</string>
+
     <string name="pk_document_root">prefDocumentRoot</string>
     <string name="pk_port">prefProt</string>
     <string name="pk_pref_changed">prefChanged</string>
+    <string name="pk_use_directory_pick">prefUseDirectoryPick</string>
+
 </resources>
