@@ -19,7 +19,7 @@
  *
  */
 
-package net.basov.web;
+package net.basov.lws;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -33,7 +33,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import static net.basov.web.Constants.*;
+import static net.basov.lws.Constants.*;
 
 public class Server extends Thread {
     private ServerSocket listener = null;

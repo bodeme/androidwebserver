@@ -19,7 +19,7 @@
  *
  */
 
-package net.basov.web;
+package net.basov.lws;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,7 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import static net.basov.web.Constants.*;
+import static net.basov.lws.Constants.*;
 
 public class StartActivity extends Activity {
     private ToggleButton mToggleButton;

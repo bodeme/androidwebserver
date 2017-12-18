@@ -20,7 +20,7 @@ android {
     buildToolsVersion "26.0.2"
 
     defaultConfig {
-        applicationId "net.basov.web"
+        applicationId "net.basov.lws"
         minSdkVersion 17
         targetSdkVersion 21
         versionCode 101

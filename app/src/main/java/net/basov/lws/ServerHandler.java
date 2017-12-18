@@ -19,7 +19,7 @@
  *
  */
 
-package net.basov.web;
+package net.basov.lws;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -36,7 +36,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import static net.basov.web.Constants.*;
+import static net.basov.lws.Constants.*;
 
 class ServerHandler extends Thread {
     private BufferedReader in;

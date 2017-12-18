@@ -19,7 +19,7 @@
  *
  */
 
-package net.basov.web;
+package net.basov.lws;
 
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -38,7 +38,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-import static net.basov.web.Constants.*;
+import static net.basov.lws.Constants.*;
 
 public class ServerService extends Service {
 

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package net.basov.web;
+package net.basov.lws;
 
 /**
  * Created by mvb on 12/18/17.
