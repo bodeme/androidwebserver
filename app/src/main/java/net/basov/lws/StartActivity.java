@@ -218,6 +218,7 @@ public class StartActivity extends Activity {
     protected void onResume() {
         super.onResume();
         doBindService();
+        refreshMainScreen();
     }
 
     @Override

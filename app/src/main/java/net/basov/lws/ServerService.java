@@ -70,7 +70,8 @@ public class ServerService extends Service {
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             if ((!wifiManager.isWifiEnabled()) || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)) {
                 putToLogScreen("Please connect to a WIFI-network.", true);
-                throw new Exception("Please connect to a WIFI-network.");
+                mNM.cancel(NOTIFICATION_ID);
+                throw new Exception("Please connect to a WiFi-network.");
             }
 
             final SharedPreferences sharedPreferences =
@@ -125,11 +126,15 @@ public class ServerService extends Service {
 
     public void stopServer() {
         isRunning = false;
+        ipAddress = "";
         mNM.cancel(NOTIFICATION_ID);
         ipAddress = "";
         try {
             //TODO: Exception when unrigester receiver which is new...
-            if (mReceiver != null) unregisterReceiver(mReceiver);
+            if (mReceiver != null) {
+                unregisterReceiver(mReceiver);
+                mReceiver = null;
+            }
         } catch (IllegalArgumentException e) {
             putToLogScreen("Receiver unregistring error again :( (stopServer())");
             Log.e(LOG_TAG, e.getMessage() + "on ServerService.stopServer()");
@@ -182,27 +187,14 @@ public class ServerService extends Service {
     @Override
     public void onDestroy() {
         stopServer();
-        stopSelf();
-        try {
-            //TODO: Exception when unrigester receiver which is new...
-            if (mReceiver != null) unregisterReceiver(mReceiver);
-        } catch (IllegalArgumentException e) {
-            putToLogScreen("Receiver unregistring error again :( (onDestroy())");
-            Log.e(LOG_TAG, e.getMessage() + "on ServerService.onDestroy()");
-        }
+        stopSelf();      
         super.onDestroy();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         stopServer();
-        stopSelf();
-        try {
-            if (mReceiver != null) unregisterReceiver(mReceiver);
-        } catch (IllegalArgumentException e) {
-            putToLogScreen("Receiver unregistring error again :( (onTaskRemoved())");
-            Log.e(LOG_TAG, e.getMessage() + "on ServerService.onTaskRemoved()");
-        }
+        stopSelf();      
         super.onTaskRemoved(rootIntent);
     }
 
