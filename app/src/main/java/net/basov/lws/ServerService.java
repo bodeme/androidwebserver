@@ -54,7 +54,7 @@ public class ServerService extends Service {
     private boolean isRunning = false;
     private String ipAddress = "";
     private static Handler gHandler;
-    private BroadcastReceiver mReceiver;
+    private static BroadcastReceiver mReceiver = null;
 
     @Override
     public void onCreate() {
@@ -92,20 +92,22 @@ public class ServerService extends Service {
             putToLogScreen("Webserver is running on port " + ipAddress + ":" + port);
 
             // register broadcast receiver to monitor WiFi state
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
-                        putToLogScreen("Webserver stopped because WiFi disconnected.");
-                        stopServer();
+            if (mReceiver == null) {
+                mReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                        if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
+                            putToLogScreen("Webserver stopped because WiFi disconnected.");
+                            stopServer();
+                        }
                     }
-                }
-            };
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-            registerReceiver(mReceiver, filter);
+                };
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+                filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+                registerReceiver(mReceiver, filter);
+            }
 
         } catch (Exception e) {
             isRunning = false;
@@ -125,8 +127,13 @@ public class ServerService extends Service {
         isRunning = false;
         mNM.cancel(NOTIFICATION_ID);
         ipAddress = "";
-        //TODO: Exception when unrigester receiver which is new...
-        if (mReceiver != null) unregisterReceiver(mReceiver);
+        try {
+            //TODO: Exception when unrigester receiver which is new...
+            if (mReceiver != null) unregisterReceiver(mReceiver);
+        } catch (IllegalArgumentException e) {
+            putToLogScreen("Receiver unregistring error again :( (stopServer())");
+            Log.e(LOG_TAG, e.getMessage() + "on ServerService.stopServer()");
+        }
         if (null != server) {
             server.stopServer();
             server.interrupt();          	
@@ -176,8 +183,13 @@ public class ServerService extends Service {
     public void onDestroy() {
         stopServer();
         stopSelf();
-        //TODO: Exception when unrigester receiver which is new...
-        if (mReceiver != null) unregisterReceiver(mReceiver);
+        try {
+            //TODO: Exception when unrigester receiver which is new...
+            if (mReceiver != null) unregisterReceiver(mReceiver);
+        } catch (IllegalArgumentException e) {
+            putToLogScreen("Receiver unregistring error again :( (onDestroy())");
+            Log.e(LOG_TAG, e.getMessage() + "on ServerService.onDestroy()");
+        }
         super.onDestroy();
     }
 
@@ -185,7 +197,12 @@ public class ServerService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         stopServer();
         stopSelf();
-        if (mReceiver != null) unregisterReceiver(mReceiver);
+        try {
+            if (mReceiver != null) unregisterReceiver(mReceiver);
+        } catch (IllegalArgumentException e) {
+            putToLogScreen("Receiver unregistring error again :( (onTaskRemoved())");
+            Log.e(LOG_TAG, e.getMessage() + "on ServerService.onTaskRemoved()");
+        }
         super.onTaskRemoved(rootIntent);
     }
 
