@@ -48,6 +48,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import static net.basov.lws.Constants.*;
+import android.net.Uri;
 
 public class StartActivity extends Activity {
     private ToggleButton mToggleButton;
@@ -239,7 +240,8 @@ public class StartActivity extends Activity {
         final TextView viewDirectoryRoot = (TextView) findViewById(R.id.document_root);
         final TextView viewAddress = (TextView) findViewById(R.id.address);
         final TextView viewPort = (TextView) findViewById(R.id.port);
-
+        final Button btnBrowser = (Button) findViewById(R.id.buttonOpenBrowser);
+        
         final SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -256,14 +258,35 @@ public class StartActivity extends Activity {
         );
         viewPort.setText(port);
 
-        if(mBoundService != null) {
-            mToggleButton.setChecked(mBoundService.isRunning());
-            viewAddress.setText(mBoundService.getIpAddress());
+        if(mBoundService != null) {         
+            mToggleButton.setChecked(mBoundService.isRunning());         
+            if (mBoundService.isRunning()) {
+                final String ipAddress = mBoundService.getIpAddress();
+                viewAddress.setText(ipAddress);
+                btnBrowser.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {            
+                            String url =
+                                    "http://"
+                                    + ipAddress 
+                                    + ":"
+                                    + port
+                                    + "/";
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(url));
+                            startActivity(i);               
+                        }
+                });
+                btnBrowser.setEnabled(true);
+            } else {
+                viewAddress.setText("");
+                btnBrowser.setEnabled(false);
+            }
         } else {
             viewAddress.setText("");
+            btnBrowser.setEnabled(false);
         }
     }
-
 
     public static File getFilesDir(Context c) {
         File filesDir;
