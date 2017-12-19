@@ -52,8 +52,15 @@
         android:layout_height="wrap_content"
         android:text="Settings" />
 
+    <Button
+        android:id="@+id/buttonOpenBrowser"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Open in browser" />
+
     <ToggleButton
-        android:text="ToggleButton01"
+        android:textOn="Stop"
+        android:textOff="Start"
         android:id="@+id/toggle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
