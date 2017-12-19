@@ -113,7 +113,7 @@ public class ServerService extends Service {
         } catch (Exception e) {
             isRunning = false;
             Log.e(LOG_TAG, e.getMessage()+ "(from ServerService.startServer())");
-            updateNotifiction("Error: " + e.getMessage());
+            if (!isRunning) mNM.cancel(NOTIFICATION_ID);
         }
     }
 
@@ -169,6 +169,7 @@ public class ServerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        if (!isRunning) mNM.cancel(NOTIFICATION_ID);
         return mBinder;
     }
 
