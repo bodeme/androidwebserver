@@ -65,6 +65,9 @@ public class StartActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             Bundle b = msg.getData();
+            if (b.containsKey("toast")){
+                Toast.makeText(StartActivity.this, b.getString("msg"), Toast.LENGTH_SHORT).show();
+            }
             log(b.getString("msg"));
         }
     };

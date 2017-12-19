@@ -21,14 +21,18 @@
 
 package net.basov.lws;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -49,6 +53,8 @@ public class ServerService extends Service {
     private Server server;
     private boolean isRunning = false;
     private String ipAddress = "";
+    private static Handler gHandler;
+    private BroadcastReceiver mReceiver;
 
     @Override
     public void onCreate() {
@@ -56,45 +62,54 @@ public class ServerService extends Service {
     }
 
     public void startServer(Handler handler, String documentRoot) {
+        ServerService.gHandler = handler;
         try {
-            isRunning = true;
+            // Check WiFi state
             WifiManager wifiManager =
                     (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            if ((!wifiManager.isWifiEnabled()) || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)) {
+                putToLogScreen("Please connect to a WIFI-network.", true);
+                throw new Exception("Please connect to a WIFI-network.");
+            }
+
             final SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            // Start server
+            isRunning = true;
+            ipAddress = intToIp(wifiInfo.getIpAddress());
             int port = Integer.valueOf(
                     sharedPreferences.getString(
                             getString(R.string.pk_port),
                             "8080"
                     )
             );
-
-            ipAddress = intToIp(wifiInfo.getIpAddress());
-
-            if( wifiInfo.getSupplicantState() != SupplicantState.COMPLETED) {
-                new AlertDialog
-                        .Builder(this)
-                        .setTitle("Error")
-                        .setMessage("Please connect to a WIFI-network for starting the webserver.")
-                        .setPositiveButton("OK", null)
-                        .show();
-                throw new Exception("Please connect to a WIFI-network.");
-            }
-
             server = new Server(handler, documentRoot, ipAddress, port, getApplicationContext());
             server.start();
-            updateNotifiction("Running on " + ipAddress + ":" + port);
 
-            Message msg = new Message();
-            Bundle b = new Bundle();
-            b.putString("msg", "Webserver is running on port " + ipAddress + ":" + port);
-            msg.setData(b);
-            handler.sendMessage(msg);
+            updateNotifiction("Running on " + ipAddress + ":" + port);
+            putToLogScreen("Webserver is running on port " + ipAddress + ":" + port);
+
+            // register broadcast receiver to monitor WiFi state
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                    if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
+                        putToLogScreen("Webserver stopped because WiFi disconnected.");
+                        stopServer();
+                    }
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+            registerReceiver(mReceiver, filter);
 
         } catch (Exception e) {
             isRunning = false;
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(LOG_TAG, e.getMessage()+ "(from ServerService.startServer())");
             updateNotifiction("Error: " + e.getMessage());
         }
     }
@@ -110,14 +125,16 @@ public class ServerService extends Service {
         isRunning = false;
         mNM.cancel(NOTIFICATION_ID);
         ipAddress = "";
-        if(null != server) {
+        //TODO: Exception when unrigester receiver which is new...
+        if (mReceiver != null) unregisterReceiver(mReceiver);
+        if (null != server) {
             server.stopServer();
             server.interrupt();          	
         }
     }
 
     public void updateNotifiction(String message) {
-        if(null == message || message.length()==0) return;
+        if (null == message || message.length()==0) return;
         CharSequence text = message;
 
         PendingIntent contentIntent = PendingIntent.getActivity(
@@ -159,6 +176,8 @@ public class ServerService extends Service {
     public void onDestroy() {
         stopServer();
         stopSelf();
+        //TODO: Exception when unrigester receiver which is new...
+        if (mReceiver != null) unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -166,9 +185,23 @@ public class ServerService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         stopServer();
         stopSelf();
+        if (mReceiver != null) unregisterReceiver(mReceiver);
         super.onTaskRemoved(rootIntent);
     }
 
     public String getIpAddress() { return ipAddress; }
 
+    private void putToLogScreen(String message) {
+        putToLogScreen(message, false);
+    }
+
+    private void putToLogScreen(String message, Boolean isToast) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putString("msg", message);
+        if (isToast)
+            b.putBoolean("toast",true);
+        msg.setData(b);
+        gHandler.sendMessage(msg);
+    }
 }
