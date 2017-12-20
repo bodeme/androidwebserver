@@ -91,13 +91,7 @@ public class StartActivity extends Activity {
             }
         });
 
-        final SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        documentRoot = sharedPreferences.getString(
-                getString(R.string.pk_document_root),
-                getFilesDir(this).getPath()
-                        + "/html/"
-        );
+        documentRoot = getDocumentRoot();
 
         if(null != documentRoot) {
             try {
@@ -245,11 +239,7 @@ public class StartActivity extends Activity {
         final SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
-        documentRoot = sharedPreferences.getString(
-                getString(R.string.pk_document_root),
-                getFilesDir(this).getPath()
-                        + "/html/"
-        );
+        documentRoot = getDocumentRoot();
         viewDirectoryRoot.setText(documentRoot);
 
         final String port = sharedPreferences.getString(
@@ -303,5 +293,22 @@ public class StartActivity extends Activity {
             filesDir = c.getFilesDir();
         }
         return filesDir;
+    }
+    
+    String getDocumentRoot(){
+        final SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        String dr = sharedPreferences.getString(
+            getString(R.string.pk_document_root),
+            ""
+        );
+        if (dr.length() == 0) {
+            // if preferences contain empty string or absent reset it to default
+            dr = getFilesDir(this).getPath() + "/html/";
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.pk_document_root), dr);
+            editor.commit();
+        }
+        return dr;
     }
 }
