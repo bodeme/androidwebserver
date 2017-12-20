@@ -102,10 +102,7 @@ public class PreferencesActivity extends PreferenceActivity implements
 
     @Override
     public void onDestroy(){
-        super.onDestroy();
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
+        super.onDestroy();     
     }
 
     @Override
@@ -127,6 +124,7 @@ public class PreferencesActivity extends PreferenceActivity implements
         if (pref_use_directory_pick.equals(key)) {
             recreate();
         }
-
+               
+        sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
     }
 }

@@ -225,6 +225,8 @@ public class StartActivity extends Activity {
                     PreferenceManager.getDefaultSharedPreferences(this);
             if (defSharedPref.getBoolean(getString(R.string.pk_pref_changed), false)) {
                 SharedPreferences.Editor editor = defSharedPref.edit();
+                stopServer();
+                startServer(mHandler, getDocumentRoot());                       
                 refreshMainScreen();
                 editor.putBoolean(getString(R.string.pk_pref_changed), false);
                 editor.commit();
