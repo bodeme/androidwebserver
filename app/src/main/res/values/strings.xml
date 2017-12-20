@@ -8,7 +8,7 @@
     %3$s    content type
     -->
     <string name="header"><![CDATA["HTTP/1.1 %1$s
-Server: AndroidWebserver/1.0
+Server: lWS/1.0
 Content-Length: %2$d
 Connection: close
 Content-Type: %3$s; charset=utf-8
@@ -21,7 +21,7 @@ Content-Type: %3$s; charset=utf-8
     <string name="rc200">200 OK</string>
 
     <string name="pk_document_root">prefDocumentRoot</string>
-    <string name="pk_port">prefProt</string>
+    <string name="pk_port">prefPort</string>
     <string name="pk_pref_changed">prefChanged</string>
     <string name="pk_use_directory_pick">prefUseDirectoryPick</string>
 

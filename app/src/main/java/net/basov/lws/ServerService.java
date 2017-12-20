@@ -49,7 +49,6 @@ import static net.basov.lws.Constants.*;
 public class ServerService extends Service {
 
     private NotificationManager mNM;
-    private Notification notification;
     private Server server;
     private boolean isRunning = false;
     private String ipAddress = "";
@@ -89,8 +88,8 @@ public class ServerService extends Service {
             server = new Server(handler, documentRoot, ipAddress, port, getApplicationContext());
             server.start();
 
-            updateNotifiction("Running on " + ipAddress + ":" + port);
-            putToLogScreen("Webserver is running on port " + ipAddress + ":" + port);
+            updateNotification("Running on " + ipAddress + ":" + port);
+            putToLogScreen("Web server is running on port " + ipAddress + ":" + port);
 
             // register broadcast receiver to monitor WiFi state
             if (mReceiver == null) {
@@ -99,7 +98,7 @@ public class ServerService extends Service {
                     public void onReceive(Context context, Intent intent) {
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
-                            putToLogScreen("Webserver stopped because WiFi disconnected.");
+                            putToLogScreen("Web server stopped because WiFi disconnected.");
                             stopServer();
                         }
                     }
@@ -117,7 +116,7 @@ public class ServerService extends Service {
         }
     }
 
-    public static String intToIp(int i) {
+    private static String intToIp(int i) {
         return ((i       ) & 0xFF) + "." +
                ((i >>  8 ) & 0xFF) + "." +
                ((i >> 16 ) & 0xFF) + "." +
@@ -130,13 +129,13 @@ public class ServerService extends Service {
         mNM.cancel(NOTIFICATION_ID);
         ipAddress = "";
         try {
-            //TODO: Exception when unrigester receiver which is new...
+            //TODO: Exception when unregister receiver which is new...
             if (mReceiver != null) {
                 unregisterReceiver(mReceiver);
                 mReceiver = null;
             }
         } catch (IllegalArgumentException e) {
-            putToLogScreen("Receiver unregistring error again :( (stopServer())");
+            putToLogScreen("Receiver unregister error again :( (stopServer())");
             Log.e(LOG_TAG, e.getMessage() + "on ServerService.stopServer()");
         }
         if (null != server) {
@@ -145,9 +144,8 @@ public class ServerService extends Service {
         }
     }
 
-    public void updateNotifiction(String message) {
+    public void updateNotification(String message) {
         if (null == message || message.length()==0) return;
-        CharSequence text = message;
 
         PendingIntent contentIntent = PendingIntent.getActivity(
                 this,
@@ -155,14 +153,14 @@ public class ServerService extends Service {
                 new Intent(this, StartActivity.class),
                 0
         );
-        notification = new Notification.Builder(this)
-            .setSmallIcon(R.drawable.ic_http_black_24dp)
-            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(text)
-            .setWhen(System.currentTimeMillis())
-            .setContentIntent(contentIntent)
-            .build();
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_http_black_24dp)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message)
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(contentIntent)
+                .build();
         mNM.notify(NOTIFICATION_ID, notification);
 
     }

@@ -35,22 +35,22 @@ import android.util.Log;
 
 import static net.basov.lws.Constants.*;
 
-public class Server extends Thread {
+class Server extends Thread {
     private ServerSocket listener = null;
     private boolean running = true;
-    private String documentRoot;
+    private final String documentRoot;
     private static Handler mHandler;
-    private Context context;
+    private final Context context;
 
-    public static LinkedList<Socket> clientList = new LinkedList<Socket>();
+    private static final LinkedList<Socket> clientList = new LinkedList<>();
 
     public Server(Handler handler, String documentRoot, String ip, int port, Context context) throws IOException {
         super();
         this.documentRoot = documentRoot;
         this.context = context;
         Server.mHandler = handler;
-        InetAddress ipadr = InetAddress.getByName(ip);
-        listener = new ServerSocket(port,0,ipadr);
+        InetAddress ipAddress = InetAddress.getByName(ip);
+        listener = new ServerSocket(port,0,ipAddress);
     }
 
     @Override

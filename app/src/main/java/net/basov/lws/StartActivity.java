@@ -56,7 +56,7 @@ public class StartActivity extends Activity {
     private static ScrollView mScroll;
     private String documentRoot;
 
-    private String lastMessage = "";
+    private final String lastMessage = "";
 
     private ServerService mBoundService;
 
@@ -95,21 +95,25 @@ public class StartActivity extends Activity {
 
         if(null != documentRoot) {
             try {
-                if (!(new File(documentRoot)).exists()) {
-                    (new File(documentRoot)).mkdir();
-                    Log.d(LOG_TAG, "Created " + documentRoot);
-                     BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
-                     bout.write("<html><head><title>lightweight WebServer</title>");                                  
-                     bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-                     bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");                
-                     bout.write("</head>");
-                     bout.write("<body>Welcome to lWS.");
-                     bout.write("<br/><br/>Document root " + documentRoot );
-                     bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">Github</a>");
-                     bout.write("</body></html>");
-                     bout.flush();
-                     bout.close();
-                    Log.d(LOG_TAG, "Created html files");
+                File documentRootDirectory = new File(documentRoot);
+                if (!documentRootDirectory.exists()) {
+                    if(documentRootDirectory.mkdir()) {
+                        Log.d(LOG_TAG, "Created " + documentRoot);
+                        BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
+                        bout.write("<html><head><title>lightweight WebServer</title>");
+                        bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+                        bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");
+                        bout.write("</head>");
+                        bout.write("<body>Welcome to lWS.");
+                        bout.write("<br/><br/>Document root " + documentRoot);
+                        bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">GitHub</a>");
+                        bout.write("</body></html>");
+                        bout.flush();
+                        bout.close();
+                        Log.d(LOG_TAG, "Created html files");
+                    } else {
+                        throw new Exception("Can't create document root.");
+                    }
                 }
             } catch (Exception e) {
                 Log.v(LOG_TAG,e.getMessage());
@@ -139,7 +143,7 @@ public class StartActivity extends Activity {
                         "Service connected",
                         Toast.LENGTH_SHORT
                 ).show();
-                mBoundService.updateNotifiction(lastMessage);
+                mBoundService.updateNotification(lastMessage);
                 refreshMainScreen();
             }
 
@@ -165,7 +169,7 @@ public class StartActivity extends Activity {
 
     }
 
-    public static void log( String s ) {
+    private static void log(String s) {
         mLog.append(s + "\n");
         mScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
@@ -234,7 +238,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    public void refreshMainScreen() {
+    private void refreshMainScreen() {
         final TextView viewDirectoryRoot = (TextView) findViewById(R.id.document_root);
         final TextView viewAddress = (TextView) findViewById(R.id.address);
         final TextView viewPort = (TextView) findViewById(R.id.port);
@@ -282,7 +286,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    public static File getFilesDir(Context c) {
+    private static File getFilesDir(Context c) {
         File filesDir;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             if (Build.VERSION.SDK_INT <= 18)
@@ -299,7 +303,7 @@ public class StartActivity extends Activity {
         return filesDir;
     }
     
-    String getDocumentRoot(){
+    private String getDocumentRoot(){
         final SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this);
         String dr = sharedPreferences.getString(

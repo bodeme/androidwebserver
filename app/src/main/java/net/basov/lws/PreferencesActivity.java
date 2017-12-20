@@ -46,10 +46,10 @@ public class PreferencesActivity extends PreferenceActivity implements
         SharedPreferences defSharedPref =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
-        Preference prefDocumetRoot = findPreference(getString(R.string.pk_document_root));
-        prefDocumetRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
+        Preference prefDocumentRoot = findPreference(getString(R.string.pk_document_root));
+        prefDocumentRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
         if(defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), true)) {
-            prefDocumetRoot.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            prefDocumentRoot.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     ((EditTextPreference) preference).getDialog().dismiss();

@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="net.basov.lws">
 
-    <application android:icon="@drawable/ic_launcher" android:label="@string/app_name">
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity android:name=".StartActivity"
                 android:label="@string/app_name"
                 android:launchMode="singleInstance">
@@ -26,9 +32,5 @@
             android:exported="false"
             android:stopWithTask="false"/>
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

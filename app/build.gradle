@@ -67,7 +67,7 @@ android {
     }
 }
 
-def getGitRevParseInfo (what) {
+static def getGitRevParseInfo (what) {
     def cmd = "git " + what + " HEAD"
     def proc = cmd.execute ()
     proc.text.trim ()

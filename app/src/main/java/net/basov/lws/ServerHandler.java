@@ -39,11 +39,9 @@ import android.util.Log;
 import static net.basov.lws.Constants.*;
 
 class ServerHandler extends Thread {
-    private BufferedReader in;
-    private PrintWriter out;
-    private Socket toClient;
-    private String documentRoot;
-    private Context context;
+    private final Socket toClient;
+    private final String documentRoot;
+    private final Context context;
 
     public ServerHandler(String d, Context c, Socket s) {
         toClient = s;
@@ -52,10 +50,10 @@ class ServerHandler extends Thread {
     }
 
     public void run() {
-        String dokument = "";
+        String document = "";
 
         try {
-            in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
 
             // Receive data
             while (true) {
@@ -66,8 +64,8 @@ class ServerHandler extends Thread {
 
                 if (s.substring(0, 3).equals("GET")) {
                     int leerstelle = s.indexOf(" HTTP/");
-                    dokument = s.substring(5,leerstelle);
-                    dokument = dokument.replaceAll("[/]+","/");
+                    document = s.substring(5,leerstelle);
+                    document = document.replaceAll("[/]+","/");
                 }
               }
         } catch (Exception e) {
@@ -77,7 +75,7 @@ class ServerHandler extends Thread {
             }
             catch (Exception ex){}
         }
-        showHtml(dokument);
+        showHtml(document);
     }
 
     private void send(String text) {
@@ -87,7 +85,7 @@ class ServerHandler extends Thread {
                 "text/html"
         );
         try {
-            out = new PrintWriter(toClient.getOutputStream(), true);
+            PrintWriter out = new PrintWriter(toClient.getOutputStream(), true);
             out.print(header);
             out.print(text);
             out.flush();
@@ -98,38 +96,38 @@ class ServerHandler extends Thread {
         }
     }
 
-    private void showHtml(String dokument) {
+    private void showHtml(String document) {
         Integer rc = 200;
 
         // Standard-Doc
-        if (dokument.equals("")) {
-            dokument = "index.html";
+        if (document.equals("")) {
+            document = "index.html";
         }
 
         // Don't allow directory traversal
-        if (dokument.indexOf("..") != -1) {
+        if (document.contains("..")) {
             rc = 403;
         }
 
-        // Search for files in docroot
-        dokument = documentRoot + dokument;
-        Log.d(LOG_TAG, "Got " + dokument);
-        dokument = dokument.replaceAll("[/]+","/");
+        // Search for files in document root
+        document = documentRoot + document;
+        Log.d(LOG_TAG, "Got " + document);
+        document = document.replaceAll("[/]+","/");
 
         // This is directory
-        if(dokument.charAt(dokument.length()-1) == '/') {
-            dokument = dokument + "/index.html";
+        if(document.charAt(document.length()-1) == '/') {
+            document = document + "/index.html";
         }
 
         try {
-            File f = new File(dokument);
+            File f = new File(document);
             if (!f.exists()) {
                 rc = 404;
             }
         }
         catch (Exception e) {}
 
-        Log.d(LOG_TAG, "Serving " + dokument);
+        Log.d(LOG_TAG, "Serving " + document);
 
         try {
             String rcStr;
@@ -140,13 +138,13 @@ class ServerHandler extends Thread {
             BufferedInputStream in;
 
             if (rc == 200) {
-                Log.d(LOG_TAG, "Send " + dokument + ", rc:" + rc);
+                Log.d(LOG_TAG, "Send " + document + ", rc:" + rc);
 
-                in = new BufferedInputStream(new FileInputStream(dokument));
+                in = new BufferedInputStream(new FileInputStream(document));
 
                 rcStr = context.getString(R.string.rc200);
 
-                contType = getMIMETypeForDocument(dokument);
+                contType = getMIMETypeForDocument(document);
             } else {
                 String errAsset = "";
                 AssetManager am = context.getAssets();
