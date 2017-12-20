@@ -99,7 +99,9 @@ public class StartActivity extends Activity {
                     (new File(documentRoot)).mkdir();
                     Log.d(LOG_TAG, "Created " + documentRoot);
                      BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
-                     bout.write("<html><head><title>lightweight WebServer</title>");
+                     bout.write("<html><head><title>lightweight WebServer</title>");                                  
+                     bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+                     bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");                
                      bout.write("</head>");
                      bout.write("<body>Welcome to lWS.");
                      bout.write("<br/><br/>Document root " + documentRoot );
