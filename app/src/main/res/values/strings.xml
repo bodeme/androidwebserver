@@ -2,7 +2,8 @@
 <resources>
     <string name="hello">lightweight Web Server (lWS) for Android</string>
     <string name="app_name">lWS</string>
-    <!--
+
+    <!-- HTTP header
     %1$d    result code
     %2%d    content length
     %3$s    content type
@@ -14,6 +15,53 @@ Connection: close
 Content-Type: %3$s; charset=utf-8
 
 "]]></string>
+    <!-- Directory listing top part
+    %1$s    HTML title
+    %2$s    Title on page
+    -->
+    <string name="dir_list_top_html"><![CDATA["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+
+<head>
+    <title>%1$s</title>
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+    <style>
+li.folder {
+    padding:0.15em 0 0.5em 1.5em;
+    list-style:none;
+    background-repeat:no-repeat;
+    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAKklEQVR4AWMYCHCS4T8cNuBQA5IkrOw/TniCGEX/kRSNKjqBU8lRBvoDAHnfmIpzw90rAAAAAElFTkSuQmCC');
+}
+li.file {
+    padding:0.15em 0 0.5em 1.5em;
+    list-style:none;
+    background-repeat:no-repeat;
+    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAANElEQVR4AWMgBZxk+I8EG7Ar+o+mqIGwIgaQMoKKIMoIKMKu7D92SDNFo4pOYFVylITEBgCOQqozpSFV0wAAAABJRU5ErkJggg==');
+}
+li.back_top {
+    list-style:none;
+}
+    </style>
+</head>
+
+<body>
+<h5>%2$s</h5>
+<ul>
+<li class=\"back_top\"><a href=\"../\">../</a></li>]]></string>
+
+    <!-- Directory listing bottom part
+    -->
+    <string name="dir_list_bottom_html"><![CDATA["</ul>
+</body>
+</html>
+"]]></string>
+
+    <!-- File or directory entry template
+    %1$s    type (file|folder)
+    %2$s    name (need to add / for folder)
+    -->
+    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%2$s</a></li>"]]></string>
 
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>

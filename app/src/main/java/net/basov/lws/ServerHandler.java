@@ -114,12 +114,18 @@ class ServerHandler extends Thread {
         Log.d(LOG_TAG, "Got " + document);
         document = document.replaceAll("[/]+","/");
 
-        // This is directory
-        if(document.charAt(document.length()-1) == '/') {
-            document = document + "/index.html";
-        }
-
         try {
+            // This is directory
+            if(document.charAt(document.length()-1) == '/') {
+                File f = new File(document+"index.html");
+                if (f.exists()) {
+                    document = document + "index.html";
+                } else {
+                    send(directoryHTMLindex(document));
+                    return;
+                }
+            }
+
             File f = new File(document);
             if (!f.exists()) {
                 rc = 404;
@@ -190,6 +196,30 @@ class ServerHandler extends Thread {
             Server.remove(toClient);
             toClient.close();
         } catch (Exception e) {}
+    }
+
+    private String directoryHTMLindex(String dir) {
+        String html = context.getString(
+                R.string.dir_list_top_html,
+                "Index of " + dir,
+                "Index of " + dir
+        );
+        File directory = new File(dir);
+        for (File i : directory.listFiles()) {
+            if (i.isDirectory()) {
+                html += context.getString(R.string.dir_list_item,
+                        "folder",
+                        i.getName() + "/"
+                );
+            } else if (i.isFile()) {
+                html += context.getString(R.string.dir_list_item,
+                        "file",
+                        i.getName()
+                );
+            }
+        }
+        html += context.getString(R.string.dir_list_bottom_html);
+        return html;
     }
 
     private String getMIMETypeForDocument(String document) {
