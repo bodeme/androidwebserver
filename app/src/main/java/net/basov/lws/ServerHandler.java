@@ -21,6 +21,10 @@
 
 package net.basov.lws;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -30,11 +34,10 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.util.Log;
 
 import static net.basov.lws.Constants.*;
 
@@ -101,7 +104,7 @@ class ServerHandler extends Thread {
 
         // Standard-Doc
         if (document.equals("")) {
-            document = "index.html";
+            document = "/";
         }
 
         // Don't allow directory traversal
@@ -130,8 +133,7 @@ class ServerHandler extends Thread {
             if (!f.exists()) {
                 rc = 404;
             }
-        }
-        catch (Exception e) {}
+        } catch (Exception e) {}
 
         Log.d(LOG_TAG, "Serving " + document);
 
@@ -145,13 +147,11 @@ class ServerHandler extends Thread {
 
             if (rc == 200) {
                 Log.d(LOG_TAG, "Send " + document + ", rc:" + rc);
-
                 in = new BufferedInputStream(new FileInputStream(document));
-
                 rcStr = context.getString(R.string.rc200);
-
                 contType = getMIMETypeForDocument(document);
             } else {
+                Log.d(LOG_TAG, "Requested " + document + ", but rc:" + rc);
                 String errAsset = "";
                 AssetManager am = context.getAssets();
                 switch (rc) {
@@ -179,7 +179,6 @@ class ServerHandler extends Thread {
             while ((count = in.read(buf)) != -1){
                 tempOut.write(buf, 0, count);
             }
-
             tempOut.flush();
 
             header = context.getString(R.string.header,
@@ -187,7 +186,6 @@ class ServerHandler extends Thread {
                     tempOut.size(),
                     contType
             );
-
 
             outStream.write(header.getBytes());
             outStream.write(tempOut.toByteArray());
@@ -198,27 +196,52 @@ class ServerHandler extends Thread {
         } catch (Exception e) {}
     }
 
-    private String directoryHTMLindex(String dir) {
+    private String directoryHTMLindex(String dir) {     
         String html = context.getString(
                 R.string.dir_list_top_html,
-                "Index of " + dir,
-                "Index of " + dir
+                "Index of " + dir.replace(documentRoot,""),
+                "Index of " + dir.replace(documentRoot,"")
         );
-        File directory = new File(dir);
-        for (File i : directory.listFiles()) {
+        
+        ArrayList <String> dirs = new ArrayList<String>();
+        ArrayList <String> files = new ArrayList<String>();
+
+        for (File i : new File(dir).listFiles()) {
             if (i.isDirectory()) {
-                html += context.getString(R.string.dir_list_item,
-                        "folder",
-                        i.getName() + "/"
-                );
+                dirs.add(i.getName());
             } else if (i.isFile()) {
-                html += context.getString(R.string.dir_list_item,
-                        "file",
-                        i.getName()
-                );
-            }
+                files.add(i.getName());              
+            }          
         }
+        
+        Comparator<String> strCmp =  new Comparator<String>(){
+            @Override
+            public int compare(String text1, String text2)
+            {
+                return text1.compareToIgnoreCase(text2);
+            }
+        };
+        
+        Collections.sort(dirs, strCmp);
+        Collections.sort(files, strCmp);
+        
+        for (String s : dirs) {
+            html += context.getString(
+                            R.string.dir_list_item,
+                            "folder",
+                            s + "/"
+                    );
+        }
+        for (String s : files) {
+            html += context.getString(
+                            R.string.dir_list_item,
+                            "file",
+                             s
+                     );
+        }
+        
         html += context.getString(R.string.dir_list_bottom_html);
+        
         return html;
     }
 
