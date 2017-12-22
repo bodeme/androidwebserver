@@ -44,6 +44,9 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 import static net.basov.lws.Constants.*;
 
 public class ServerService extends Service {
@@ -63,14 +66,16 @@ public class ServerService extends Service {
     public void startServer(Handler handler, String documentRoot) {
         ServerService.gHandler = handler;
         try {
-            // Check WiFi state
             WifiManager wifiManager =
                     (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            // Check Tethering AP state
+            Boolean isWifiAPenabled = isSharingWiFi(wifiManager);                          
+            // Check WiFi state
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if ((!wifiManager.isWifiEnabled()) || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)) {
-                putToLogScreen("Please connect to a WIFI-network.", true);
+            if (((!wifiManager.isWifiEnabled()) || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)) && !isWifiAPenabled) {
+                putToLogScreen("Please connect to a WIFI-network or start Tethering.", true);
                 mNM.cancel(NOTIFICATION_ID);
-                throw new Exception("Please connect to a WiFi-network.");
+                throw new Exception("Please connect to a WiFi-network or start Tethering.");
             }
 
             final SharedPreferences sharedPreferences =
@@ -78,7 +83,11 @@ public class ServerService extends Service {
 
             // Start server
             isRunning = true;
-            ipAddress = intToIp(wifiInfo.getIpAddress());
+            if (isWifiAPenabled)
+                // Dirty hack.
+                ipAddress="192.168.43.1";
+            else
+                ipAddress = intToIp(wifiInfo.getIpAddress());
             int port = Integer.valueOf(
                     sharedPreferences.getString(
                             getString(R.string.pk_port),
@@ -211,5 +220,17 @@ public class ServerService extends Service {
             b.putBoolean("toast",true);
         msg.setData(b);
         gHandler.sendMessage(msg);
+    }
+    
+    // Code from https://stackoverflow.com/a/20432036
+    // Check Tethering AP enabled
+    private static boolean isSharingWiFi(final WifiManager manager) {
+        try {
+            final Method method = manager.getClass().getDeclaredMethod("isWifiApEnabled");
+            method.setAccessible(true); //in the case of visibility change in future APIs
+            return (Boolean) method.invoke(manager);
+        }
+        catch (final Throwable ignored) { }
+        return false;
     }
 }
