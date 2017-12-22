@@ -120,17 +120,17 @@ class ServerHandler extends Thread {
         try {
             // This is directory
             if(document.charAt(document.length()-1) == '/') {
-                File f = new File(document+"index.html");
-                if (f.exists()) {
+                if (new File(document+"index.html").exists()) {
                     document = document + "index.html";
                 } else {
-                    send(directoryHTMLindex(document));
-                    return;
+                    if (new File(document).exists()) {
+                        send(directoryHTMLindex(document));
+                        return;
+                    }
                 }
             }
 
-            File f = new File(document);
-            if (!f.exists()) {
+            if (!new File(document).exists()) {
                 rc = 404;
             }
         } catch (Exception e) {}
