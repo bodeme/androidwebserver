@@ -27,28 +27,38 @@ Content-Type: %3$s; charset=utf-8
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
     <style>
+ul {
+    padding-left:1em
+}
 li.folder {
-    padding:0.15em 0 0.5em 1.5em;
+    padding-top:0.15em;
+    padding-left:1.35em;
     list-style:none;
     background-repeat:no-repeat;
     background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAKklEQVR4AWMYCHCS4T8cNuBQA5IkrOw/TniCGEX/kRSNKjqBU8lRBvoDAHnfmIpzw90rAAAAAElFTkSuQmCC');
 }
 li.file {
-    padding:0.15em 0 0.5em 1.5em;
+    padding-top:0.15em;
+    padding-left:1.35em;
     list-style:none;
     background-repeat:no-repeat;
     background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAANElEQVR4AWMgBZxk+I8EG7Ar+o+mqIGwIgaQMoKKIMoIKMKu7D92SDNFo4pOYFVylITEBgCOQqozpSFV0wAAAABJRU5ErkJggg==');
 }
 li.back_top {
     list-style:none;
+    padding-left:1.35em;
+}
+h5.top {
+    margin-top:0.5em;
+    margin-bottom:0.5em;
 }
     </style>
 </head>
 
 <body>
-<h5>%2$s</h5>
+<h5 class="top">%2$s</h5>
 <ul>
-<li class=\"back_top\"><a href=\"../\">../</a></li>]]></string>
+<li class=\"back_top\"><a href=\"../\">..</a></li>]]></string>
 
     <!-- Directory listing bottom part
     -->
