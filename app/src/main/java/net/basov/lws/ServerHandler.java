@@ -118,21 +118,18 @@ class ServerHandler extends Thread {
         document = document.replaceAll("[/]+","/");
 
         try {
-            // This is directory
-            if(document.charAt(document.length()-1) == '/') {
+            if (!new File(document).exists()) {
+                rc = 404;
+            } else if(document.charAt(document.length()-1) == '/') {
+                // This is directory
                 if (new File(document+"index.html").exists()) {
                     document = document + "index.html";
                 } else {
-                    if (new File(document).exists()) {
-                        send(directoryHTMLindex(document));
-                        return;
-                    }
+                    send(directoryHTMLindex(document));
+                    return;
                 }
             }
 
-            if (!new File(document).exists()) {
-                rc = 404;
-            }
         } catch (Exception e) {}
 
         Log.d(LOG_TAG, "Serving " + document);
