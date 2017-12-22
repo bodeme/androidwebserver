@@ -155,7 +155,7 @@ public class ServerService extends Service {
         );
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_http_black_24dp)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.lws_ic))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(message)
                 .setWhen(System.currentTimeMillis())
