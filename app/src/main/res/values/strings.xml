@@ -70,8 +70,9 @@ h5.top {
     <!-- File or directory entry template
     %1$s    type (file|folder)
     %2$s    name (need to add / for folder)
+    %3$s    url
     -->
-    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%2$s</a></li>"]]></string>
+    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%3$s</a></li>"]]></string>
 
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>

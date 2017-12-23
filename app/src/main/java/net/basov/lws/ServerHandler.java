@@ -33,7 +33,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -69,6 +72,7 @@ class ServerHandler extends Thread {
                     int leerstelle = s.indexOf(" HTTP/");
                     document = s.substring(5,leerstelle);
                     document = document.replaceAll("[/]+","/");
+                    document = URLDecoder.decode(document, "UTF-8");
                 }
               }
         } catch (Exception e) {
@@ -226,6 +230,7 @@ class ServerHandler extends Thread {
             html += context.getString(
                             R.string.dir_list_item,
                             "folder",
+                            fileName2URL(s) + "/",
                             s + "/"
                     );
         }
@@ -233,6 +238,7 @@ class ServerHandler extends Thread {
             html += context.getString(
                             R.string.dir_list_item,
                             "file",
+                            fileName2URL(s),
                              s
                      );
         }
@@ -266,5 +272,13 @@ class ServerHandler extends Thread {
                       document.lastIndexOf(".")+1
                 ).toLowerCase()
         );
+    }
+    
+    private String fileName2URL(String fn) {
+        String ref = "";
+        try {
+            ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {}
+        return ref;
     }
 }
