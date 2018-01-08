@@ -20,7 +20,11 @@ android {
     buildToolsVersion "26.0.2"
 
     defaultConfig {
+// Keep two lines arround applicationId unchanged to allow use patch for F-Droid build
+
         applicationId "net.basov.lws"
+
+// End of strings reserved for F-Droid patch
         minSdkVersion 17
         targetSdkVersion 21
 
