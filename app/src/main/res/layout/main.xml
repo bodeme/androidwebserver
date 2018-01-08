@@ -20,6 +20,7 @@
         android:id="@+id/document_root"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FF0"
         android:text="Unset" />
 
     <LinearLayout
@@ -35,15 +36,18 @@
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF0"
             android:text="Unset" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF0"
             android:text=": " />
         <TextView
             android:id="@+id/port"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FF0"
             android:text="Unset" />
     </LinearLayout>
 
