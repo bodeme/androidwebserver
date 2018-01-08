@@ -22,7 +22,8 @@ android {
     defaultConfig {
 // Keep two lines arround applicationId unchanged to allow use patch for F-Droid build
 
-        applicationId "net.basov.lws"
+
+        applicationId "net.basov.lws.fdroid"
 
 
 // End of strings reserved for F-Droid patch
