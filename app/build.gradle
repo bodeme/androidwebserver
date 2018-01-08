@@ -23,7 +23,7 @@ android {
 // Keep two lines arround applicationId unchanged to allow use patch for F-Droid build
 
 
-        applicationId "net.basov.lws.fdroid"
+        applicationId "net.basov.lws"
 
 
 // End of strings reserved for F-Droid patch
