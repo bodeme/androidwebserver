@@ -77,6 +77,7 @@ public class StartActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        setTitle(R.string.hello);
 
         mToggleButton = (ToggleButton) findViewById(R.id.toggle);
         mLog = (TextView) findViewById(R.id.log);

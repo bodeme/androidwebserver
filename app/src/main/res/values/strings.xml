@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">lightweight Web Server (lWS) for Android</string>
     <string name="app_name">lWS</string>
+    <string name="hello">lightweight Web Server (lWS)</string>
+    <string name="usage">To exit application press \'Back\' or press \'Home\' to leave it run in background.</string>
 
     <!-- HTTP header
     %1$d    result code
