@@ -24,6 +24,7 @@ android {
 
         applicationId "net.basov.lws"
 
+
 // End of strings reserved for F-Droid patch
         minSdkVersion 17
         targetSdkVersion 21
