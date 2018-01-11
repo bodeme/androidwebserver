@@ -1,12 +1,22 @@
-## lightweight Web Server (lWS) 
+## lightweight Web Server (lWS)
 
-### It is ...
-* ... Web Server for static content.
-* ... lightweight. APK size less then 100 Kb.
-* ... as simple as possible. Only essential features implemented.
-* ... open. [Source code.](https://github.com/mvbasov/lWS)
-* ... personal solution. It is not optimized/tested for many parallel connections and large file transfer.
-* ... network state responsive. Require WiFi connected or tethering enabled. Service stop automatically if network disconnected.
+<table>
+  <tr>
+    <td width="20%"><img src="ic_launcher-web.png" width="128" height="128" alt="lWS"><h3 align="center">lWS</h3></td>
+    <td width="80%">
+      <h3>It is ...</h3>
+      <ul>
+  <li>... Web Server for static content.</li>
+  <li>... lightweight. APK size less then 100 Kb.</li>
+  <li>... as simple as possible. Only essential features implemented.</li>
+  <li>... open. [Source code.](https://github.com/mvbasov/lWS)</li>
+  <li>... personal solution. It is not optimized/tested for many parallel connections and large file transfer.</li>
+  <li>... network state responsive. Require WiFi connected or tethering enabled. Service stop automatically if network disconnected.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
 
 ### Derivate from
 This project based on [another open source project](https://github.com/bodeme/androidwebserver)
