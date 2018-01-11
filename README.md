@@ -13,7 +13,7 @@ This project based on [another open source project](https://github.com/bodeme/an
 Unfortunately, original project didn't maintained for 3 years.
 
 ### License
-lWS is licensed under the [GPLv3 License](COPYING) because original project
+lWS is licensed under the [GPLv3 License](LICENSE) because original project
 
 ### Artwork
 * File and folder icons for directory listing used from Google Material Design Icons [project](https://github.com/google/material-design-icons/) licensed by Apache License Version 2.0
