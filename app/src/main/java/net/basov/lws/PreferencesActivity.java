@@ -23,6 +23,7 @@ package net.basov.lws;
  * Created by mvb on 6/22/17.
  */
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -31,6 +32,8 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import static net.basov.lws.Constants.*;
 
@@ -48,14 +51,22 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         Preference prefDocumentRoot = findPreference(getString(R.string.pk_document_root));
         prefDocumentRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
-        if(defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), true)) {
+        if(defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), false)) {
             prefDocumentRoot.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     ((EditTextPreference) preference).getDialog().dismiss();
                     Intent intent = new Intent("org.openintents.action.PICK_DIRECTORY");
                     intent.putExtra("org.openintents.extra.BUTTON_TEXT", "Select document root");
-                    startActivityForResult(intent, DIRECTORY_REQUEST);
+                    try {
+                        startActivityForResult(intent, DIRECTORY_REQUEST);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(PreferencesActivity.this,
+                                "OI File Manager not installed. Install or disable using.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        Log.e("lWS", "OI File Manager not found", e);
+                    }
                     return true;
                 }
             });
