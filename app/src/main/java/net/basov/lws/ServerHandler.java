@@ -23,6 +23,8 @@ package net.basov.lws;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import android.os.Handler;
 
 import static net.basov.lws.Constants.*;
 
@@ -48,11 +51,13 @@ class ServerHandler extends Thread {
     private final Socket toClient;
     private final String documentRoot;
     private final Context context;
+    private static Handler msgHandler;
 
-    public ServerHandler(String d, Context c, Socket s) {
+    public ServerHandler(String d, Context c, Socket s, Handler h) {
         toClient = s;
         documentRoot = d;
         context = c;
+        msgHandler = h;
     }
 
     public void run() {
@@ -130,6 +135,12 @@ class ServerHandler extends Thread {
                     document = document + "index.html";
                 } else {
                     send(directoryHTMLindex(document));
+                    putToLogScreen(
+                            "rc: " + rc
+                            + ", /"
+                            + document.replace(documentRoot, "")
+                            + " (dir. index)"
+                    );
                     return;
                 }
             }
@@ -174,6 +185,11 @@ class ServerHandler extends Thread {
                 in = new BufferedInputStream(am.open(errAsset));
 
             }
+            putToLogScreen(
+                    "rc: " + rc
+                    + ", /"
+                    + document.replace(documentRoot, "")
+            );
 
             byte[] buf = new byte[4096];
             int count = 0;
@@ -280,5 +296,19 @@ class ServerHandler extends Thread {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {}
         return ref;
+    }
+
+    private void putToLogScreen(String message) {
+        putToLogScreen(message, false);
+    }
+
+    private void putToLogScreen(String message, Boolean isToast) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putString("msg", message);
+        if (isToast)
+            b.putBoolean("toast",true);
+        msg.setData(b);
+        msgHandler.sendMessage(msg);
     }
 }

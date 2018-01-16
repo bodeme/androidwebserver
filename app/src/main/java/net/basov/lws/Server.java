@@ -61,7 +61,7 @@ class Server extends Thread {
                 Socket client = listener.accept();
 
                 send("New connection from " + client.getInetAddress().toString());
-                new ServerHandler(documentRoot, context, client).start();
+                new ServerHandler(documentRoot, context, client, Server.mHandler).start();
                 clientList.add(client);
             } catch (IOException e) {
                 send(e.getMessage());
