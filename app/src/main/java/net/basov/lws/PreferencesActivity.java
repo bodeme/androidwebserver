@@ -35,6 +35,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+
 import static net.basov.lws.Constants.*;
 
 public class PreferencesActivity extends PreferenceActivity implements
@@ -123,12 +125,30 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         String pref_document_root = getString(R.string.pk_document_root);
         if (pref_document_root.equals(key)) {
-            pref.setSummary(sharedPreferences.getString(pref_document_root,""));
+            String documentRoot = sharedPreferences.getString(pref_document_root,"");
+            if (! new File(documentRoot).exists()){
+                documentRoot = "";
+                Toast.makeText(PreferencesActivity.this,
+                        "Document root doesn't exists. Set to default.",
+                        Toast.LENGTH_LONG
+                ).show();
+                Log.w("lWS", "Document root doesn't exists. Set to default.");
+            }
+            pref.setSummary(documentRoot);
         }
 
         String pref_port = getString(R.string.pk_port);
         if (pref_port.equals(key)) {
-            pref.setSummary(sharedPreferences.getString(pref_port,"8080"));
+            Integer port = sharedPreferences.getInt(pref_port,8080);
+            if (port < 1024) {
+                port = 8080;
+                Toast.makeText(PreferencesActivity.this,
+                        "Port less then 1024. Set to default.",
+                        Toast.LENGTH_LONG
+                ).show();
+                Log.w("lWS", "Port less then 1024. Set to default.");
+            }
+            pref.setSummary(Integer.toString(port));
         }
 
         String pref_use_directory_pick = getString(R.string.pk_use_directory_pick);
