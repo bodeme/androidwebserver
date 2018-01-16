@@ -27,7 +27,7 @@ android {
 
 
 // End of strings reserved for F-Droid patch
-        minSdkVersion 17
+        minSdkVersion 16
         targetSdkVersion 21
 
         versionCode 10001
