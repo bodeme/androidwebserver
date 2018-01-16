@@ -72,7 +72,15 @@ public class ServerService extends Service {
             Boolean isWifiAPenabled = isSharingWiFi(wifiManager);                          
             // Check WiFi state
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if (((!wifiManager.isWifiEnabled()) || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)) && !isWifiAPenabled) {
+            if (
+                    (
+                            (!wifiManager.isWifiEnabled())
+                            || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)
+                            || (wifiInfo.getIpAddress() == 0)
+                    )
+                    && !isWifiAPenabled
+            ) {
+
                 putToLogScreen("Please connect to a WIFI-network or start Tethering.", true);
                 mNM.cancel(NOTIFICATION_ID);
                 throw new Exception("Please connect to a WiFi-network or start Tethering.");
