@@ -45,7 +45,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 import static net.basov.lws.Constants.*;
 
