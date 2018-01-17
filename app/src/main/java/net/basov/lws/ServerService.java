@@ -192,6 +192,7 @@ public class ServerService extends Service {
                 .setContentText(message)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
+                .setOngoing(true)
                 .build();
         mNM.notify(NOTIFICATION_ID, notification);
 
