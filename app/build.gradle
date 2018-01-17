@@ -61,7 +61,7 @@ android {
         betta {
             applicationIdSuffix '.b'
             versionNameSuffix "b-g" + current_commit
-            debuggable true
+            debuggable false
             resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
             signingConfig signingConfigs.debug
         }
