@@ -56,11 +56,16 @@ public class ServerService extends Service {
     private static BroadcastReceiver mReceiver = null;
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);      
     }
 
-    public void startServer(Handler handler, String documentRoot) {
+    public void startServer(Handler handler) {
         ServerService.gHandler = handler;
         try {
             WifiManager wifiManager =
@@ -103,7 +108,14 @@ public class ServerService extends Service {
                             "8080"
                     )
             );
-            server = new Server(handler, documentRoot, ipAddress, port, getApplicationContext());
+
+            server = new Server(
+                    handler,
+                    sharedPreferences.getString(getString(R.string.pk_document_root), ""),
+                    ipAddress,
+                    port,
+                    getApplicationContext()
+            );
             server.start();
 
             updateNotification("Running on " + ipAddress + ":" + port);
@@ -172,6 +184,7 @@ public class ServerService extends Service {
             server.stopServer();
             server.interrupt();          	
         }
+        stopSelf();
     }
 
     public void updateNotification(String message) {

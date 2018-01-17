@@ -84,32 +84,6 @@ public class StartActivity extends Activity {
         documentRoot = getDocumentRoot();
 
         if(null != documentRoot) {
-            try {
-                File documentRootDirectory = new File(documentRoot);
-                if (!documentRootDirectory.exists()) {
-                    if(documentRootDirectory.mkdir()) {
-                        Log.d(LOG_TAG, "Created " + documentRoot);
-                        BufferedWriter bout = new BufferedWriter(new FileWriter(documentRoot + "index.html"));
-                        bout.write("<html><head><title>lightweight WebServer</title>");
-                        bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-                        bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");
-                        bout.write("</head>");
-                        bout.write("<body>Welcome to lWS.");
-                        bout.write("<br/><br/>Document root " + documentRoot);
-                        bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">GitHub</a>");
-                        bout.write("</body></html>");
-                        bout.flush();
-                        bout.close();
-                        Log.d(LOG_TAG, "Created html files");
-                        log("Default DocumentRoot HTML index file creted.");
-                    } else {
-                        throw new Exception("Can't create document root.");
-                    }
-                }
-            } catch (Exception e) {
-                Log.v(LOG_TAG,e.getMessage());
-            }
-
             log("");
         } else {
             log("Error: Document-Root could not be found.");
@@ -117,10 +91,13 @@ public class StartActivity extends Activity {
 
         mToggleButton.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
+                Intent intent = new Intent(StartActivity.this, ServerService.class);
                 if(mToggleButton.isChecked()) {
-                    startServer( mHandler, documentRoot );
+                    startServer(mHandler);
+                    startService(intent);
                 } else {
                     stopServer();
+                    stopService(intent);
                 }
                 refreshMainScreen();
             }
@@ -160,7 +137,7 @@ public class StartActivity extends Activity {
 
     }
 
-    private void startServer(Handler handler, String documentRoot) {
+    private void startServer(Handler handler) {
         if (mBoundService == null) {
             Toast.makeText(
                     StartActivity.this,
@@ -168,7 +145,7 @@ public class StartActivity extends Activity {
                     Toast.LENGTH_SHORT
             ).show();
         } else {
-            mBoundService.startServer(handler, documentRoot);
+            mBoundService.startServer(handler);
         }
     }
 
@@ -217,7 +194,7 @@ public class StartActivity extends Activity {
                 SharedPreferences.Editor editor = defSharedPref.edit();
                 if(mBoundService != null &&  mBoundService.isRunning()) {
                     stopServer();
-                    startServer(mHandler, getDocumentRoot());
+                    startServer(mHandler);
                 }
                 refreshMainScreen();
                 editor.putBoolean(getString(R.string.pk_pref_changed), false);
@@ -304,6 +281,31 @@ public class StartActivity extends Activity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(getString(R.string.pk_document_root), dr);
             editor.commit();
+            try {
+                File documentRootDirectory = new File(dr);
+                if (!documentRootDirectory.exists()) {
+                    if(documentRootDirectory.mkdir()) {
+                        Log.d(LOG_TAG, "Created " + dr);
+                        BufferedWriter bout = new BufferedWriter(new FileWriter(dr + "index.html"));
+                        bout.write("<html><head><title>lightweight WebServer</title>");
+                        bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+                        bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");
+                        bout.write("</head>");
+                        bout.write("<body>Welcome to lWS.");
+                        bout.write("<br/><br/>Default document root is" + dr);
+                        bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">GitHub</a>");
+                        bout.write("</body></html>");
+                        bout.flush();
+                        bout.close();
+                        Log.d(LOG_TAG, "Created html files");
+                        log("Default DocumentRoot HTML index file creted.");
+                    } else {
+                        throw new Exception("Can't create document root.");
+                    }
+                }
+            } catch (Exception e) {
+                Log.v(LOG_TAG,e.getMessage());
+            }
         }
         return dr;
     }
