@@ -109,9 +109,14 @@ class ServerHandler extends Thread {
     private void showHtml(String document) {
         Integer rc = 200;
         String clientIP = "";
-        if(toClient != null) {
+        if(toClient != null
+                && toClient.toString() != null
+                && toClient.toString().length() > 2
+                ) {
             clientIP = toClient.getRemoteSocketAddress().toString().substring(1);
-            clientIP = clientIP.substring(0, clientIP.indexOf(':'));
+            Integer clientIPColon = clientIP.indexOf(':');
+            if (clientIPColon > 0)
+                clientIP = clientIP.substring(0, clientIPColon);
         }
 
         // Standard-Doc
