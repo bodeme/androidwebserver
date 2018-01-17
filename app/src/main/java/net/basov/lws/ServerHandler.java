@@ -135,11 +135,12 @@ class ServerHandler extends Thread {
                     document = document + "index.html";
                 } else {
                     send(directoryHTMLindex(document));
-                    putToLogScreen(
+                    StartActivity.putToLogScreen(
                             "rc: " + rc
                             + ", /"
                             + document.replace(documentRoot, "")
-                            + " (dir. index)"
+                            + " (dir. index)",
+                            msgHandler
                     );
                     return;
                 }
@@ -185,10 +186,11 @@ class ServerHandler extends Thread {
                 in = new BufferedInputStream(am.open(errAsset));
 
             }
-            putToLogScreen(
+            StartActivity.putToLogScreen(
                     "rc: " + rc
                     + ", /"
-                    + document.replace(documentRoot, "")
+                    + document.replace(documentRoot, ""),
+                    msgHandler
             );
 
             byte[] buf = new byte[4096];
@@ -298,17 +300,4 @@ class ServerHandler extends Thread {
         return ref;
     }
 
-    private void putToLogScreen(String message) {
-        putToLogScreen(message, false);
-    }
-
-    private void putToLogScreen(String message, Boolean isToast) {
-        Message msg = new Message();
-        Bundle b = new Bundle();
-        b.putString("msg", message);
-        if (isToast)
-            b.putBoolean("toast",true);
-        msg.setData(b);
-        msgHandler.sendMessage(msg);
-    }
 }

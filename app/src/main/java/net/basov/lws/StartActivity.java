@@ -62,17 +62,6 @@ public class StartActivity extends Activity {
 
     private ServiceConnection mConnection;
 
-    final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle b = msg.getData();
-            if (b.containsKey("toast")){
-                Toast.makeText(StartActivity.this, b.getString("msg"), Toast.LENGTH_SHORT).show();
-            }
-            log(b.getString("msg"));
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +101,7 @@ public class StartActivity extends Activity {
                         bout.flush();
                         bout.close();
                         Log.d(LOG_TAG, "Created html files");
+                        log("Default DocumentRoot HTML index file creted.");
                     } else {
                         throw new Exception("Can't create document root.");
                     }
@@ -168,11 +158,6 @@ public class StartActivity extends Activity {
             getApplicationContext().unbindService(mConnection);
         }
 
-    }
-
-    private static void log(String s) {
-        mLog.append(s + "\n");
-        mScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
 
     private void startServer(Handler handler, String documentRoot) {
@@ -319,5 +304,39 @@ public class StartActivity extends Activity {
             editor.commit();
         }
         return dr;
+    }
+    
+    /**
+    * Application main screen related functions and handler
+    */
+    
+    private static void log(String s) {
+        mLog.append(s + "\n");
+        mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+    }
+    
+    final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle b = msg.getData();
+            if (b.containsKey("toast")){
+                Toast.makeText(StartActivity.this, b.getString("msg"), Toast.LENGTH_SHORT).show();
+            }
+            log(b.getString("msg"));
+        }
+    };
+    
+    public static void putToLogScreen(String message, Handler msgHandler) {
+        putToLogScreen(message, msgHandler, false);
+    }
+
+    public static void putToLogScreen(String message, Handler msgHandler, Boolean isToast) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putString("msg", message);
+        if (isToast)
+            b.putBoolean("toast",true);
+        msg.setData(b);
+        msgHandler.sendMessage(msg);
     }
 }

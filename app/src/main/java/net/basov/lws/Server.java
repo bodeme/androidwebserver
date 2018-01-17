@@ -57,14 +57,14 @@ class Server extends Thread {
     public void run() {
         while( running ) {
             try {
-                send("Waiting for connections");
+                StartActivity.putToLogScreen("Waiting for connections", mHandler);
                 Socket client = listener.accept();
 
-                send("New connection from " + client.getInetAddress().toString());
+                StartActivity.putToLogScreen("New connection from " + client.getInetAddress().toString(), mHandler);
                 new ServerHandler(documentRoot, context, client, Server.mHandler).start();
                 clientList.add(client);
             } catch (IOException e) {
-                send(e.getMessage());
+                StartActivity.putToLogScreen(e.getMessage(), mHandler);
                 Log.e(LOG_TAG, e.getMessage());
             }
         }
@@ -75,23 +75,14 @@ class Server extends Thread {
         try {
             listener.close();
         } catch (IOException e) {
-            send(e.getMessage());
+            StartActivity.putToLogScreen(e.getMessage(), mHandler);
             Log.e("lWS", e.getMessage());
         }
     }
 
     public synchronized static void remove(Socket s) {
-        send("Closing connection: " + s.getInetAddress().toString());
+        StartActivity.putToLogScreen("Closing connection: " + s.getInetAddress().toString(), mHandler);
         clientList.remove(s);      
     }
 
-    private static void send(String s) {
-        if(s != null) {
-            Message msg = new Message();
-            Bundle b = new Bundle();
-            b.putString("msg", s);
-            msg.setData(b);
-            mHandler.sendMessage(msg);
-        }
-    }
 }

@@ -80,7 +80,11 @@ public class ServerService extends Service {
                     && !isWifiAPenabled
             ) {
 
-                putToLogScreen("Please connect to a WIFI-network or start Tethering.", true);
+                StartActivity.putToLogScreen(
+                        "Please connect to a WIFI-network or start Tethering.",
+                        gHandler,
+                        true
+                );
                 mNM.cancel(NOTIFICATION_ID);
                 throw new Exception("Please connect to a WiFi-network or start Tethering.");
             }
@@ -105,7 +109,13 @@ public class ServerService extends Service {
             server.start();
 
             updateNotification("Running on " + ipAddress + ":" + port);
-            putToLogScreen("Web server is running on port " + ipAddress + ":" + port);
+            StartActivity.putToLogScreen(
+                    "Web server is running on port "
+                    + ipAddress
+                    + ":"
+                    + port,
+                    gHandler
+            );
 
             // register broadcast receiver to monitor WiFi state
             if (mReceiver == null) {
@@ -114,7 +124,10 @@ public class ServerService extends Service {
                     public void onReceive(Context context, Intent intent) {
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
-                            putToLogScreen("Web server stopped because WiFi disconnected.");
+                            StartActivity.putToLogScreen(
+                                    "Web server stopped because WiFi disconnected.",
+                                    gHandler
+                            );
                             stopServer();
                         }
                     }
@@ -151,7 +164,10 @@ public class ServerService extends Service {
                 mReceiver = null;
             }
         } catch (IllegalArgumentException e) {
-            putToLogScreen("Receiver unregister error again :( (stopServer())");
+            StartActivity.putToLogScreen(
+                    "Receiver unregister error again :( (stopServer())", 
+                    gHandler
+            );
             Log.e(LOG_TAG, e.getMessage() + "on ServerService.stopServer()");
         }
         if (null != server) {
@@ -215,20 +231,6 @@ public class ServerService extends Service {
 
     public String getIpAddress() { return ipAddress; }
 
-    private void putToLogScreen(String message) {
-        putToLogScreen(message, false);
-    }
-
-    private void putToLogScreen(String message, Boolean isToast) {
-        Message msg = new Message();
-        Bundle b = new Bundle();
-        b.putString("msg", message);
-        if (isToast)
-            b.putBoolean("toast",true);
-        msg.setData(b);
-        gHandler.sendMessage(msg);
-    }
-    
     // Code from https://stackoverflow.com/a/20432036
     // Check Tethering AP enabled
     private static boolean isSharingWiFi(final WifiManager manager) {
