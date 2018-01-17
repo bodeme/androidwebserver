@@ -110,6 +110,11 @@ class ServerHandler extends Thread {
 
     private void showHtml(String document) {
         Integer rc = 200;
+        String clientIP = "";
+        if(toClient != null) {
+            clientIP = toClient.getRemoteSocketAddress().toString().substring(1);
+            clientIP = clientIP.substring(0, clientIP.indexOf(':'));
+        }
 
         // Standard-Doc
         if (document.equals("")) {
@@ -136,10 +141,13 @@ class ServerHandler extends Thread {
                 } else {
                     send(directoryHTMLindex(document));
                     StartActivity.putToLogScreen(
-                            "rc: " + rc
-                            + ", /"
-                            + document.replace(documentRoot, "")
-                            + " (dir. index)",
+                            "rc: "
+                                    + rc
+                                    + ", "
+                                    + clientIP
+                                    + ", /"
+                                    + document.replace(documentRoot, "")
+                                    + " (dir. index)",
                             msgHandler
                     );
                     return;
@@ -187,9 +195,12 @@ class ServerHandler extends Thread {
 
             }
             StartActivity.putToLogScreen(
-                    "rc: " + rc
-                    + ", /"
-                    + document.replace(documentRoot, ""),
+                    "rc: "
+                            + rc
+                            + ", "
+                            + clientIP
+                            + ", /"
+                            + document.replace(documentRoot, ""),
                     msgHandler
             );
 
