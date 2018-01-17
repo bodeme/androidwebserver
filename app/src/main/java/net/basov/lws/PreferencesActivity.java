@@ -133,22 +133,26 @@ public class PreferencesActivity extends PreferenceActivity implements
                         Toast.LENGTH_LONG
                 ).show();
                 Log.w("lWS", "Document root doesn't exists. Set to default.");
+                sharedPreferences.edit().putString(getString(R.string.pk_document_root), "").apply();
             }
             pref.setSummary(documentRoot);
         }
 
         String pref_port = getString(R.string.pk_port);
         if (pref_port.equals(key)) {
-            Integer port = sharedPreferences.getInt(pref_port,8080);
+            String portAsString = sharedPreferences.getString(pref_port,"8080");
+            Integer port = Integer.valueOf(portAsString);
             if (port < 1024) {
                 port = 8080;
+                portAsString = Integer.toString(port);
                 Toast.makeText(PreferencesActivity.this,
                         "Port less then 1024. Set to default.",
                         Toast.LENGTH_LONG
                 ).show();
                 Log.w("lWS", "Port less then 1024. Set to default.");
+                sharedPreferences.edit().putString(getString(R.string.pk_port), portAsString).apply();
             }
-            pref.setSummary(Integer.toString(port));
+            pref.setSummary(portAsString);
         }
 
         String pref_use_directory_pick = getString(R.string.pk_use_directory_pick);
