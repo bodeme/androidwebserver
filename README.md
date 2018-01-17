@@ -4,7 +4,7 @@
 
 <table>
   <tr>
-    <td width="20%"><img src="ic_launcher-web.png" width="128" height="128" alt="lWS" /><h3 align="center">lWS</h3></td>
+    <td width="20%"><img style="max-width:25%;height:auto" src="ic_launcher-web.png" alt="lWS" /><h3 align="center">lWS</h3></td>
     <td width="80%">
       <h3>It is ...</h3>
       <ul>
