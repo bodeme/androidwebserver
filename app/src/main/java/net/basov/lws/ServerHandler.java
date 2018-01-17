@@ -23,8 +23,7 @@ package net.basov.lws;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Bundle;
-import android.os.Message;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import android.os.Handler;
 
 import static net.basov.lws.Constants.*;
 
