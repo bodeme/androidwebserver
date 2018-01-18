@@ -140,8 +140,14 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         String pref_port = getString(R.string.pk_port);
         if (pref_port.equals(key)) {
+            Integer port;
             String portAsString = sharedPreferences.getString(pref_port,"8080");
-            Integer port = Integer.valueOf(portAsString);
+            try {
+                port = Integer.valueOf(portAsString);
+            } catch (NumberFormatException e) {
+                port = 8080;
+                Log.w(Constants.LOG_TAG, "Port preferences may be empty");
+            }
             if (port < 1024) {
                 port = 8080;
                 portAsString = Integer.toString(port);
