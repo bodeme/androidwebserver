@@ -165,8 +165,7 @@ public class ServerService extends Service {
     public void stopServer() {
         isRunning = false;
         ipAddress = "";
-        mNM.cancel(NOTIFICATION_ID);
-        ipAddress = "";
+        mNM.cancel(NOTIFICATION_ID);       
         try {
             //TODO: Exception when unregister receiver which is new...
             if (mReceiver != null) {
@@ -184,6 +183,7 @@ public class ServerService extends Service {
             server.stopServer();
             server.interrupt();          	
         }
+        stopForeground(true);
         stopSelf();
     }
 
@@ -205,7 +205,8 @@ public class ServerService extends Service {
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .build();
-        mNM.notify(NOTIFICATION_ID, notification);
+        //mNM.notify(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, notification);
 
     }
 
