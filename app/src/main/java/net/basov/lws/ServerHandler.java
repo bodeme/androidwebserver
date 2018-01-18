@@ -22,10 +22,8 @@
 package net.basov.lws;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Handler;
-import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -133,7 +131,7 @@ class ServerHandler extends Thread {
 
         // Search for files in document root
         document = documentRoot + document;
-        Log.d(LOG_TAG, "Got " + document);
+        //Log.d(LOG_TAG, "Got " + document);
         document = document.replaceAll("[/]+","/");
 
         try {
@@ -161,7 +159,7 @@ class ServerHandler extends Thread {
 
         } catch (Exception e) {}
 
-        Log.d(LOG_TAG, "Serving " + document);
+        //Log.d(LOG_TAG, "Serving " + document);
 
         try {
             String rcStr;
@@ -172,12 +170,12 @@ class ServerHandler extends Thread {
             BufferedInputStream in;
 
             if (rc == 200) {
-                Log.d(LOG_TAG, "Send " + document + ", rc:" + rc);
+                //Log.d(LOG_TAG, "Send " + document + ", rc:" + rc);
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
                 contType = getMIMETypeForDocument(document);
             } else {
-                Log.d(LOG_TAG, "Requested " + document + ", but rc:" + rc);
+                //Log.d(LOG_TAG, "Requested " + document + ", but rc:" + rc);
                 String errAsset = "";
                 AssetManager am = context.getAssets();
                 switch (rc) {

@@ -67,7 +67,7 @@ public class PreferencesActivity extends PreferenceActivity implements
                                 "OI File Manager not installed. Install or disable using.",
                                 Toast.LENGTH_LONG
                         ).show();
-                        Log.e("lWS", "OI File Manager not found", e);
+                        Log.w("lWS", "OI File Manager not found", e);
                     }
                     return true;
                 }

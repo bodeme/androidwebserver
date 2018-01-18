@@ -133,8 +133,6 @@ public class StartActivity extends Activity {
         if (intent != null && intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_MAIN)) {
                 Bundle main_extras = intent.getExtras();
-                if (main_extras == null) Log.d(Constants.LOG_TAG, "main_extras == null");
-                if (main_extras.get(Constants.ACTION_CMD_KEY) == null) Log.d(Constants.LOG_TAG, "main_extras.getString == null");
                 if (
                         main_extras != null
                         && main_extras.getString(Constants.ACTION_CMD_KEY) != null
@@ -305,7 +303,7 @@ public class StartActivity extends Activity {
                 File documentRootDirectory = new File(dr);
                 if (!documentRootDirectory.exists()) {
                     if(documentRootDirectory.mkdir()) {
-                        Log.d(LOG_TAG, "Created " + dr);
+                        //Log.d(LOG_TAG, "Created " + dr);
                         BufferedWriter bout = new BufferedWriter(new FileWriter(dr + "index.html"));
                         bout.write("<html><head><title>lightweight WebServer</title>");
                         bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
@@ -317,14 +315,14 @@ public class StartActivity extends Activity {
                         bout.write("</body></html>");
                         bout.flush();
                         bout.close();
-                        Log.d(LOG_TAG, "Created html files");
+                        //Log.d(LOG_TAG, "Created html files");
                         log("Default DocumentRoot HTML index file creted.");
                     } else {
                         throw new Exception("Can't create document root.");
                     }
                 }
             } catch (Exception e) {
-                Log.v(LOG_TAG,e.getMessage());
+                Log.e(LOG_TAG,e.getMessage());
             }
         }
         return dr;
