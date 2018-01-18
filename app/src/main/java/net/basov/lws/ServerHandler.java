@@ -111,8 +111,9 @@ class ServerHandler extends Thread {
         Integer rc = 200;
         String clientIP = "";
         if(toClient != null
-                && toClient.toString() != null
-                && toClient.toString().length() > 2
+                && toClient.getRemoteSocketAddress() != null
+                && toClient.getRemoteSocketAddress().toString() != null
+                && toClient.getRemoteSocketAddress().toString().length() > 2
                 ) {
             clientIP = toClient.getRemoteSocketAddress().toString().substring(1);
             Integer clientIPColon = clientIP.indexOf(':');
