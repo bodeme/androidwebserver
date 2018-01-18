@@ -118,7 +118,7 @@ public class ServerService extends Service {
             );
             server.start();
 
-            updateNotification("Running on " + ipAddress + ":" + port);
+            startForgroundService("Running on " + ipAddress + ":" + port);
             StartActivity.putToLogScreen(
                     "Web server is running on port "
                     + ipAddress
@@ -187,14 +187,23 @@ public class ServerService extends Service {
         stopSelf();
     }
 
-    public void updateNotification(String message) {
+    private void startForgroundService(String message) {
         if (null == message || message.length()==0) return;
 
         PendingIntent contentIntent = PendingIntent.getActivity(
                 this,
-                0,
+                Constants.MAIN_SCREEN_REQUEST,
                 new Intent(this, StartActivity.class),
-                0
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        Intent stopIntent = new Intent(this,StartActivity.class);
+        stopIntent.setAction(Intent.ACTION_MAIN);
+        stopIntent.putExtra(Constants.ACTION_CMD_KEY, Constants.CMD_STOP);
+        PendingIntent stopPendingIntent = PendingIntent.getActivity(
+                this,
+                Constants.STOP_SERVICE_REQUEST,
+                stopIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
         );
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.lws_ic)
@@ -203,9 +212,9 @@ public class ServerService extends Service {
                 .setContentText(message)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
+                .addAction(0, "Stop service", stopPendingIntent)
                 .setOngoing(true)
                 .build();
-        //mNM.notify(NOTIFICATION_ID, notification);
         startForeground(NOTIFICATION_ID, notification);
 
     }

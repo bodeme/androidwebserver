@@ -56,8 +56,6 @@ public class StartActivity extends Activity {
     private static ScrollView mScroll;
     private String documentRoot;
 
-    private final String lastMessage = "";
-
     private ServerService mBoundService;
 
     private ServiceConnection mConnection;
@@ -111,7 +109,6 @@ public class StartActivity extends Activity {
                         "Service connected",
                         Toast.LENGTH_SHORT
                 ).show();
-                mBoundService.updateNotification(lastMessage);
                 refreshMainScreen();
             }
 
@@ -128,6 +125,29 @@ public class StartActivity extends Activity {
         doBindService();
 
         refreshMainScreen();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        //super.onNewIntent(intent);
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(Intent.ACTION_MAIN)) {
+                Bundle main_extras = intent.getExtras();
+                if (main_extras == null) Log.d(Constants.LOG_TAG, "main_extras == null");
+                if (main_extras.get(Constants.ACTION_CMD_KEY) == null) Log.d(Constants.LOG_TAG, "main_extras.getString == null");
+                if (
+                        main_extras != null
+                        && main_extras.getString(Constants.ACTION_CMD_KEY) != null
+                        && main_extras.getString(Constants.ACTION_CMD_KEY).equals(Constants.CMD_STOP)
+                    ) {
+
+                    stopServer();
+                    stopService(intent);
+                    finish();
+                    //refreshMainScreen();
+                }
+            }
+        }
     }
 
     private void doUnbindService() {
