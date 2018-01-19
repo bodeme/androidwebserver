@@ -269,7 +269,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    private static File getFilesDir(Context c) {
+    public static File getFilesDir(Context c) {
         File filesDir;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             if (Build.VERSION.SDK_INT <= 18)
@@ -285,7 +285,7 @@ public class StartActivity extends Activity {
         }
         return filesDir;
     }
-    
+
     private String getDocumentRoot(){
         final SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this);
