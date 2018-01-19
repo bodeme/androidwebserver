@@ -149,14 +149,14 @@ public class PreferencesActivity extends PreferenceActivity implements
                 port = 8080;
                 Log.w(Constants.LOG_TAG, "Port preferences may be empty");
             }
-            if (port < 1024) {
+            if (port < 1024 || port > 65535) {
                 port = 8080;
                 portAsString = Integer.toString(port);
                 Toast.makeText(PreferencesActivity.this,
-                        "Port less then 1024. Set to default.",
+                        "Port less then 1024 or grate then 65535. Set to default.",
                         Toast.LENGTH_LONG
                 ).show();
-                Log.w("lWS", "Port less then 1024. Set to default.");
+                Log.w("lWS", "Port less then 1024 or grate then 65535. Set to default.");
                 sharedPreferences.edit().putString(getString(R.string.pk_port), portAsString).apply();
             }
             pref.setSummary(portAsString);
