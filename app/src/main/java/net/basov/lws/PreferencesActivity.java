@@ -127,7 +127,7 @@ public class PreferencesActivity extends PreferenceActivity implements
         if (pref_document_root.equals(key)) {
             String defaultDocumentRoot = StartActivity.getFilesDir(this).getPath() + "/html/";
             String documentRoot = sharedPreferences.getString(pref_document_root, defaultDocumentRoot);
-            if (! new File(documentRoot).exists()){
+            if (! new File(documentRoot).canRead()){
                 documentRoot = defaultDocumentRoot;
                 Toast.makeText(PreferencesActivity.this,
                         "Document root doesn't exists. Set to default.",
