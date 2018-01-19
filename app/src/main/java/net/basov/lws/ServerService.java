@@ -119,8 +119,16 @@ public class ServerService extends Service {
             server.start();
 
             startForgroundService("Running on " + ipAddress + ":" + port);
+
+            android.content.pm.PackageInfo pInfo =
+                this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            
             StartActivity.putToLogScreen(
-                    "Web server is running on port "
+                    this.getString(R.string.hello)
+                    + " v"
+                    + pInfo.versionName
+                    + "\n"
+                    + "Web server address http://"
                     + ipAddress
                     + ":"
                     + port,
