@@ -137,10 +137,9 @@ public class PreferencesActivity extends PreferenceActivity implements
                 ).show();
                 Log.w("lWS", "Document root doesn't exists. Set to default.");
                 sharedPreferences.edit().putString(getString(R.string.pk_document_root), defaultDocumentRoot).apply();
-            }
-            // existig directory readable with and witout trailing slash
-            // but slash need for correct flename forming
-            if (documentRoot.charAt(docRootLength - 1) != '/') {
+            } else if (documentRoot.charAt(docRootLength - 1) != '/') {
+                // existig directory readable with and witout trailing slash
+                // but slash need for correct flename forming             
                 documentRoot = documentRoot + "/";
                 sharedPreferences.edit().putString(getString(R.string.pk_document_root), documentRoot).apply();
             }
