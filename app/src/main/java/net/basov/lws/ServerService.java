@@ -47,10 +47,6 @@ import java.lang.reflect.Method;
 import static net.basov.lws.Constants.*;
 
 public class ServerService extends Service {
-
-    private static final String TAG = ServerService.class.getSimpleName();
-    private static final String ACTION_STOP = TAG + ".CANCEL";   
-    
     private NotificationManager mNM;
     private Server server;
     private boolean isRunning = false;
@@ -214,7 +210,7 @@ public class ServerService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         Intent stopIntent = new Intent(this,ServerService.class);     
-        stopIntent.setAction(ACTION_STOP);
+        stopIntent.setAction(Constants.ACTION_STOP);
         PendingIntent stopPendingIntent = PendingIntent.getService(
                 this,
                 Constants.STOP_SERVICE_REQUEST,
