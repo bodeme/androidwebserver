@@ -4,6 +4,24 @@
     <string name="hello">lightweight Web Server (lWS)</string>
     <string name="usage">To exit application press \'Back\' or press \'Home\' to leave it run in background.</string>
 
+    <!-- Default document root index
+    %1$d    default document root path
+    -->
+    <string name="def_doc_root_index"><![CDATA["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+    <head>
+        <title>lightweight Web Server</title>
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+    </head>
+    <body>
+        <h4>lightweight Web Server (lWS) for Android.</h4>
+        <p>Default document root is %1$s</p>    
+        <p>Source code available on <a href=\"https://github.com/mvbasov/lWS\">GitHub</a></p>
+    </body>
+</html>
+"]]></string>
+
     <!-- HTTP header
     %1$d    result code
     %2%d    content length

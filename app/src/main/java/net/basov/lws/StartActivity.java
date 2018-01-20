@@ -284,14 +284,7 @@ public class StartActivity extends Activity {
                     if(documentRootDirectory.mkdir()) {
                         //Log.d(LOG_TAG, "Created " + dr);
                         BufferedWriter bout = new BufferedWriter(new FileWriter(dr + "index.html"));
-                        bout.write("<html><head><title>lightweight WebServer</title>");
-                        bout.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-                        bout.write("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ");
-                        bout.write("</head>");
-                        bout.write("<body>Welcome to lWS.");
-                        bout.write("<br/><br/>Default document root is" + dr);
-                        bout.write("<br/>Source code here<a href=\"https://github.com/mvbasov/lWS\">GitHub</a>");
-                        bout.write("</body></html>");
+                        bout.write(getString(R.string.def_doc_root_index, dr));
                         bout.flush();
                         bout.close();
                         //Log.d(LOG_TAG, "Created html files");
