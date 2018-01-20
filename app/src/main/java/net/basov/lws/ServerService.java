@@ -48,6 +48,9 @@ import static net.basov.lws.Constants.*;
 
 public class ServerService extends Service {
 
+    private static final String TAG = ServerService.class.getSimpleName();
+    private static final String ACTION_STOP = TAG + ".CANCEL";   
+    
     private NotificationManager mNM;
     private Server server;
     private boolean isRunning = false;
@@ -57,6 +60,12 @@ public class ServerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        
+        if (intent != null
+            && intent.getAction() != null
+            && intent.getAction().equals(ACTION_STOP)
+            ) stopServer();
+        
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -204,10 +213,9 @@ public class ServerService extends Service {
                 new Intent(this, StartActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
-        Intent stopIntent = new Intent(this,StartActivity.class);
-        stopIntent.setAction(Intent.ACTION_MAIN);
-        stopIntent.putExtra(Constants.ACTION_CMD_KEY, Constants.CMD_STOP);
-        PendingIntent stopPendingIntent = PendingIntent.getActivity(
+        Intent stopIntent = new Intent(this,ServerService.class);     
+        stopIntent.setAction(ACTION_STOP);
+        PendingIntent stopPendingIntent = PendingIntent.getService(
                 this,
                 Constants.STOP_SERVICE_REQUEST,
                 stopIntent,
