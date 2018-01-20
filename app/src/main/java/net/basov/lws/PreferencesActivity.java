@@ -127,6 +127,10 @@ public class PreferencesActivity extends PreferenceActivity implements
         if (pref_document_root.equals(key)) {
             String defaultDocumentRoot = StartActivity.getFilesDir(this).getPath() + "/html/";
             String documentRoot = sharedPreferences.getString(pref_document_root, defaultDocumentRoot);
+            if (documentRoot.charAt(documentRoot.length() - 1) != '/') {
+                documentRoot = documentRoot + "/";
+                sharedPreferences.edit().putString(getString(R.string.pk_document_root), documentRoot).apply();
+            }
             if (! new File(documentRoot).canRead()){
                 documentRoot = defaultDocumentRoot;
                 Toast.makeText(PreferencesActivity.this,
