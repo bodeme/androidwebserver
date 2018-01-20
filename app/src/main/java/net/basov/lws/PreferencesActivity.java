@@ -127,18 +127,22 @@ public class PreferencesActivity extends PreferenceActivity implements
         if (pref_document_root.equals(key)) {
             String defaultDocumentRoot = StartActivity.getFilesDir(this).getPath() + "/html/";
             String documentRoot = sharedPreferences.getString(pref_document_root, defaultDocumentRoot);
-            if (documentRoot.charAt(documentRoot.length() - 1) != '/') {
-                documentRoot = documentRoot + "/";
-                sharedPreferences.edit().putString(getString(R.string.pk_document_root), documentRoot).apply();
-            }
-            if (! new File(documentRoot).canRead()){
+            int docRootLength = documentRoot.length();
+            if (! new File(documentRoot).canRead() || docRootLength == 0){
                 documentRoot = defaultDocumentRoot;
+                docRootLength = documentRoot.length();
                 Toast.makeText(PreferencesActivity.this,
                         "Document root doesn't exists. Set to default.",
                         Toast.LENGTH_LONG
                 ).show();
                 Log.w("lWS", "Document root doesn't exists. Set to default.");
                 sharedPreferences.edit().putString(getString(R.string.pk_document_root), defaultDocumentRoot).apply();
+            }
+            // existig directory readable with and witout trailing slash
+            // but slash need for correct flename forming
+            if (documentRoot.charAt(docRootLength - 1) != '/') {
+                documentRoot = documentRoot + "/";
+                sharedPreferences.edit().putString(getString(R.string.pk_document_root), documentRoot).apply();
             }
             pref.setSummary(documentRoot);
         }
