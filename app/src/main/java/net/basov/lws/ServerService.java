@@ -115,7 +115,7 @@ public class ServerService extends Service {
             );
 
             server = new Server(
-                    handler,
+                    gHandler,
                     sharedPreferences.getString(getString(R.string.pk_document_root), ""),
                     ipAddress,
                     port,
@@ -163,8 +163,9 @@ public class ServerService extends Service {
 
         } catch (Exception e) {
             isRunning = false;
+            mNM.cancel(NOTIFICATION_ID);
             Log.e(LOG_TAG, e.getMessage()+ "(from ServerService.startServer())");
-            if (!isRunning) mNM.cancel(NOTIFICATION_ID);
+            StartActivity.putToLogScreen(e.getMessage(), gHandler);
         }
     }
 
