@@ -266,40 +266,49 @@ public class StartActivity extends Activity {
     }
 
     private String getDocumentRoot(){
+        String defaultDocumentRoot = getFilesDir(this).getPath() + "/html/";
         final SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this);
-        String dr = sharedPreferences.getString(
+
+        String documentRoot = sharedPreferences.getString(
             getString(R.string.pk_document_root),
             ""
         );
-        if (dr.length() == 0) {
+
+        if (documentRoot.length() == 0 ) {
             // if preferences contain empty string or absent reset it to default
-            dr = getFilesDir(this).getPath() + "/html/";
+            documentRoot = defaultDocumentRoot;
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(getString(R.string.pk_document_root), dr);
+            editor.putString(getString(R.string.pk_document_root), documentRoot);
             editor.commit();
-            try {
-                File documentRootDirectory = new File(dr);
-                if (!documentRootDirectory.exists()) {
-                    if(documentRootDirectory.mkdir()) {
-                        //Log.d(LOG_TAG, "Created " + dr);
-                        BufferedWriter bout = new BufferedWriter(new FileWriter(dr + "index.html"));
-                        bout.write(getString(R.string.def_doc_root_index, dr));
-                        bout.flush();
-                        bout.close();
-                        //Log.d(LOG_TAG, "Created html files");
-                        log("Default DocumentRoot HTML index file creted.");
-                    } else {
-                        throw new Exception("Can't create document root.");
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(LOG_TAG,e.getMessage());
-            }
         }
-        return dr;
+
+        if (documentRoot.equals(defaultDocumentRoot)) createDefaultIndex();
+
+        return documentRoot;
     }
-    
+
+    private void createDefaultIndex() {
+        try {
+            String defaultDocumentRoot = getFilesDir(this).getPath() + "/html/";
+            File defaultDocumentRootDirectory = new File(defaultDocumentRoot);
+            if (!defaultDocumentRootDirectory.exists()) {
+                if(defaultDocumentRootDirectory.mkdirs()) {
+                    BufferedWriter bout = new BufferedWriter(new FileWriter(defaultDocumentRoot + "index.html"));
+                    bout.write(getString(R.string.def_doc_root_index, defaultDocumentRoot));
+                    bout.flush();
+                    bout.close();
+                    log("Default DocumentRoot HTML index file creted.");
+                } else {
+                    throw new Exception("Can't create document root.");
+                }
+            }
+        } catch (Exception e) {
+            log("Error creating HTML index file.");
+            Log.e(LOG_TAG,e.getMessage());
+        }
+    }
+
     /**
     * Application main screen related functions and handler
     */
