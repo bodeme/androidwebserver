@@ -75,7 +75,7 @@ public class StartActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
-                StartActivity.this.startActivityForResult(i, PREFERENCES_REQUEST);
+                startActivity(i);
             }
         });
 
@@ -182,24 +182,6 @@ public class StartActivity extends Activity {
         refreshMainScreen();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PREFERENCES_REQUEST) {
-            SharedPreferences defSharedPref =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            if (defSharedPref.getBoolean(getString(R.string.pk_pref_changed), false)) {
-                SharedPreferences.Editor editor = defSharedPref.edit();
-                if(mBoundService != null &&  mBoundService.isRunning()) {
-                    stopServer();
-                    startServer(mHandler);
-                }
-                refreshMainScreen();
-                editor.putBoolean(getString(R.string.pk_pref_changed), false);
-                editor.commit();
-            }
-        }
-    }
-
     private void refreshMainScreen() {
         final TextView viewDirectoryRoot = (TextView) findViewById(R.id.document_root);
         final TextView viewAddress = (TextView) findViewById(R.id.address);
@@ -221,6 +203,14 @@ public class StartActivity extends Activity {
         if(mBoundService != null) {         
             mToggleButton.setChecked(mBoundService.isRunning());         
             if (mBoundService.isRunning()) {
+                if (sharedPreferences.getBoolean(getString(R.string.pk_pref_changed), false)) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    stopServer();
+                    startServer(mHandler);
+                    Toast.makeText(StartActivity.this,"Service restarted because configuration changed", Toast.LENGTH_SHORT).show();
+                    editor.putBoolean(getString(R.string.pk_pref_changed), false);
+                    editor.commit();
+                }
                 final String ipAddress = mBoundService.getIpAddress();
                 viewAddress.setText(ipAddress);
                 btnBrowser.setOnClickListener(new OnClickListener() {
