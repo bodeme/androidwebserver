@@ -50,7 +50,8 @@ android {
     
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             zipAlignEnabled true
             applicationIdSuffix '.r'
@@ -59,6 +60,9 @@ android {
             signingConfig signingConfigs.release
         }
         betta {
+            minifyEnabled true
+            shrinkResources true 
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             applicationIdSuffix '.b'
             versionNameSuffix "b-g" + current_commit
             debuggable false
