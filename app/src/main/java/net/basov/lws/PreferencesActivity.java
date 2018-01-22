@@ -94,8 +94,9 @@ public class PreferencesActivity extends PreferenceActivity implements
                     PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(getString(R.string.pk_document_root), newValue);
+            editor.putBoolean(getString(R.string.pk_pref_changed), true);
             editor.commit();
-            recreate();
+            findPreference(getString(R.string.pk_document_root)).setSummary(newValue);
         }
     }
 
@@ -170,10 +171,10 @@ public class PreferencesActivity extends PreferenceActivity implements
         }
 
         String pref_use_directory_pick = getString(R.string.pk_use_directory_pick);
-        if (pref_use_directory_pick.equals(key)) {
-            recreate();
+       if (!pref_use_directory_pick.equals(key)) {
+           // don't set preferences changed flag if only use directory pick changed
+           sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
         }
                
-        sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
     }
 }
