@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">lWS</string>
     <string name="hello">lightweight Web Server (lWS)</string>
-    <string name="usage">To exit application press \'Back\' or press \'Home\' to leave it run in background.</string>
 
     <!-- Default document root index
     %1$d    default document root path
