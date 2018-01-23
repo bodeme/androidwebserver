@@ -35,5 +35,6 @@ gradlew.bat
 *.o
 *.so
 
-
+# ProGuard mapping files
+*_mapping.txt
 
