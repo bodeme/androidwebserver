@@ -77,7 +77,6 @@
         android:layout_height="fill_parent">
 
         <TextView
-            android:text="Log"
             android:textIsSelectable="true"
             android:id="@+id/log"
             android:layout_width="fill_parent"

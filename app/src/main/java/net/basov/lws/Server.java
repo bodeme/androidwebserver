@@ -55,10 +55,7 @@ class Server extends Thread {
     public void run() {
         while( running ) {
             try {
-                //StartActivity.putToLogScreen("Waiting for connections", mHandler);
                 Socket client = listener.accept();
-
-                //StartActivity.putToLogScreen("New connection from " + client.getInetAddress().toString(), mHandler);
                 new ServerHandler(documentRoot, context, client, Server.mHandler).start();
                 clientList.add(client);
             } catch (IOException e) {
@@ -79,8 +76,7 @@ class Server extends Thread {
     }
 
     public synchronized static void remove(Socket s) {
-        //StartActivity.putToLogScreen("Closing connection: " + s.getInetAddress().toString(), mHandler);
-        clientList.remove(s);      
+        clientList.remove(s);
     }
 
 }
