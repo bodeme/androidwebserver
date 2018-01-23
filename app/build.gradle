@@ -12,6 +12,17 @@ android {
                 def fileName = "lWS." + versionName + ".apk"
                 output.outputFile = new File(outputFile.parent, fileName)
             }
+            if (variant.getBuildType().isMinifyEnabled()) {
+                variant.assemble.doLast{
+                    copy {
+                        from variant.mappingFile
+                        into output.outputFile.parent 
+                        rename { String fileName ->
+                            "lWS." + versionName + "_mapping.txt"
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -83,4 +94,3 @@ static def getGitRevParseInfo (what) {
     def proc = cmd.execute ()
     proc.text.trim ()
 }
-
