@@ -1,3 +1,42 @@
-### v01.00.00
+#### v01.09.00b (g5b9da2a)
+* New 'Send URL' button
 
-1-st public release.
+#### v01.08.00b (g6a995d3)
+* Fix issue with return from preferences
+
+#### v01.07.00b (g68e6e24)
+* Beta release to test ProGuard settings
+
+#### v01.06.00b (ca00cdb)
+* Display connection diagnostic on log screen
+* Fix default document root creation on legacy devices
+* Fix restart on configuration changed on legacy devices
+
+#### v01.05.00b (8fcb81b)
+* Improve  stop service from notification issue
+* Make log selectable
+* Fix several bugs
+
+#### v01.04.00b (g7bf53e8)
+* Display application version at start
+* Fix configuration check and reset to default
+
+#### v01.03.00b (g722356c)
+* Fix NumberFormatException exception
+
+#### v01.02.00b (g86e678b)
+* Improve service stability
+* Add button to stop service from notification
+* Fix several NPE
+
+#### v01.01.00b (ga889b46)
+* Another service model to stable run in background
+* Check and fix configuration values
+* More informative logging
+* Fix several bugs
+
+### v00.01.01b (g9efcd5f)
+* Fix 0 content length
+
+### v01.00.00 (g06f4f90)
+* 1-st public release.
