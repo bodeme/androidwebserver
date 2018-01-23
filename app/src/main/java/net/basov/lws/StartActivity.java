@@ -70,8 +70,8 @@ public class StartActivity extends Activity {
         mLog = (TextView) findViewById(R.id.log);
         mScroll = (ScrollView) findViewById(R.id.ScrollView01);
 
-        Button button = (Button) findViewById(R.id.buttonSettings);
-        button.setOnClickListener(new OnClickListener() {
+        Button btnSettings = (Button) findViewById(R.id.buttonSettings);
+        btnSettings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
@@ -187,7 +187,8 @@ public class StartActivity extends Activity {
         final TextView viewAddress = (TextView) findViewById(R.id.address);
         final TextView viewPort = (TextView) findViewById(R.id.port);
         final Button btnBrowser = (Button) findViewById(R.id.buttonOpenBrowser);
-        
+        final Button btnSendURL = (Button) findViewById(R.id.buttonSendURL);
+
         final SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -213,6 +214,7 @@ public class StartActivity extends Activity {
                 }
                 final String ipAddress = mBoundService.getIpAddress();
                 viewAddress.setText(ipAddress);
+                
                 btnBrowser.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {            
@@ -228,9 +230,29 @@ public class StartActivity extends Activity {
                         }
                 });
                 btnBrowser.setEnabled(true);
+
+                btnSendURL.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url =
+                                "http://"
+                                        + ipAddress
+                                        + ":"
+                                        + port
+                                        + "/";
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setData(Uri.parse(url));
+                        i.setType("text/html");
+                        i.putExtra(Intent.EXTRA_TEXT, url);
+                        startActivity(i);
+                    }
+                });
+                btnSendURL.setEnabled(true);
+
             } else {
                 viewAddress.setText("");
                 btnBrowser.setEnabled(false);
+                btnSendURL.setEnabled(false);
             }
         } else {
             viewAddress.setText("");

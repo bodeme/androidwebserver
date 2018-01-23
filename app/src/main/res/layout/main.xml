@@ -51,12 +51,29 @@
         android:layout_height="wrap_content"
         android:text="Settings" />
 
-    <Button
-        android:id="@+id/buttonOpenBrowser"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="Open in browser" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/buttonSendURL"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Send URL" />
+
+        <Button
+            android:id="@+id/buttonOpenBrowser"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Open in browser" />
+
+    </LinearLayout>
 
     <ToggleButton
         android:textOn="Stop"
