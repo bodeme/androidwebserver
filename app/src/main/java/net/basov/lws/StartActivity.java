@@ -243,6 +243,7 @@ public class StartActivity extends Activity {
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setData(Uri.parse(url));
                         i.setType("text/html");
+                        i.putExtra(Intent.EXTRA_SUBJECT, "Current lWS URL");
                         i.putExtra(Intent.EXTRA_TEXT, url);
                         startActivity(i);
                     }
