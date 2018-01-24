@@ -51,6 +51,8 @@ import android.widget.ToggleButton;
 import static net.basov.lws.Constants.*;
 
 public class StartActivity extends Activity {
+    private static int prevMsgCount;
+    private static String prevMsg;
     private ToggleButton mToggleButton;
     private static TextView mLog;
     private static ScrollView mScroll;
@@ -62,6 +64,8 @@ public class StartActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        StartActivity.prevMsg = "";
+        StartActivity.prevMsgCount = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         setTitle(R.string.hello);
@@ -327,7 +331,15 @@ public class StartActivity extends Activity {
     */
     
     private static void log(String s) {
-        mLog.append(s + "\n");
+        if (prevMsg.equals(s)) {
+            prevMsgCount++;
+        }else {
+            if (prevMsgCount != 0)
+                mLog.append("... previous repeaed " + prevMsgCount +"times.\n");
+            prevMsgCount = 0;
+            prevMsg = s;
+            mLog.append(s + "\n");
+        }
         mScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
     
