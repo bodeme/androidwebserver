@@ -1,3 +1,7 @@
+#### v01.10.00b (g8c53bf8) 
+* Fix 'Use OI File Manager' preference issue
+* Several build system tweaks
+
 #### v01.09.00b (g5b9da2a)
 * New 'Send URL' button
 
