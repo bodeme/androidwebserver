@@ -145,10 +145,22 @@ public class ServerService extends Service {
                 mReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
                             StartActivity.putToLogScreen(
                                     "Web server stopped because WiFi disconnected.",
+                                    gHandler
+                            );
+                            stopServer();
+                        }
+
+                        Integer tetheringState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
+                        Integer t = tetheringState;
+                        if (tetheringState > 10) tetheringState -= 10; // Old android fix
+                        if (tetheringState == 10) {
+                            StartActivity.putToLogScreen(
+                                    "Web server stopped because AP switched off.",
                                     gHandler
                             );
                             stopServer();
@@ -158,6 +170,7 @@ public class ServerService extends Service {
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
                 filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+                filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
                 registerReceiver(mReceiver, filter);
             }
 
