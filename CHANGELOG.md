@@ -1,3 +1,7 @@
+#### v01.11.00b (g63a4a2d)
+* Add tethering AP switch off detection
+* More informative logging
+
 #### v01.10.00b (g8c53bf8) 
 * Fix 'Use OI File Manager' preference issue
 * Several build system tweaks
