@@ -59,7 +59,7 @@ class Server extends Thread {
                 new ServerHandler(documentRoot, context, client, Server.mHandler).start();
                 clientList.add(client);
             } catch (IOException e) {
-                StartActivity.putToLogScreen(e.getMessage(), mHandler);
+                StartActivity.putToLogScreen("I: " + e.getMessage(), mHandler);
                 Log.e(LOG_TAG, e.getMessage());
             }
         }
@@ -70,7 +70,7 @@ class Server extends Thread {
         try {
             listener.close();
         } catch (IOException e) {
-            StartActivity.putToLogScreen(e.getMessage(), mHandler);
+            StartActivity.putToLogScreen("E: " + e.getMessage(), mHandler);
             Log.e("lWS", e.getMessage());
         }
     }

@@ -87,12 +87,6 @@ public class ServerService extends Service {
                     )
                     && !isWifiAPenabled
             ) {
-
-                StartActivity.putToLogScreen(
-                        "Please connect to a WIFI-network or start Tethering.",
-                        gHandler,
-                        true
-                );
                 mNM.cancel(NOTIFICATION_ID);
                 throw new Exception("Please connect to a WiFi-network or start Tethering.");
             }
@@ -125,15 +119,8 @@ public class ServerService extends Service {
 
             startForgroundService("Running on " + ipAddress + ":" + port);
 
-            android.content.pm.PackageInfo pInfo =
-                this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-            
             StartActivity.putToLogScreen(
-                    this.getString(R.string.hello)
-                    + " v"
-                    + pInfo.versionName
-                    + "\n"
-                    + "Web server address http://"
+                    "I: Web server address http://"
                     + ipAddress
                     + ":"
                     + port,
@@ -149,7 +136,7 @@ public class ServerService extends Service {
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
                             StartActivity.putToLogScreen(
-                                    "Web server stopped because WiFi disconnected.",
+                                    "I: Web server stopped because WiFi disconnected.",
                                     gHandler
                             );
                             stopServer();
@@ -160,7 +147,7 @@ public class ServerService extends Service {
                         if (tetheringState > 10) tetheringState -= 10; // Old android fix
                         if (tetheringState == 10) {
                             StartActivity.putToLogScreen(
-                                    "Web server stopped because AP switched off.",
+                                    "I: Web server stopped because AP switched off.",
                                     gHandler
                             );
                             stopServer();
@@ -178,7 +165,7 @@ public class ServerService extends Service {
             isRunning = false;
             mNM.cancel(NOTIFICATION_ID);
             Log.e(LOG_TAG, e.getMessage()+ "(from ServerService.startServer())");
-            StartActivity.putToLogScreen(e.getMessage(), gHandler);
+            StartActivity.putToLogScreen("E: " + e.getMessage(), gHandler);
         }
     }
 
@@ -201,7 +188,7 @@ public class ServerService extends Service {
             }
         } catch (IllegalArgumentException e) {
             StartActivity.putToLogScreen(
-                    "Receiver unregister error again :( (stopServer())", 
+                    "E: Receiver unregister error again :( (stopServer())",
                     gHandler
             );
             Log.e(LOG_TAG, e.getMessage() + "on ServerService.stopServer()");

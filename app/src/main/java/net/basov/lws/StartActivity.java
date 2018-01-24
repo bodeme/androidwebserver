@@ -24,6 +24,7 @@ package net.basov.lws;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.Array;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -31,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -83,12 +85,26 @@ public class StartActivity extends Activity {
             }
         });
 
+        try {
+            android.content.pm.PackageInfo pInfo =
+                    this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            String appName =
+                    this.getString(R.string.hello)
+                    + " v"
+                    + pInfo.versionName;
+            log(
+                    appName
+                    + "\n"
+                    + new String(new char[appName.length()]).replace('\0', '*')
+            );
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         documentRoot = getDocumentRoot();
 
-        if(null != documentRoot) {
-            log("");
-        } else {
-            log("Error: Document-Root could not be found.");
+        if(null == documentRoot) {
+            log("E: Document-Root could not be found.");
         }
 
         mToggleButton.setOnClickListener(new OnClickListener() {
@@ -315,13 +331,13 @@ public class StartActivity extends Activity {
                     bout.write(getString(R.string.def_doc_root_index, defaultDocumentRoot));
                     bout.flush();
                     bout.close();
-                    log("Default DocumentRoot HTML index file creted.");
+                    log("I: Default DocumentRoot HTML index file creted.");
                 } else {
                     throw new Exception("Can't create document root.");
                 }
             }
         } catch (Exception e) {
-            log("Error creating HTML index file.");
+            log("E: Error creating HTML index file.");
             Log.e(LOG_TAG,e.getMessage());
         }
     }
