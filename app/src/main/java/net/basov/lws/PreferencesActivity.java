@@ -53,8 +53,19 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         Preference prefDocumentRoot = findPreference(getString(R.string.pk_document_root));
         prefDocumentRoot.setSummary(defSharedPref.getString(getString(R.string.pk_document_root), ""));
-        if(defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), false)) {
-            prefDocumentRoot.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        enableDirPicker(
+                prefDocumentRoot,
+                defSharedPref.getBoolean(getString(R.string.pk_use_directory_pick), false)
+        );
+
+        Preference prefPort = findPreference(getString(R.string.pk_port));
+        prefPort.setSummary(defSharedPref.getString(getString(R.string.pk_port), "8080"));
+
+    }
+
+    private void enableDirPicker(Preference p, Boolean enable) {
+        if (enable) {
+            p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     ((EditTextPreference) preference).getDialog().dismiss();
@@ -72,13 +83,16 @@ public class PreferencesActivity extends PreferenceActivity implements
                     return true;
                 }
             });
+        } else {
+            p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    return false;
+                }
+            });
         }
 
-        Preference prefPort = findPreference(getString(R.string.pk_port));
-        prefPort.setSummary(defSharedPref.getString(getString(R.string.pk_port), "8080"));
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DIRECTORY_REQUEST && data != null) {
@@ -171,9 +185,13 @@ public class PreferencesActivity extends PreferenceActivity implements
         }
 
         String pref_use_directory_pick = getString(R.string.pk_use_directory_pick);
-       if (!pref_use_directory_pick.equals(key)) {
-           // don't set preferences changed flag if only use directory pick changed
-           sharedPreferences.edit().putBoolean(getString(R.string.pk_pref_changed), true).apply();
+        if (pref_use_directory_pick.equals(key)) {
+            // don't set preferences changed flag if only use directory pick changed
+            Preference prefDocumentRoot = findPreference(getString(R.string.pk_document_root));
+            enableDirPicker(
+                    prefDocumentRoot,
+                    sharedPreferences.getBoolean(pref_use_directory_pick, false)
+            );
         }
                
     }
