@@ -59,6 +59,10 @@ class Server extends Thread {
                 new ServerHandler(documentRoot, context, client, Server.mHandler).start();
                 clientList.add(client);
             } catch (IOException e) {
+                // Don't set running=false at this poin!
+                // Give the server chance to create new socket if it is temporary problem
+                // This lead repeating message 'Socket closed' message many (more then 100) times
+                // but they suppressed by '... previous string repeated x times' logging functionality.
                 StartActivity.putToLogScreen("I: " + e.getMessage(), mHandler);
                 Log.e(LOG_TAG, e.getMessage());
             }
