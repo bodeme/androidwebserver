@@ -351,7 +351,7 @@ public class StartActivity extends Activity {
             prevMsgCount++;
         }else {
             if (prevMsgCount != 0)
-                mLog.append("... previous repeaed " + prevMsgCount +"times.\n");
+                mLog.append("... previous string repeated " + prevMsgCount +" times.\n");
             prevMsgCount = 0;
             prevMsg = s;
             mLog.append(s + "\n");

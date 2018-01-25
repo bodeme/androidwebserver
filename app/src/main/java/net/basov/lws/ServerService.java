@@ -148,8 +148,7 @@ public class ServerService extends Service {
                             stopServer();
                         }
 
-                        Integer tetheringState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
-                        Integer t = tetheringState;
+                        Integer tetheringState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);                     
                         if (tetheringState > 10) tetheringState -= 10; // Old android fix
                         if (tetheringState == 10) {
                             StartActivity.putToLogScreen(
