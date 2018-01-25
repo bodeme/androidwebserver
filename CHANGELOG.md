@@ -1,4 +1,4 @@
-### v02.00.00 ()
+### v02.00.00 (g36b7530)
 * Another service model to stable run in background
 * New 'Send URL' button
 * Add button to stop service from notification
