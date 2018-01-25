@@ -171,7 +171,7 @@ public class PreferencesActivity extends PreferenceActivity implements
                 port = 8080;
                 Log.w(Constants.LOG_TAG, "Port preferences may be empty");
             }
-            if (port < 1024 || port > 65535) {
+            if (port < 1024 || port > 65535 || portAsString.length() == 0) {
                 port = 8080;
                 portAsString = Integer.toString(port);
                 Toast.makeText(PreferencesActivity.this,
