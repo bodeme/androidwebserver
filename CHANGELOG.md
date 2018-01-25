@@ -1,3 +1,12 @@
+### v02.00.00 ()
+* Another service model to stable run in background
+* New 'Send URL' button
+* Add button to stop service from notification
+* More informative logging
+* Minimal Android version is 4.1 now
+* Check and fix wrong configuration values
+* Fix several NPE, ANR and other bugs
+
 #### v01.11.00b (g63a4a2d)
 * Add tethering AP switch off detection
 * More informative logging
