@@ -88,7 +88,13 @@ public class ServerService extends Service {
                     && !isWifiAPenabled
             ) {
                 mNM.cancel(NOTIFICATION_ID);
-                throw new Exception("Please connect to a WiFi-network or start Tethering.");
+                isRunning = false;
+                StartActivity.putToLogScreen(
+                        "Please connect to a WiFi-network or start Tethering.",
+                        gHandler,
+                        true
+                );
+                return;
             }
 
             final SharedPreferences sharedPreferences =
