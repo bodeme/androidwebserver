@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.lang.reflect.Array;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -208,6 +209,7 @@ public class StartActivity extends Activity {
         final TextView viewPort = (TextView) findViewById(R.id.port);
         final Button btnBrowser = (Button) findViewById(R.id.buttonOpenBrowser);
         final Button btnSendURL = (Button) findViewById(R.id.buttonSendURL);
+        final Button btnQRCodeURL = (Button) findViewById(R.id.buttonQRCodeURL);
 
         final SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -234,16 +236,16 @@ public class StartActivity extends Activity {
                 }
                 final String ipAddress = mBoundService.getIpAddress();
                 viewAddress.setText(ipAddress);
-                
+
+                final String url =
+                        "http://"
+                        + ipAddress
+                        + ":"
+                        + port
+                        + "/";
                 btnBrowser.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {            
-                            String url =
-                                    "http://"
-                                    + ipAddress 
-                                    + ":"
-                                    + port
-                                    + "/";
                             Intent i = new Intent(Intent.ACTION_VIEW);
                             i.setData(Uri.parse(url));
                             startActivity(i);               
@@ -251,15 +253,29 @@ public class StartActivity extends Activity {
                 });
                 btnBrowser.setEnabled(true);
 
+                btnQRCodeURL.setOnClickListener( new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PackageManager pm = getApplicationContext().getPackageManager();
+                        try {
+                            pm.getPackageInfo("com.google.zxing.client.android", 0);
+                            Intent i = new Intent("com.google.zxing.client.android.ENCODE");
+                            i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
+                            i.putExtra("ENCODE_DATA", url);
+                            i.putExtra("ENCODE_FORMAT", "QRCODE");
+                            startActivity(i);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse("market://details?id=com.google.zxing.client.android"));
+                            startActivity(i);
+                        }
+                    }
+                });
+                btnQRCodeURL.setEnabled(true);
+
                 btnSendURL.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url =
-                                "http://"
-                                        + ipAddress
-                                        + ":"
-                                        + port
-                                        + "/";
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setData(Uri.parse(url));
                         i.setType("text/html");
@@ -274,6 +290,7 @@ public class StartActivity extends Activity {
                 viewAddress.setText("");
                 btnBrowser.setEnabled(false);
                 btnSendURL.setEnabled(false);
+                btnQRCodeURL.setEnabled(false);
             }
         } else {
             viewAddress.setText("");

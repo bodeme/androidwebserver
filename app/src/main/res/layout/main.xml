@@ -45,16 +45,10 @@
             android:text="Unset" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonSettings"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Settings" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:weightSum="2"
+        android:weightSum="3"
         android:layout_height="wrap_content">
 
         <Button
@@ -63,7 +57,15 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Send URL" />
+            android:text="Send" />
+
+        <Button
+            android:id="@+id/buttonQRCodeURL"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="QR Code" />
 
         <Button
             android:id="@+id/buttonOpenBrowser"
@@ -71,9 +73,15 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Open in browser" />
+            android:text="Browser" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings" />
 
     <ToggleButton
         android:textOn="Stop"
