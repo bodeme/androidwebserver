@@ -241,6 +241,7 @@ public class StartActivity extends Activity {
                 }
                 final String ipAddress = mBoundService.getIpAddress();
                 viewAddress.setText(ipAddress);
+                viewAddress.setTextColor(0xFFFFFF00);
 
                 final String url =
                         "http://"
@@ -294,7 +295,8 @@ public class StartActivity extends Activity {
                 viewAddress.setOnClickListener(sendListner);
 
             } else {
-                viewAddress.setText("");
+                viewAddress.setText("not running");
+                viewAddress.setTextColor(0xFFFF0000);
                 viewAddress.setOnClickListener(null);
                 viewAddress.setClickable(false);            
                 btnBrowser.setEnabled(false);
@@ -302,7 +304,8 @@ public class StartActivity extends Activity {
                 btnQRCodeURL.setEnabled(false);
             }
         } else {
-            viewAddress.setText("");
+            viewAddress.setText("not running");
+            viewAddress.setTextColor(0xFFFF0000);
             viewAddress.setOnClickListener(null);
             viewAddress.setClickable(false);
             btnBrowser.setEnabled(false);
