@@ -32,6 +32,7 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ public class PreferencesActivity extends PreferenceActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+      
         addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences defSharedPref =
@@ -60,7 +61,17 @@ public class PreferencesActivity extends PreferenceActivity implements
 
         Preference prefPort = findPreference(getString(R.string.pk_port));
         prefPort.setSummary(defSharedPref.getString(getString(R.string.pk_port), "8080"));
-
+        
+        Intent incoingIntent = getIntent();
+        Bundle incomingExtras = incoingIntent.getExtras();
+        if (incomingExtras != null) {
+            int incomingIndex = incomingExtras.getInt("item");
+            if (incomingIndex >= 0 && incomingIndex <= 2 ) {
+                PreferenceScreen screen = getPreferenceScreen();
+                screen.onItemClick(null, null, incomingIndex , 0);
+            }
+        }      
+        
     }
 
     private void enableDirPicker(Preference p, Boolean enable) {

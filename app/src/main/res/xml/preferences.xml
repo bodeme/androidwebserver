@@ -6,6 +6,7 @@
         android:key="@string/pk_use_directory_pick"
         android:singleLine="true"
         android:title="Use OI File Manager"
+        android:defaultValue="false"
         android:summary="to directory pick"/>
     <EditTextPreference
         android:key="@string/pk_document_root"
@@ -14,6 +15,7 @@
     <EditTextPreference
         android:key="@string/pk_port"
         android:numeric="integer"
+        android:defaultValue="8080"
         android:title="Port" />
 
 </PreferenceScreen>

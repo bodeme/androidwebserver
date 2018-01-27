@@ -60,8 +60,7 @@ public class StartActivity extends Activity {
     private static TextView mLog;
     private static ScrollView mScroll;
     private String documentRoot;
-    private OnClickListener prefListner;
-
+  
     private ServerService mBoundService;
     private ServiceConnection mConnection;
     
@@ -74,20 +73,12 @@ public class StartActivity extends Activity {
         setContentView(R.layout.main);
         setTitle(R.string.hello);
         
-        prefListner = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
-                startActivity(i);
-            }
-        };
-        
         mToggleButton = (ToggleButton) findViewById(R.id.toggle);
         mLog = (TextView) findViewById(R.id.log);
         mScroll = (ScrollView) findViewById(R.id.ScrollView01);
 
         findViewById(R.id.buttonSettings)
-                .setOnClickListener(prefListner);
+                .setOnClickListener(makePrefListner(-1));
         
         try {
             android.content.pm.PackageInfo pInfo =
@@ -105,6 +96,7 @@ public class StartActivity extends Activity {
             e.printStackTrace();
         }
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         documentRoot = getDocumentRoot();
 
         if(null == documentRoot) {
@@ -219,14 +211,15 @@ public class StartActivity extends Activity {
 
         documentRoot = getDocumentRoot();
         viewDirectoryRoot.setText(documentRoot);
-        viewDirectoryRoot.setOnClickListener(prefListner);
+        viewDirectoryRoot.setOnClickListener(makePrefListner(1));
 
         final String port = sharedPreferences.getString(
                 getString(R.string.pk_port),
                 "8080"
         );
         viewPort.setText(port);
-        viewPort.setOnClickListener(prefListner);
+        
+        viewPort.setOnClickListener(makePrefListner(2));
 
         if(mBoundService != null) {         
             mToggleButton.setChecked(mBoundService.isRunning());         
@@ -416,4 +409,17 @@ public class StartActivity extends Activity {
         msg.setData(b);
         msgHandler.sendMessage(msg);
     }
+
+    private OnClickListener makePrefListner(final int index) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
+                if (index != -1 )
+                    i.putExtra("item", index);
+                startActivity(i);
+            }
+        };
+    }
+
 }
