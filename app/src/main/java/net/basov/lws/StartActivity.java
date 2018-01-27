@@ -60,32 +60,35 @@ public class StartActivity extends Activity {
     private static TextView mLog;
     private static ScrollView mScroll;
     private String documentRoot;
+    private OnClickListener prefListner;
 
     private ServerService mBoundService;
-
     private ServiceConnection mConnection;
+    
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {     
         StartActivity.prevMsg = "";
         StartActivity.prevMsgCount = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         setTitle(R.string.hello);
-
-        mToggleButton = (ToggleButton) findViewById(R.id.toggle);
-        mLog = (TextView) findViewById(R.id.log);
-        mScroll = (ScrollView) findViewById(R.id.ScrollView01);
-
-        Button btnSettings = (Button) findViewById(R.id.buttonSettings);
-        btnSettings.setOnClickListener(new OnClickListener() {
+        
+        prefListner = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(StartActivity.this, PreferencesActivity.class);
                 startActivity(i);
             }
-        });
+        };
+        
+        mToggleButton = (ToggleButton) findViewById(R.id.toggle);
+        mLog = (TextView) findViewById(R.id.log);
+        mScroll = (ScrollView) findViewById(R.id.ScrollView01);
 
+        findViewById(R.id.buttonSettings)
+                .setOnClickListener(prefListner);
+        
         try {
             android.content.pm.PackageInfo pInfo =
                     this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
@@ -216,12 +219,14 @@ public class StartActivity extends Activity {
 
         documentRoot = getDocumentRoot();
         viewDirectoryRoot.setText(documentRoot);
+        viewDirectoryRoot.setOnClickListener(prefListner);
 
         final String port = sharedPreferences.getString(
                 getString(R.string.pk_port),
                 "8080"
         );
         viewPort.setText(port);
+        viewPort.setOnClickListener(prefListner);
 
         if(mBoundService != null) {         
             mToggleButton.setChecked(mBoundService.isRunning());         
@@ -273,7 +278,7 @@ public class StartActivity extends Activity {
                 });
                 btnQRCodeURL.setEnabled(true);
 
-                btnSendURL.setOnClickListener(new OnClickListener() {
+                OnClickListener sendListner = new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(Intent.ACTION_SEND);
@@ -283,18 +288,26 @@ public class StartActivity extends Activity {
                         i.putExtra(Intent.EXTRA_TEXT, url);
                         startActivity(i);
                     }
-                });
+                };
+                btnSendURL.setOnClickListener(sendListner);
                 btnSendURL.setEnabled(true);
+                viewAddress.setOnClickListener(sendListner);
 
             } else {
                 viewAddress.setText("");
+                viewAddress.setOnClickListener(null);
+                viewAddress.setClickable(false);            
                 btnBrowser.setEnabled(false);
                 btnSendURL.setEnabled(false);
                 btnQRCodeURL.setEnabled(false);
             }
         } else {
             viewAddress.setText("");
+            viewAddress.setOnClickListener(null);
+            viewAddress.setClickable(false);
             btnBrowser.setEnabled(false);
+            btnSendURL.setEnabled(false);
+            btnQRCodeURL.setEnabled(false);
         }
     }
 
