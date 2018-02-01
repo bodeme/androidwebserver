@@ -255,19 +255,6 @@ public class StartActivity extends Activity {
                 btnQRCodeURL.setOnClickListener( new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        PackageManager pm = getApplicationContext().getPackageManager();
-//                        try {
-//                            pm.getPackageInfo("com.google.zxing.client.android", 0);
-//                            Intent i = new Intent("com.google.zxing.client.android.ENCODE");
-//                            i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
-//                            i.putExtra("ENCODE_DATA", url);
-//                            i.putExtra("ENCODE_FORMAT", "QRCODE");
-//                            startActivity(i);
-//                        } catch (PackageManager.NameNotFoundException e) {
-//                            Intent i = new Intent(Intent.ACTION_VIEW);
-//                            i.setData(Uri.parse("market://details?id=com.google.zxing.client.android"));
-//                            startActivity(i);
-//                        }
                         PackageManager pm = getApplicationContext().getPackageManager();
                         try {
                             pm.getPackageInfo("net.basov.lws.qr.gpm", 0);
@@ -278,10 +265,19 @@ public class StartActivity extends Activity {
                             i.putExtra("ENCODE_LIGHT", "#e0ffff");
                             i.putExtra("ENCODE_CORRECTION", "L");
                             startActivity(i);
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse("market://details?id=net.basov.lws.qr.gpm"));
-                            startActivity(i);
+                        } catch (PackageManager.NameNotFoundException e_lws_qr) {
+                            try {
+                                pm.getPackageInfo("com.google.zxing.client.android", 0);
+                                Intent i = new Intent("com.google.zxing.client.android.ENCODE");
+                                i.putExtra("ENCODE_TYPE", "TEXT_TYPE");
+                                i.putExtra("ENCODE_DATA", url);
+                                i.putExtra("ENCODE_FORMAT", "QRCODE");
+                                startActivity(i);
+                            } catch (PackageManager.NameNotFoundException e_zxing) {
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse("market://details?id=net.basov.lws.qr.gpm"));
+                                startActivity(i);
+                            }
                         }
                     }
                 });
