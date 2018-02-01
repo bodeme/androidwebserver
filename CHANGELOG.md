@@ -1,3 +1,7 @@
+#### v02.01.00b (ga2077c8)
+* Add QR Code URL function
+* Fix service restart if configuration changed
+
 ### v02.00.00 (g36b7530)
 * Another service model to stable run in background
 * New 'Send URL' button
