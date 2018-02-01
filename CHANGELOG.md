@@ -1,3 +1,7 @@
+#### v02.02.00b (ge329d5f)
+* support [QR code plugin](http://play.google.com/store/apps/details?id=net.basov.lws.qr.gpm")
+* Interface tweaks
+
 #### v02.01.00b (ga2077c8)
 * Add QR Code URL function
 * Fix service restart if configuration changed
