@@ -273,7 +273,7 @@ public class StartActivity extends Activity {
                                 startActivity(i);
                             } catch (PackageManager.NameNotFoundException e_zxing) {
                                 Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse("market://details?id=net.basov.lws.qr.gpm"));
+                                i.setData(Uri.parse("market://details?id=" + R.string.qrPluginPackage));
                                 startActivity(i);
                             }
                         }
