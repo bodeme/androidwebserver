@@ -85,12 +85,12 @@
     <ToggleButton
         android:textOn="Stop"
         android:textOff="Start"
-        android:id="@+id/toggle"
+        android:id="@+id/buttonStartStop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
     <ScrollView
-        android:id="@+id/ScrollView01"
+        android:id="@+id/ScrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 

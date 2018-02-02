@@ -24,10 +24,8 @@ package net.basov.lws;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.lang.reflect.Array;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -56,9 +54,9 @@ import static net.basov.lws.Constants.*;
 public class StartActivity extends Activity {
     private static int prevMsgCount;
     private static String prevMsg;
-    private ToggleButton mToggleButton;
-    private static TextView mLog;
-    private static ScrollView mScroll;
+    private ToggleButton btnStartStop;
+    private static TextView viewLog;
+    private static ScrollView viewScroll;
     private String documentRoot;
   
     private ServerService mBoundService;
@@ -73,9 +71,9 @@ public class StartActivity extends Activity {
         setContentView(R.layout.main);
         setTitle(R.string.hello);
         
-        mToggleButton = (ToggleButton) findViewById(R.id.toggle);
-        mLog = (TextView) findViewById(R.id.log);
-        mScroll = (ScrollView) findViewById(R.id.ScrollView01);
+        btnStartStop = (ToggleButton) findViewById(R.id.buttonStartStop);
+        viewLog = (TextView) findViewById(R.id.log);
+        viewScroll = (ScrollView) findViewById(R.id.ScrollView);
 
         findViewById(R.id.buttonSettings)
                 .setOnClickListener(makePrefListner(-1));
@@ -103,10 +101,10 @@ public class StartActivity extends Activity {
             log("E: Document-Root could not be found.");
         }
 
-        mToggleButton.setOnClickListener(new OnClickListener() {
+        btnStartStop.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
                 Intent intent = new Intent(StartActivity.this, ServerService.class);
-                if(mToggleButton.isChecked()) {
+                if(btnStartStop.isChecked()) {
                     startServer(mHandler);
                     startService(intent);
                 } else {
@@ -222,7 +220,7 @@ public class StartActivity extends Activity {
         viewPort.setOnClickListener(makePrefListner(2));
 
         if(mBoundService != null) {         
-            mToggleButton.setChecked(mBoundService.isRunning());         
+            btnStartStop.setChecked(mBoundService.isRunning());
             if (mBoundService.isRunning()) {
                 if (sharedPreferences.getBoolean(getString(R.string.pk_pref_changed), false)) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -388,12 +386,12 @@ public class StartActivity extends Activity {
             prevMsgCount++;
         }else {
             if (prevMsgCount != 0)
-                mLog.append("... previous string repeated " + prevMsgCount +" times.\n");
+                viewLog.append("... previous string repeated " + prevMsgCount +" times.\n");
             prevMsgCount = 0;
             prevMsg = s;
-            mLog.append(s + "\n");
+            viewLog.append(s + "\n");
         }
-        mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        viewScroll.fullScroll(ScrollView.FOCUS_DOWN);
     }
     
     final Handler mHandler = new Handler() {
