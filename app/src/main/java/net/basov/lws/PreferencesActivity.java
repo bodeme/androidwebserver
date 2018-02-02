@@ -89,6 +89,9 @@ public class PreferencesActivity extends PreferenceActivity implements
                                 "OI File Manager not installed. Install or disable using.",
                                 Toast.LENGTH_LONG
                         ).show();
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse("market://details?id=org.openintents.filemanager"));
+                        startActivity(i);
                         Log.w("lWS", "OI File Manager not found", e);
                     }
                     return true;
