@@ -255,8 +255,8 @@ public class StartActivity extends Activity {
                     public void onClick(View v) {
                         PackageManager pm = getApplicationContext().getPackageManager();
                         try {
-                            pm.getPackageInfo("net.basov.lws.qr.gpm", 0);
-                            Intent i = new Intent("net.basov.lws.qr.ENCODE");
+                            pm.getPackageInfo(getString(R.string.qrPluginPackage), 0);
+                            Intent i = new Intent(getString(R.string.qrIntentAction));
                             i.putExtra("ENCODE_DATA", url);
                             i.putExtra("ENCODE_SIZE", "256");
                             i.putExtra("ENCODE_DARK", "#000");
