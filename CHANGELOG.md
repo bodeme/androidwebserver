@@ -1,3 +1,6 @@
+#### v02.03.00b (g7fb3791)
+* Offer to instull OI File manager in attempt to use and it is not installed.
+
 #### v02.02.00b (ge329d5f)
 * support [QR code plugin](http://play.google.com/store/apps/details?id=net.basov.lws.qr.gpm")
 * Interface tweaks
