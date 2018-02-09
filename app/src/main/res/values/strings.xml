@@ -101,7 +101,12 @@ h5.top {
     <string name="pk_port">prefPort</string>
     <string name="pk_pref_changed">prefChanged</string>
     <string name="pk_use_directory_pick">prefUseDirectoryPick</string>
-    <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
     <string name="qrIntentAction">net.basov.lws.qr.ENCODE</string>
+    <!-- place holder for fdroid patch -->
 
+
+    <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
+
+
+    <!-- end of place holder for fdroid patch -->
 </resources>
