@@ -1,3 +1,8 @@
+### v03.00.00 (g579b06e)
+* Add share URL by QR code.
+* Offer to install external program if need
+* Click on main screen variable values call corresponding settings.
+
 #### v02.03.00b (g7fb3791)
 * Offer to instull OI File manager in attempt to use and it is not installed.
 
