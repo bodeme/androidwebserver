@@ -202,7 +202,8 @@ class ServerHandler extends Thread {
                             + document.replace(documentRoot, ""),
                     msgHandler
             );
-
+            // If fileSize not 0 some error detected and fileSize already set
+            // to assets file length
             if (fileSize == 0L) fileSize = new File(document).length();
             header = context.getString(R.string.header,
                     rcStr,
@@ -293,11 +294,13 @@ class ServerHandler extends Thread {
                 put("pdf","application/pdf");
             }
         };
-        return MIME.get(
-                document.substring(
-                      document.lastIndexOf(".")+1
-                ).toLowerCase()
-        );
+        String fileExt = document.substring(
+                document.lastIndexOf(".")+1
+        ).toLowerCase();
+        if (MIME.containsKey(fileExt))
+            return MIME.get(fileExt);
+        else
+            return "application/octet-stream";
     }
     
     private String fileName2URL(String fn) {
