@@ -107,6 +107,7 @@ class ServerHandler extends Thread {
 
     private void showHtml(String document) {
         Integer rc = 200;
+        Long fileSize = 0L;
         String clientIP = "";
         if(toClient != null
                 && toClient.getRemoteSocketAddress() != null
@@ -162,7 +163,6 @@ class ServerHandler extends Thread {
             String rcStr;
             String header;
             String contType;
-            ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
             BufferedOutputStream outStream = new BufferedOutputStream(toClient.getOutputStream());
             BufferedInputStream in;
 
@@ -190,6 +190,7 @@ class ServerHandler extends Thread {
 
                 contType = "text/html";
                 in = new BufferedInputStream(am.open(errAsset));
+                fileSize = Long.valueOf(in.available());
 
             }
             StartActivity.putToLogScreen(
@@ -202,21 +203,19 @@ class ServerHandler extends Thread {
                     msgHandler
             );
 
-            byte[] buf = new byte[4096];
-            int count = 0;
-            while ((count = in.read(buf)) != -1){
-                tempOut.write(buf, 0, count);
-            }
-            tempOut.flush();
-
+            if (fileSize == 0L) fileSize = new File(document).length();
             header = context.getString(R.string.header,
                     rcStr,
-                    tempOut.size(),
+                    fileSize,
                     contType
             );
 
             outStream.write(header.getBytes());
-            outStream.write(tempOut.toByteArray());
+            byte[] fileBuffer = new byte[4096];
+            int bytesCount = 0;
+            while ((bytesCount = in.read(fileBuffer)) != -1){
+                outStream.write(fileBuffer, 0, bytesCount);
+            }
             outStream.flush();
 
             Server.remove(toClient);
