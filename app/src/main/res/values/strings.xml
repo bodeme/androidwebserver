@@ -28,6 +28,7 @@
     -->
     <string name="header"><![CDATA["HTTP/1.1 %1$s
 Server: lWS/1.0
+Accept-Ranges: bytes
 Content-Length: %2$d
 Connection: close
 Content-Type: %3$s; charset=utf-8
@@ -106,6 +107,7 @@ h5.top {
 
 
     <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
+    <string name="rc416">416 Range Not Satisfiable</string>
 
 
     <!-- end of place holder for fdroid patch -->

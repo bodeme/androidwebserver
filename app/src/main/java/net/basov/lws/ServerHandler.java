@@ -182,6 +182,10 @@ class ServerHandler extends Thread {
                         rcStr = context.getString(R.string.rc403);
                         errAsset = "403.html";
                         break;
+                    case 416:
+                        errAsset = "416.html";
+                        rcStr = context.getString(R.string.rc416);
+                        break;
                     default:
                         errAsset = "500.html";
                         rcStr = context.getString(R.string.rc500);
