@@ -41,8 +41,7 @@ Content-Type: %3$s
     %3$d    content length
     %4$s    content type
     -->
-    <string name="header_partial"><![CDATA["HTTP/1.1 %1$s
-Content-Range: bytes %2$s
+    <string name="header_partial"><![CDATA["HTTP/1.1 %1$s%2$s
 Content-Length: %3$d
 Content-Type: %4$s
 

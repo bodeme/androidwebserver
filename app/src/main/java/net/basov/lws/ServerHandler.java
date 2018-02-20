@@ -238,6 +238,13 @@ class ServerHandler extends Thread {
                 Long rangeSize = 0L;
                 String rangeBegin = "";
                 String rangeEnd = "";
+                int partialHeaderLength = context.getString(R.string.boundary_string).length();
+                partialHeaderLength += ("Content-Type: " + contType).length();
+                partialHeaderLength += ("Content-Range: bytes ").length();
+                partialHeaderLength += 7;
+                partialHeaderLength = partialHeaderLength * ranges.length;
+                partialHeaderLength += context.getString(R.string.boundary_string).length();
+                partialHeaderLength += 1 + 2; // I don't know why + 2
                 for (String r : ranges) {
                     rangeBegin = r.split("-",2)[0];
                     rangeEnd = r.split("-",2)[1];
@@ -248,6 +255,7 @@ class ServerHandler extends Thread {
                         rangeEnd = "" + (fileSize - 1);
 
                     }
+                    partialHeaderLength += (rangeBegin+"-"+rangeEnd+"/" + fileSize).length();
                 }
 
                 StartActivity.putToLogScreen(
@@ -264,12 +272,13 @@ class ServerHandler extends Thread {
 
                 header = context.getString(R.string.header_partial,
                         context.getString(R.string.rc206),
-                        rangeBegin+"-"+rangeEnd+"/" + fileSize,
-                        rangeSize,
+                        ranges.length > 1 ? "" : "\nContent-Range: bytes: " + rangeBegin+"-"+rangeEnd+"/" + fileSize,
+                        ranges.length > 1 ? rangeSize + partialHeaderLength : rangeSize,
                         ranges.length > 1 ? "multipart/byteranges; boundary=" + context.getString(R.string.boundary_string) : contType
                 );
-                outStream.write(header.getBytes());
 
+                outStream.write(header.getBytes());
+                String cr = "";
                 for (String r : ranges) {
                     rangeBegin = r.split("-",2)[0];
                     rangeEnd = r.split("-",2)[1];
@@ -287,12 +296,15 @@ class ServerHandler extends Thread {
                                 Long.valueOf(rangeEnd), // end
                                 fileSize  // length
                         );
+                        rangeHeader = cr + rangeHeader;
                         outStream.write(rangeHeader.getBytes());
+                        cr = "\n";
                     }
                     byte[] fileBuffer = new byte[8192];
                     int bytesCount = 0;
                     Long currentPosition = Long.valueOf(rangeBegin);
                     Long endPosition = Long.valueOf(rangeEnd);
+                    in = new BufferedInputStream(new FileInputStream(document));
                     in.skip(currentPosition);
                     while ((bytesCount = in.read(fileBuffer)) != -1) {
                         if (currentPosition + bytesCount <= endPosition)
@@ -303,10 +315,10 @@ class ServerHandler extends Thread {
                         }
                         outStream.write(fileBuffer, 0, bytesCount);
                     }
-                    if (ranges.length >1 )
-                        outStream.write(("--"+context.getString(R.string.boundary_string)).getBytes());
-
                 }
+                if (ranges.length >1 )
+                    outStream.write(("\n--"+context.getString(R.string.boundary_string)+"\n").getBytes());
+
             }
             outStream.flush();
 
