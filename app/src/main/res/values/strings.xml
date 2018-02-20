@@ -31,7 +31,7 @@ Server: lWS/1.0
 Accept-Ranges: bytes
 Content-Length: %2$d
 Connection: close
-Content-Type: %3$s; charset=utf-8
+Content-Type: %3$s
 
 "]]></string>
     <!-- Directory listing top part

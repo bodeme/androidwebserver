@@ -282,11 +282,11 @@ class ServerHandler extends Thread {
     private String getMIMETypeForDocument(String document) {
         final HashMap<String,String> MIME = new HashMap<String, String>(){
             {
-                put("html","text/html");
-                put("css", "text/css");
-                put("js", "text/javascript");
-                put("txt","text/plain");
-                put("md","text/markdown");
+                put("html","text/html; charset=utf-8");
+                put("css", "text/css; charset=utf-8");
+                put("js", "text/javascript; charset=utf-8");
+                put("txt","text/plain; charset=utf-8");
+                put("md","text/markdown; charset=utf-8");
                 put("gif", "image/gif");
                 put("png", "image/png");
                 put("jpg","image/jpeg");
