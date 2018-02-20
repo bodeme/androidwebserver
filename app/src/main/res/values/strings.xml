@@ -34,6 +34,35 @@ Connection: close
 Content-Type: %3$s
 
 "]]></string>
+
+    <!-- HTTP header with partial content
+    %1$d    result code
+    %2$d    content range
+    %3$d    content length
+    %4$s    content type
+    -->
+    <string name="header_partial"><![CDATA["HTTP/1.1 %1$s
+Content-Range: bytes %2$s
+Content-Length: %3$d
+Content-Type: %4$s
+
+"]]></string>
+
+    <!-- Range header
+    %1$s    boundary string
+    %2$s    content type
+    %3$d    begin
+    %4$d    end
+    %5$d    length
+    -->
+    <string name="range_header"><![CDATA["--%1$s
+Content-Type: %2$s
+Content-Range: bytes %3$d-%4$d/%5$d
+
+"]]></string>
+
+    <string name="boundary_string">da_zarasti_ono_ramashkami</string>
+
     <!-- Directory listing top part
     %1$s    HTML title
     %2$s    Title on page
@@ -97,6 +126,7 @@ h5.top {
     <string name="rc404">404 File not found</string>
     <string name="rc403">403 Forbidden</string>
     <string name="rc200">200 OK</string>
+    <string name="rc206">206 Partial Content</string>
 
     <string name="pk_document_root">prefDocumentRoot</string>
     <string name="pk_port">prefPort</string>

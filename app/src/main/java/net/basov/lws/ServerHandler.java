@@ -24,6 +24,7 @@ package net.basov.lws;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,6 +39,7 @@ import java.net.Socket;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -59,11 +61,13 @@ class ServerHandler extends Thread {
 
     public void run() {
         String document = "";
+        String[] rangesArray = {};
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
 
             // Receive data
+
             while (true) {
                 String s = in.readLine().trim();
                     if (s.equals("")) {
@@ -76,7 +80,12 @@ class ServerHandler extends Thread {
                     document = document.replaceAll("[/]+","/");
                     document = URLDecoder.decode(document, "UTF-8");
                 }
-              }
+                if (s.substring(0,6).equals("Range:")) {
+                    rangesArray = s
+                            .split("=", 2)[1]
+                            .split(",");
+                }
+            }
         } catch (Exception e) {
             Server.remove(toClient);
             try {
@@ -84,7 +93,7 @@ class ServerHandler extends Thread {
             }
             catch (Exception ex){}
         }
-        showHtml(document);
+        showHtml(document, rangesArray);
     }
 
     private void send(String text) {
@@ -105,7 +114,7 @@ class ServerHandler extends Thread {
         }
     }
 
-    private void showHtml(String document) {
+    private void showHtml(String document, String[] ranges) {
         Integer rc = 200;
         Long fileSize = 0L;
         String clientIP = "";
@@ -197,35 +206,116 @@ class ServerHandler extends Thread {
                 fileSize = Long.valueOf(in.available());
 
             }
-            StartActivity.putToLogScreen(
-                    "rc: "
-                            + rc
-                            + ", "
-                            + clientIP
-                            + ", /"
-                            + document.replace(documentRoot, ""),
-                    msgHandler
-            );
             // If fileSize not 0 some error detected and fileSize already set
             // to assets file length
             if (fileSize == 0L) fileSize = new File(document).length();
-            header = context.getString(R.string.header,
-                    rcStr,
-                    fileSize,
-                    contType
-            );
+            if(ranges.length == 0) {
+                header = context.getString(R.string.header,
+                        rcStr,
+                        fileSize,
+                        contType
+                );
 
-            outStream.write(header.getBytes());
-            byte[] fileBuffer = new byte[4096];
-            int bytesCount = 0;
-            while ((bytesCount = in.read(fileBuffer)) != -1){
-                outStream.write(fileBuffer, 0, bytesCount);
+                outStream.write(header.getBytes());
+                byte[] fileBuffer = new byte[8192];
+                int bytesCount = 0;
+                while ((bytesCount = in.read(fileBuffer)) != -1) {
+                    outStream.write(fileBuffer, 0, bytesCount);
+                }
+                StartActivity.putToLogScreen(
+                        "rc: "
+                                + rc
+                                + ", "
+                                + clientIP
+                                + ", /"
+                                + document.replace(documentRoot, ""),
+                        msgHandler
+                );
+            } else {
+                // TODO: range error processing
+                // TODO: number conversion error processing
+                rc = 206;
+                Long rangeSize = 0L;
+                String rangeBegin = "";
+                String rangeEnd = "";
+                for (String r : ranges) {
+                    rangeBegin = r.split("-",2)[0];
+                    rangeEnd = r.split("-",2)[1];
+                    if (rangeEnd.length() != 0 )
+                        rangeSize += Long.valueOf(rangeEnd) - Long.valueOf(rangeBegin) + 1;
+                    else {
+                        rangeSize += fileSize - Long.valueOf(rangeBegin);
+                        rangeEnd = "" + (fileSize - 1);
+
+                    }
+                }
+
+                StartActivity.putToLogScreen(
+                        "rc: "
+                                + rc
+                                + ", "
+                                + clientIP
+                                + ", /"
+                                + document.replace(documentRoot, "")
+                                + ", Rnage: "
+                                + Arrays.toString(ranges),
+                        msgHandler
+                );
+
+                header = context.getString(R.string.header_partial,
+                        context.getString(R.string.rc206),
+                        rangeBegin+"-"+rangeEnd+"/" + fileSize,
+                        rangeSize,
+                        ranges.length > 1 ? "multipart/byteranges; boundary=" + context.getString(R.string.boundary_string) : contType
+                );
+                outStream.write(header.getBytes());
+
+                for (String r : ranges) {
+                    rangeBegin = r.split("-",2)[0];
+                    rangeEnd = r.split("-",2)[1];
+                    if (rangeEnd.length() != 0)
+                        rangeSize += Long.valueOf(rangeEnd) - Long.valueOf(rangeBegin) + 1;
+                    else {
+                        rangeSize += fileSize - Long.valueOf(rangeBegin) + 1;
+                        rangeEnd = "" + (fileSize - 1);
+                    }
+                    if (ranges.length > 1) {
+                        String rangeHeader = context.getString(R.string.range_header,
+                                context.getString(R.string.boundary_string),
+                                contType,
+                                Long.valueOf(rangeBegin), // begin
+                                Long.valueOf(rangeEnd), // end
+                                fileSize  // length
+                        );
+                        outStream.write(rangeHeader.getBytes());
+                    }
+                    byte[] fileBuffer = new byte[8192];
+                    int bytesCount = 0;
+                    Long currentPosition = Long.valueOf(rangeBegin);
+                    Long endPosition = Long.valueOf(rangeEnd);
+                    in.skip(currentPosition);
+                    while ((bytesCount = in.read(fileBuffer)) != -1) {
+                        if (currentPosition + bytesCount <= endPosition)
+                            currentPosition += bytesCount;
+                        else {
+                            outStream.write(fileBuffer, 0, (int)(endPosition - currentPosition + 1));
+                            break;
+                        }
+                        outStream.write(fileBuffer, 0, bytesCount);
+                    }
+                    if (ranges.length >1 )
+                        outStream.write(("--"+context.getString(R.string.boundary_string)).getBytes());
+
+                }
             }
             outStream.flush();
 
             Server.remove(toClient);
             toClient.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(Constants.LOG_TAG, "showHtml() very complex and need to be written simpler ... ");
+        }
     }
 
     private String directoryHTMLindex(String dir) {     
@@ -296,6 +386,8 @@ class ServerHandler extends Thread {
                 put("gz","application/gzip");
                 put("tgz","application/gzip");
                 put("pdf","application/pdf");
+                put("mp4","video/mp4");
+
             }
         };
         String fileExt = document.substring(
