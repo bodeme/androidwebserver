@@ -29,9 +29,9 @@ import android.util.Log;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -242,17 +242,29 @@ class ServerHandler extends Thread {
                     String strRangeBegin = ranges[i].split("-",2)[0];
                     String strRangeEnd = ranges[i].split("-",2)[1];
                     boundaries[i] = new PartialRange();
-                    if (strRangeBegin.length() != 0 && strRangeEnd.length() != 0) {
-                        boundaries[i].begin = Long.valueOf(strRangeBegin);
-                        boundaries[i].end = Long.valueOf(strRangeEnd);
-                    } else if (strRangeBegin.length() != 0 && strRangeEnd.length() == 0) {
-                        boundaries[i].begin = Long.valueOf(strRangeBegin);
-                        boundaries[i].end = fileSize - 1;
-                    } else if (strRangeBegin.length() == 0 && strRangeEnd.length() != 0) {
-                        boundaries[i].begin = fileSize - Long.valueOf(strRangeEnd);
-                        boundaries[i].end = fileSize - 1;
+                    try {
+                        if (strRangeBegin.length() != 0 && strRangeEnd.length() != 0) {
+                            boundaries[i].begin = Long.valueOf(strRangeBegin);
+                            boundaries[i].end = Long.valueOf(strRangeEnd);
+                        } else if (strRangeBegin.length() != 0 && strRangeEnd.length() == 0) {
+                            boundaries[i].begin = Long.valueOf(strRangeBegin);
+                            boundaries[i].end = fileSize - 1;
+                        } else if (strRangeBegin.length() == 0 && strRangeEnd.length() != 0) {
+                            boundaries[i].begin = fileSize - Long.valueOf(strRangeEnd);
+                            boundaries[i].end = fileSize - 1;
+                        }
+                    } catch (NumberFormatException e ) {
+                        e.printStackTrace();
+                        handleError416(outStream);
+                        return;
                     }
                     boundaries[i].size = boundaries[i].end - boundaries[i].begin + 1;
+                    if (boundaries[i].size <= 0
+                            || boundaries[i].end > fileSize
+                            || boundaries[i].begin > fileSize) {
+                        handleError416(outStream);
+                        return;
+                    }
                     boundaries[i].header = "";
                     if (i != 0) boundaries[i].header += "\n";
                     boundaries[i].header += context.getString(R.string.range_header,
@@ -407,6 +419,34 @@ class ServerHandler extends Thread {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {}
         return ref;
+    }
+
+    private void handleError416(BufferedOutputStream outStream) {
+        try {
+            AssetManager am = context.getAssets();
+            BufferedInputStream in = new BufferedInputStream(am.open("416.html"));
+
+            String header = context.getString(R.string.header,
+                    context.getString(R.string.rc500),
+                    Long.valueOf(in.available()),
+                    "text/html"
+            );
+            outStream.write(header.getBytes());
+
+            byte[] fileBuffer = new byte[8192];
+            int bytesCount = 0;
+            while ((bytesCount = in.read(fileBuffer)) != -1) {
+                outStream.write(fileBuffer, 0, bytesCount);
+            }
+            outStream.flush();
+            Server.remove(toClient);
+            toClient.close();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     class PartialRange {
