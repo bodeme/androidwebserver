@@ -235,33 +235,37 @@ class ServerHandler extends Thread {
                 // TODO: range error processing
                 // TODO: number conversion error processing
                 rc = 206;
-                Long rangeSize = 0L;
-                String rangeBegin = "";
-                String rangeEnd = "";
-                int partialHeaderLength = context.getString(R.string.boundary_string).length();
-                partialHeaderLength += ("Content-Type: " + contType).length();
-                partialHeaderLength += ("Content-Range: bytes ").length();
-                partialHeaderLength += 7;
-                partialHeaderLength = partialHeaderLength * ranges.length;
-                partialHeaderLength += context.getString(R.string.boundary_string).length();
-                partialHeaderLength += 1 + 2; // I don't know why + 2
-                for (String r : ranges) {
-                    rangeBegin = r.split("-",2)[0];
-                    rangeEnd = r.split("-",2)[1];
-                    if (rangeEnd.length() != 0 && rangeBegin.length() != 0)
-                        rangeSize += Long.valueOf(rangeEnd) - Long.valueOf(rangeBegin) + 1;
-                    else if (rangeBegin.length() != 0){
-                        rangeSize += fileSize - Long.valueOf(rangeBegin);
-                        rangeEnd = "" + (fileSize - 1);
-                    }
-                    if (rangeBegin.length() == 0 && rangeEnd.length() != 0 && Long.valueOf(rangeEnd) <= fileSize) {
-                        rangeSize += Long.valueOf(rangeEnd);
-                        rangeBegin = "" + (fileSize - Long.valueOf(rangeEnd));
-                        rangeEnd = "" + (fileSize - 1);
-                    }
+                Long partialHeaderLength = 0L;
+                PartialRange[] boundaries = new PartialRange[ranges.length];
 
-                    partialHeaderLength += (rangeBegin+"-"+rangeEnd+"/" + fileSize).length();
+                for (int i = 0; i < ranges.length; i++) {
+                    String strRangeBegin = ranges[i].split("-",2)[0];
+                    String strRangeEnd = ranges[i].split("-",2)[1];
+                    boundaries[i] = new PartialRange();
+                    if (strRangeBegin.length() != 0 && strRangeEnd.length() != 0) {
+                        boundaries[i].begin = Long.valueOf(strRangeBegin);
+                        boundaries[i].end = Long.valueOf(strRangeEnd);
+                    } else if (strRangeBegin.length() != 0 && strRangeEnd.length() == 0) {
+                        boundaries[i].begin = Long.valueOf(strRangeBegin);
+                        boundaries[i].end = fileSize - 1;
+                    } else if (strRangeBegin.length() == 0 && strRangeEnd.length() != 0) {
+                        boundaries[i].begin = fileSize - Long.valueOf(strRangeEnd);
+                        boundaries[i].end = fileSize - 1;
+                    }
+                    boundaries[i].size = boundaries[i].end - boundaries[i].begin + 1;
+                    boundaries[i].header = "";
+                    if (i != 0) boundaries[i].header += "\n";
+                    boundaries[i].header += context.getString(R.string.range_header,
+                            context.getString(R.string.boundary_string),
+                            contType,
+                            boundaries[i].begin, // begin
+                            boundaries[i].end, // end
+                            fileSize  // length
+                    );
+
+                    partialHeaderLength += boundaries[i].size + boundaries[i].header.length();
                 }
+                if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 2; // I dont know why + 2 second time
 
                 StartActivity.putToLogScreen(
                         "rc: "
@@ -277,52 +281,32 @@ class ServerHandler extends Thread {
 
                 header = context.getString(R.string.header_partial,
                         context.getString(R.string.rc206),
-                        ranges.length > 1 ? "" : "\nContent-Range: bytes: " + rangeBegin+"-"+rangeEnd+"/" + fileSize,
-                        ranges.length > 1 ? rangeSize + partialHeaderLength : rangeSize,
+                        ranges.length > 1 ? "" : "\nContent-Range: bytes " + boundaries[0].begin+"-"+boundaries[0].end+"/" + fileSize,
+                        ranges.length > 1 ? partialHeaderLength : boundaries[0].size,
                         ranges.length > 1 ? "multipart/byteranges; boundary=" + context.getString(R.string.boundary_string) : contType
                 );
-
                 outStream.write(header.getBytes());
-                String cr = ""; // to skip cr before 1-st range if multiply
-                for (String r : ranges) {
-                    rangeBegin = r.split("-",2)[0];
-                    rangeEnd = r.split("-",2)[1];
-                    if (rangeBegin.length() != 0){
-                        rangeEnd = "" + (fileSize - 1);
-                    }
-                    if (rangeBegin.length() == 0 && rangeEnd.length() != 0 && Long.valueOf(rangeEnd) <= fileSize) {
-                        rangeBegin = "" + (fileSize - Long.valueOf(rangeEnd));
-                        rangeEnd = "" + (fileSize - 1);
-                    }
-                    if (ranges.length > 1) {
-                        String rangeHeader = context.getString(R.string.range_header,
-                                context.getString(R.string.boundary_string),
-                                contType,
-                                Long.valueOf(rangeBegin), // begin
-                                Long.valueOf(rangeEnd), // end
-                                fileSize  // length
-                        );
-                        rangeHeader = cr + rangeHeader;
-                        outStream.write(rangeHeader.getBytes());
-                        cr = "\n";
+
+                for (PartialRange b : boundaries) {
+                    if (boundaries.length > 1) {
+                        outStream.write(b.header.getBytes());
                     }
                     byte[] fileBuffer = new byte[8192];
                     int bytesCount = 0;
-                    Long currentPosition = Long.valueOf(rangeBegin);
-                    Long endPosition = Long.valueOf(rangeEnd);
+                    Long currentPosition = b.begin;
                     in = new BufferedInputStream(new FileInputStream(document));
                     in.skip(currentPosition);
                     while ((bytesCount = in.read(fileBuffer)) != -1) {
-                        if (currentPosition + bytesCount <= endPosition)
+                        if (currentPosition + bytesCount <= b.end)
                             currentPosition += bytesCount;
                         else {
-                            outStream.write(fileBuffer, 0, (int)(endPosition - currentPosition + 1));
+                            outStream.write(fileBuffer, 0, (int)(b.end - currentPosition + 1));
                             break;
                         }
                         outStream.write(fileBuffer, 0, bytesCount);
                     }
                 }
-                if (ranges.length >1 )
+                if (boundaries.length > 1 )
                     outStream.write(("\n--"+context.getString(R.string.boundary_string)+"\n").getBytes());
 
             }
@@ -423,6 +407,13 @@ class ServerHandler extends Thread {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {}
         return ref;
+    }
+
+    class PartialRange {
+        Long begin;
+        Long end;
+        Long size;
+        String header;
     }
 
 }
