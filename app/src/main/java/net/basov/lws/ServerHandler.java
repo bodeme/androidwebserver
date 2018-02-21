@@ -248,13 +248,18 @@ class ServerHandler extends Thread {
                 for (String r : ranges) {
                     rangeBegin = r.split("-",2)[0];
                     rangeEnd = r.split("-",2)[1];
-                    if (rangeEnd.length() != 0 )
+                    if (rangeEnd.length() != 0 && rangeBegin.length() != 0)
                         rangeSize += Long.valueOf(rangeEnd) - Long.valueOf(rangeBegin) + 1;
-                    else {
+                    else if (rangeBegin.length() != 0){
                         rangeSize += fileSize - Long.valueOf(rangeBegin);
                         rangeEnd = "" + (fileSize - 1);
-
                     }
+                    if (rangeBegin.length() == 0 && rangeEnd.length() != 0 && Long.valueOf(rangeEnd) <= fileSize) {
+                        rangeSize += Long.valueOf(rangeEnd);
+                        rangeBegin = "" + (fileSize - Long.valueOf(rangeEnd));
+                        rangeEnd = "" + (fileSize - 1);
+                    }
+
                     partialHeaderLength += (rangeBegin+"-"+rangeEnd+"/" + fileSize).length();
                 }
 
@@ -278,14 +283,15 @@ class ServerHandler extends Thread {
                 );
 
                 outStream.write(header.getBytes());
-                String cr = "";
+                String cr = ""; // to skip cr before 1-st range if multiply
                 for (String r : ranges) {
                     rangeBegin = r.split("-",2)[0];
                     rangeEnd = r.split("-",2)[1];
-                    if (rangeEnd.length() != 0)
-                        rangeSize += Long.valueOf(rangeEnd) - Long.valueOf(rangeBegin) + 1;
-                    else {
-                        rangeSize += fileSize - Long.valueOf(rangeBegin) + 1;
+                    if (rangeBegin.length() != 0){
+                        rangeEnd = "" + (fileSize - 1);
+                    }
+                    if (rangeBegin.length() == 0 && rangeEnd.length() != 0 && Long.valueOf(rangeEnd) <= fileSize) {
+                        rangeBegin = "" + (fileSize - Long.valueOf(rangeEnd));
                         rangeEnd = "" + (fileSize - 1);
                     }
                     if (ranges.length > 1) {
