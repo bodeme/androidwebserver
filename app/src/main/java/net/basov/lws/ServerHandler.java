@@ -401,6 +401,8 @@ class ServerHandler extends Thread {
                 put("tgz","application/gzip");
                 put("pdf","application/pdf");
                 put("mp4","video/mp4");
+                put("avi","video/x-msvideo");
+                put("3gp","video/3gpp");
 
             }
         };
