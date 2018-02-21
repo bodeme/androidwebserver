@@ -209,7 +209,7 @@ class ServerHandler extends Thread {
             // If fileSize not 0 some error detected and fileSize already set
             // to assets file length
             if (fileSize == 0L) fileSize = new File(document).length();
-            if(ranges.length == 0) {
+            if(ranges.length == 0 || rc != 200) {
                 header = context.getString(R.string.header,
                         rcStr,
                         fileSize,
