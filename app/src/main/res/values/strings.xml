@@ -24,14 +24,16 @@
     <!-- HTTP header
     %1$d    result code
     %2%d    content length
-    %3$s    content type
+    %3$s    last modified
+    %4$s    content type
     -->
     <string name="header"><![CDATA["HTTP/1.1 %1$s
 Server: lWS/1.0
 Accept-Ranges: bytes
 Content-Length: %2$d
+Last-Modified: %3$s
 Connection: close
-Content-Type: %3$s
+Content-Type: %4$s
 
 "]]></string>
 

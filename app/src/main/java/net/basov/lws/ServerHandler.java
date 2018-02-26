@@ -38,11 +38,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import static net.basov.lws.Constants.*;
 
@@ -51,12 +55,16 @@ class ServerHandler extends Thread {
     private final String documentRoot;
     private final Context context;
     private static Handler msgHandler;
+    private DateFormat DF;
 
     public ServerHandler(String d, Context c, Socket s, Handler h) {
         toClient = s;
         documentRoot = d;
         context = c;
         msgHandler = h;
+        DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+        DF.setTimeZone(TimeZone.getTimeZone("GMT"));
+
     }
 
     public void run() {
@@ -100,6 +108,7 @@ class ServerHandler extends Thread {
         String header = context.getString(R.string.header,
                 context.getString(R.string.rc200),
                 text.length(),
+                DF.format(new Date()) + " GMT", // workaround to avoid +00:00
                 "text/html"
         );
         try {
@@ -117,6 +126,7 @@ class ServerHandler extends Thread {
     private void showHtml(String document, String[] ranges) {
         Integer rc = 200;
         Long fileSize = 0L;
+        String fileModified = "";
         String clientIP = "";
         if(toClient != null
                 && toClient.getRemoteSocketAddress() != null
@@ -204,15 +214,19 @@ class ServerHandler extends Thread {
                 contType = "text/html";
                 in = new BufferedInputStream(am.open(errAsset));
                 fileSize = Long.valueOf(in.available());
+                fileModified = DF.format(new File("file:///android_asset/"+errAsset).lastModified()) + " GMT"; // workaround to avoid +00:00
 
             }
             // If fileSize not 0 some error detected and fileSize already set
             // to assets file length
-            if (fileSize == 0L) fileSize = new File(document).length();
+            File documentFile = new File(document);
+            if (fileSize == 0L) fileSize = documentFile.length();
+            if (fileModified.length() == 0) fileModified = DF.format(documentFile.lastModified())  + " GMT"; // workaround to avoid +00:00
             if(ranges.length == 0 || rc != 200) {
                 header = context.getString(R.string.header,
                         rcStr,
                         fileSize,
+                        fileModified,
                         contType
                 );
 
@@ -435,6 +449,7 @@ class ServerHandler extends Thread {
             String header = context.getString(R.string.header,
                     context.getString(R.string.rc500),
                     Long.valueOf(in.available()),
+                    DF.format(new Date()) + " GMT", // workaround to avoid +00:00
                     "text/html"
             );
             outStream.write(header.getBytes());
