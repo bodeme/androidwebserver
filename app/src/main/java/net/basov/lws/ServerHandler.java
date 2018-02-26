@@ -56,6 +56,7 @@ class ServerHandler extends Thread {
     private final Context context;
     private static Handler msgHandler;
     private DateFormat DF;
+    private Boolean requestHEAD = false;
 
     public ServerHandler(String d, Context c, Socket s, Handler h) {
         toClient = s;
@@ -70,6 +71,7 @@ class ServerHandler extends Thread {
     public void run() {
         String document = "";
         String[] rangesArray = {};
+        requestHEAD = false;
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
@@ -82,7 +84,9 @@ class ServerHandler extends Thread {
                     break;
                 }
 
-                if (s.substring(0, 3).equals("GET")) {
+                if (s.startsWith("HEAD"))
+                    requestHEAD = true;
+                if (s.substring(0, 3).equals("GET") || s.substring(0, 4).equals("HEAD")) {
                     int leerstelle = s.indexOf(" HTTP/");
                     document = s.substring(5,leerstelle);
                     document = document.replaceAll("[/]+","/");
@@ -231,18 +235,22 @@ class ServerHandler extends Thread {
                 );
 
                 outStream.write(header.getBytes());
-                byte[] fileBuffer = new byte[8192];
-                int bytesCount = 0;
-                while ((bytesCount = in.read(fileBuffer)) != -1) {
-                    outStream.write(fileBuffer, 0, bytesCount);
+                if (!requestHEAD) {
+                    byte[] fileBuffer = new byte[8192];
+                    int bytesCount = 0;
+                    while ((bytesCount = in.read(fileBuffer)) != -1) {
+                        outStream.write(fileBuffer, 0, bytesCount);
+                    }
                 }
+                String headMark = requestHEAD ? "(HEAD)":"";
                 StartActivity.putToLogScreen(
-                        "rc: "
+                       "rc: "
                                 + rc
                                 + ", "
                                 + clientIP
                                 + ", /"
-                                + document.replace(documentRoot, ""),
+                                + document.replace(documentRoot, "")
+                                + headMark,
                         msgHandler
                 );
             } else {
@@ -293,15 +301,17 @@ class ServerHandler extends Thread {
                 }
                 if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 2; // I dont know why + 2 second time
 
+                String headMark = requestHEAD ? "(HEAD)":"";
                 StartActivity.putToLogScreen(
-                        "rc: "
+                                "rc: "
                                 + rc
                                 + ", "
                                 + clientIP
                                 + ", /"
                                 + document.replace(documentRoot, "")
                                 + ", Rnage: "
-                                + Arrays.toString(ranges),
+                                + Arrays.toString(ranges)
+                                + headMark,
                         msgHandler
                 );
 
@@ -313,27 +323,29 @@ class ServerHandler extends Thread {
                 );
                 outStream.write(header.getBytes());
 
-                for (PartialRange b : boundaries) {
-                    if (boundaries.length > 1) {
-                        outStream.write(b.header.getBytes());
-                    }
-                    byte[] fileBuffer = new byte[8192];
-                    int bytesCount = 0;
-                    Long currentPosition = b.begin;
-                    in = new BufferedInputStream(new FileInputStream(document));
-                    in.skip(currentPosition);
-                    while ((bytesCount = in.read(fileBuffer)) != -1) {
-                        if (currentPosition + bytesCount <= b.end)
-                            currentPosition += bytesCount;
-                        else {
-                            outStream.write(fileBuffer, 0, (int)(b.end - currentPosition + 1));
-                            break;
+                if (!requestHEAD) {
+                    for (PartialRange b : boundaries) {
+                        if (boundaries.length > 1) {
+                            outStream.write(b.header.getBytes());
                         }
-                        outStream.write(fileBuffer, 0, bytesCount);
+                        byte[] fileBuffer = new byte[8192];
+                        int bytesCount = 0;
+                        Long currentPosition = b.begin;
+                        in = new BufferedInputStream(new FileInputStream(document));
+                        in.skip(currentPosition);
+                        while ((bytesCount = in.read(fileBuffer)) != -1) {
+                            if (currentPosition + bytesCount <= b.end)
+                                currentPosition += bytesCount;
+                            else {
+                                outStream.write(fileBuffer, 0, (int) (b.end - currentPosition + 1));
+                                break;
+                            }
+                            outStream.write(fileBuffer, 0, bytesCount);
+                        }
                     }
+                    if (boundaries.length > 1)
+                        outStream.write(("\n--" + context.getString(R.string.boundary_string) + "\n").getBytes());
                 }
-                if (boundaries.length > 1 )
-                    outStream.write(("\n--"+context.getString(R.string.boundary_string)+"\n").getBytes());
 
             }
             outStream.flush();
