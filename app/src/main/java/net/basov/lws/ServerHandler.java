@@ -234,6 +234,7 @@ class ServerHandler extends Thread {
                         contType
                 );
 
+                header = normalizeLineEnd(header);
                 outStream.write(header.getBytes());
                 if (!requestHEAD) {
                     byte[] fileBuffer = new byte[8192];
@@ -296,10 +297,11 @@ class ServerHandler extends Thread {
                             boundaries[i].end, // end
                             fileSize  // length
                     );
+                    boundaries[i].header = normalizeLineEnd(boundaries[i].header);
 
                     partialHeaderLength += boundaries[i].size + boundaries[i].header.length();
                 }
-                if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 2; // I dont know why + 2 second time
+                if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 4; // I dont know why + 4
 
                 String headMark = requestHEAD ? "(HEAD)":"";
                 StartActivity.putToLogScreen(
@@ -321,6 +323,7 @@ class ServerHandler extends Thread {
                         ranges.length > 1 ? partialHeaderLength : boundaries[0].size,
                         ranges.length > 1 ? "multipart/byteranges; boundary=" + context.getString(R.string.boundary_string) : contType
                 );
+                header = normalizeLineEnd(header);
                 outStream.write(header.getBytes());
 
                 if (!requestHEAD) {
@@ -344,7 +347,7 @@ class ServerHandler extends Thread {
                         }
                     }
                     if (boundaries.length > 1)
-                        outStream.write(("\n--" + context.getString(R.string.boundary_string) + "\n").getBytes());
+                        outStream.write(("\r\n--" + context.getString(R.string.boundary_string) + "\r\n").getBytes());
                 }
 
             }
@@ -480,6 +483,10 @@ class ServerHandler extends Thread {
             e.printStackTrace();
         }
 
+    }
+
+    private String normalizeLineEnd (String src) {
+        return src.replaceAll("\\n|\\r|\\n\\r", "\r\n");
     }
 
     class PartialRange {
