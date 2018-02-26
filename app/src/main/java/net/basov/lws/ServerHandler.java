@@ -56,6 +56,7 @@ class ServerHandler extends Thread {
     private final Context context;
     private static Handler msgHandler;
     private DateFormat DF;
+    private DateFormat FLDF;
     private Boolean requestHEAD = false;
 
     public ServerHandler(String d, Context c, Socket s, Handler h) {
@@ -65,6 +66,7 @@ class ServerHandler extends Thread {
         msgHandler = h;
         DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         DF.setTimeZone(TimeZone.getTimeZone("GMT"));
+        FLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     }
 
@@ -367,8 +369,8 @@ class ServerHandler extends Thread {
     private String directoryHTMLindex(String dir) {     
         String html = context.getString(
                 R.string.dir_list_top_html,
-                "Index of " + dir.replace(documentRoot,""),
-                "Index of " + dir.replace(documentRoot,"")
+                "Index of /" + dir.replace(documentRoot,""),
+                "Index of /" + dir.replace(documentRoot,"")
         );
         
         ArrayList <String> dirs = new ArrayList<String>();
@@ -381,7 +383,7 @@ class ServerHandler extends Thread {
                 files.add(new FileInfo());
                 files.get(files.size() - 1).name = i.getName();
                 files.get(files.size() - 1).size = i.length();
-                files.get(files.size() - 1).date = DF.format(i.lastModified());
+                files.get(files.size() - 1).date = FLDF.format(i.lastModified());
             }
         }
         
@@ -409,7 +411,7 @@ class ServerHandler extends Thread {
                             "folder",
                             fileName2URL(s) + "/",
                             s + "/",
-                            "-",
+                            "",
                             "-"
                     );
         }

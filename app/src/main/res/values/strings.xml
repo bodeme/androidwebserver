@@ -76,26 +76,17 @@ Content-Range: bytes %3$d-%4$d/%5$d
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
     <style>
-ul {
-    padding-left:1em
-}
-li.folder {
-    padding-top:0.15em;
-    padding-left:1.35em;
-    list-style:none;
+div.folder {
     background-repeat:no-repeat;
     background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAKklEQVR4AWMYCHCS4T8cNuBQA5IkrOw/TniCGEX/kRSNKjqBU8lRBvoDAHnfmIpzw90rAAAAAElFTkSuQmCC');
+    width: 18px;
+    height: 18px;
 }
-li.file {
-    padding-top:0.15em;
-    padding-left:1.35em;
-    list-style:none;
+div.file {
     background-repeat:no-repeat;
     background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAANElEQVR4AWMgBZxk+I8EG7Ar+o+mqIGwIgaQMoKKIMoIKMKu7D92SDNFo4pOYFVylITEBgCOQqozpSFV0wAAAABJRU5ErkJggg==');
-}
-li.back_top {
-    list-style:none;
-    padding-left:1.35em;
+    width: 18px;
+    height: 18px;
 }
 h5.top {
     margin-top:0.5em;
@@ -106,12 +97,17 @@ h5.top {
 
 <body>
 <h5 class="top">%2$s</h5>
-<ul>
-<li class=\"back_top\"><a href=\"../\">..</a></li>]]></string>
+<table>
+    <tr><th></th><th>Name</th><th>Last modified</th><th>Size</th></tr>
+    <tr><th colspan="4"><hr /></th></tr>
+    <tr><td><a href=\"../\">..</a></td><td><a href=\"../\">Parent Directory</a></td></tr>
+]]></string>
 
     <!-- Directory listing bottom part
     -->
-    <string name="dir_list_bottom_html"><![CDATA["</ul>
+    <string name="dir_list_bottom_html"><![CDATA["    <tr><th colspan="4"><hr /></th></tr>
+
+</table>
 </body>
 </html>
 "]]></string>
@@ -123,7 +119,8 @@ h5.top {
     %4$s    modification date
     %5$s    size
     -->
-    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%3$s</a>&nbsp;%4$s&nbsp;%5$s</li>"]]></string>
+    <string name="dir_list_item"><![CDATA["    <tr><td><div class=\"%1$s\">.</div></td><td><a href=\"%2$s\">%3$s</a></td><td>%4$s</td><td>%5$s</td></tr>
+"]]></string>
 
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>
