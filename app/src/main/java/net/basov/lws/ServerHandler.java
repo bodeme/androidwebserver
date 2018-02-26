@@ -180,7 +180,10 @@ class ServerHandler extends Thread {
                 }
             }
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         try {
             String rcStr;
@@ -369,14 +372,17 @@ class ServerHandler extends Thread {
         );
         
         ArrayList <String> dirs = new ArrayList<String>();
-        ArrayList <String> files = new ArrayList<String>();
+        ArrayList <FileInfo> files = new ArrayList<FileInfo>();
 
         for (File i : new File(dir).listFiles()) {
             if (i.isDirectory()) {
                 dirs.add(i.getName());
             } else if (i.isFile()) {
-                files.add(i.getName());              
-            }          
+                files.add(new FileInfo());
+                files.get(files.size() - 1).name = i.getName();
+                files.get(files.size() - 1).size = i.length();
+                files.get(files.size() - 1).date = DF.format(i.lastModified());
+            }
         }
         
         Comparator<String> strCmp =  new Comparator<String>(){
@@ -386,24 +392,35 @@ class ServerHandler extends Thread {
                 return text1.compareToIgnoreCase(text2);
             }
         };
-        
+
+        Comparator<FileInfo> fileNameCmp =  new Comparator<FileInfo>(){
+            @Override
+            public int compare(FileInfo f1, FileInfo f2)
+            {
+                return f1.name.compareToIgnoreCase(f2.name);
+            }
+        };
         Collections.sort(dirs, strCmp);
-        Collections.sort(files, strCmp);
+        Collections.sort(files, fileNameCmp);
         
         for (String s : dirs) {
             html += context.getString(
                             R.string.dir_list_item,
                             "folder",
                             fileName2URL(s) + "/",
-                            s + "/"
+                            s + "/",
+                            "-",
+                            "-"
                     );
         }
-        for (String s : files) {
+        for (FileInfo f : files) {
             html += context.getString(
                             R.string.dir_list_item,
                             "file",
-                            fileName2URL(s),
-                             s
+                            fileName2URL(f.name),
+                            f.name,
+                            f.date,
+                            bytesToKMGT(f.size)
                      );
         }
         
@@ -484,6 +501,20 @@ class ServerHandler extends Thread {
         }
 
     }
+    private String bytesToKMGT(Long size) {
+        String ret;
+        if (size <= 1024)
+            ret = String.format("%d b", size);
+        else if (size > 1024 && size <= 1024*1024)
+            ret = String.format("%.2f Kb", (float) size/1024);
+        else if (size > 1024*1024 && size <= 1024*1024*1024)
+            ret = String.format("%.2f Mb", (float) size/(1024*1024));
+        else if (size > 1024*1024*1024 && size <= 1024*1024*1024*1024)
+            ret = String.format("%.2f Gb", (float) size/(1024*1024*1024));
+        else // Yes. I am optimist :)
+            ret = String.format("%.2f Tb", (float) size/(1024*1024*1024*1024));
+        return ret;
+    }
 
     private String normalizeLineEnd (String src) {
         return src.replaceAll("\\n|\\r|\\n\\r", "\r\n");
@@ -496,4 +527,9 @@ class ServerHandler extends Thread {
         String header;
     }
 
+    class FileInfo {
+        String name;
+        Long size;
+        String date;
+    }
 }

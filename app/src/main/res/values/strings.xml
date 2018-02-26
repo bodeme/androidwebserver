@@ -120,8 +120,10 @@ h5.top {
     %1$s    type (file|folder)
     %2$s    name (need to add / for folder)
     %3$s    url
+    %4$s    modification date
+    %5$s    size
     -->
-    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%3$s</a></li>"]]></string>
+    <string name="dir_list_item"><![CDATA["   <li class=\"%1$s\"><a href=\"%2$s\">%3$s</a>&nbsp;%4$s&nbsp;%5$s</li>"]]></string>
 
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>
