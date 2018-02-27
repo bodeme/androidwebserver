@@ -44,7 +44,8 @@ You can change document root to any readable point of file system, but you need 
 All files from document root and below available for reading without any restrictions to anyone who connected to network and known URL of the server.
 
 ### License
-lWS is licensed under the [GPLv3 License](LICENSE) because original project
+lWS is licensed under the [GPLv3 License](LICENSE) because [original project](https://github.com/bodeme/androidwebserver)
+Directory listing sort based on [this project](https://github.com/wmentzel/table-sort) licensed under GPL-3.0
 
 ### Artwork
 * File and folder icons for directory listing used from Google Material Design Icons [project](https://github.com/google/material-design-icons/)(commit 7fbdfc4)  licensed by Apache License Version 2.0
