@@ -72,10 +72,21 @@ Content-Range: bytes %3$d-%4$d/%5$d
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 
 <head>
-    <title>%1$s</title>
+    <title>Index of /%1$s</title>
     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+
     <style>
+th.downward {
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAASklEQVR4Ac3KwQFAAAzF0LSLwx6wCewFAPgDVHJ9RNcu/wWZIONTTo2/kFOS8iplosJPtJHpRMoW9CHCSvrlD1E2LgtRpkTZcmwzxRole4MAT9IAAAAASUVORK5CYII=');
+}
+th.upward {
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAUUlEQVR4AcXKQQ5AUAwA0amDS0+BheAoHExof9KVNN35M9tH79QuyWNrRW47YUEWLnvNmJMZ4bSFzVlGaAgG9i9TJieBGjsYSQoEAjXiL9S3F1+7JU/NtrjRAAAAAElFTkSuQmCC');
+}
 div.folder {
     background-repeat:no-repeat;
     background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAKklEQVR4AWMYCHCS4T8cNuBQA5IkrOw/TniCGEX/kRSNKjqBU8lRBvoDAHnfmIpzw90rAAAAAElFTkSuQmCC');
@@ -88,24 +99,123 @@ div.file {
     width: 18px;
     height: 18px;
 }
-h5.top {
-    margin-top:0.5em;
-    margin-bottom:0.5em;
+td.date, td.size {
+    padding-left: 0.7em;
 }
+td.size {
+    text-align: right;
+}
+th {
+    text-decoration: underline;
+    color: -webkit-link;
+}
+
     </style>
+    <script type=\"text/javascript\">
+    function sort(ascending, columnClassName) {
+        var tbody = document.getElementById('content-table').getElementsByTagName('tbody')[0];
+        var rows = tbody.getElementsByClassName('file_row');
+
+        var unsorted = true;
+        while (unsorted) {
+            unsorted = false
+
+            for (var r = 0; r < rows.length - 1; r++) {
+                var row = rows[r];
+                var nextRow = rows[r + 1];
+
+                switch(columnClassName) {
+                    case 'name':
+                        var value = row.getElementsByClassName(columnClassName)[0].getElementsByTagName('a')[0].innerHTML;
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].getElementsByTagName('a')[0].innerHTML;
+                        break;
+                    case 'date':
+                        var value = row.getElementsByClassName(columnClassName)[0].innerHTML;
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].innerHTML;
+                        break;
+                    case 'size':
+                        var value = row.getElementsByClassName(columnClassName)[0].getElementsByTagName('span')[0].getAttribute('value');
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].getElementsByTagName('span')[0].getAttribute('value');
+                        if (!isNaN(value)) {
+                            value = parseInt(value);
+                            nextValue = parseInt(nextValue);
+                        }
+
+                        break;
+                    default:
+                        console.log('Ups!!! header id');
+                }
+
+                if (ascending ? value > nextValue : value < nextValue) {
+                    tbody.insertBefore(nextRow, row);
+                    unsorted = true;
+                }
+            }
+        }
+    };
+
+    function toggle(id) {
+        var headElement = document.getElementById(id);
+        var order = false;
+
+        var headers = ['hname', 'hdate', 'hsize'];
+        for (s in headers) {
+            if (headers[s] !== id)
+                    document.getElementById(headers[s]).setAttribute('class', 'none');
+        }
+
+        switch (headElement.getAttribute('class')) {
+            case 'none':
+                headElement.setAttribute('class', 'upward');
+                order = true;
+                break;
+            case 'downward':
+                headElement.setAttribute('class', 'upward');
+                order = true;
+                break;
+            case 'upward':
+                headElement.setAttribute('class', 'downward');
+                order = false;
+                break;
+            default:
+                console.log('Ups!!! upward/downward');
+        }
+        sort(order, id.substring(1));
+    }
+
+    </script>
+
 </head>
 
 <body>
-<h5 class="top">%2$s</h5>
-<table>
-    <tr><th></th><th>Name</th><th>Last modified</th><th>Size</th></tr>
-    <tr><th colspan="4"><hr /></th></tr>
-    <tr><td><a href=\"../\">..</a></td><td><a href=\"../\">Parent Directory</a></td></tr>
-]]></string>
+<p>Index of <b>/%2$s</b></p>
+<a href=\"../\">Parent Directory</a>
+<table id=\"content-table\">
+
+    <thead>
+    <tr><th colspan=\"4\"><hr /></th></tr>
+    <tr>
+        <th></th>
+        <th id=\"hname\" class=\"upward\" onclick=\"javascript:toggle(this.id);\">
+            Name
+        </th>
+        <th id=\"hdate\" class=\"none\" onclick=\"javascript:toggle(this.id);\">
+            Date
+        </th>
+        <th id=\"hsize\" class=\"none\" onclick=\"javascript:toggle(this.id);\">
+            Size
+        </th>
+    </tr>
+    <tr><th colspan=\"4\"><hr /></th></tr>
+    </thead>
+
+    <tbody>
+"]]></string>
 
     <!-- Directory listing bottom part
     -->
-    <string name="dir_list_bottom_html"><![CDATA["    <tr><th colspan="4"><hr /></th></tr>
+    <string name="dir_list_bottom_html"><![CDATA["    </tbody>
+    <tr><th colspan=\"4\"><hr /></th></tr>
 
 </table>
 </body>
@@ -117,9 +227,10 @@ h5.top {
     %2$s    name (need to add / for folder)
     %3$s    url
     %4$s    modification date
-    %5$s    size
+    %5$d    size
+    %6$s    human readable size
     -->
-    <string name="dir_list_item"><![CDATA["    <tr><td><div class=\"%1$s\">.</div></td><td><a href=\"%2$s\">%3$s</a></td><td>%4$s</td><td>%5$s</td></tr>
+    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><div class=\"%1$s\" /></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
 "]]></string>
 
     <string name="rc500">500 Internal server error</string>

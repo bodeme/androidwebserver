@@ -369,8 +369,8 @@ class ServerHandler extends Thread {
     private String directoryHTMLindex(String dir) {     
         String html = context.getString(
                 R.string.dir_list_top_html,
-                "Index of /" + dir.replace(documentRoot,""),
-                "Index of /" + dir.replace(documentRoot,"")
+                dir.replace(documentRoot,""),
+                dir.replace(documentRoot,"")
         );
         
         ArrayList <String> dirs = new ArrayList<String>();
@@ -412,6 +412,7 @@ class ServerHandler extends Thread {
                             fileName2URL(s) + "/",
                             s + "/",
                             "",
+                            0,
                             "-"
                     );
         }
@@ -422,6 +423,7 @@ class ServerHandler extends Thread {
                             fileName2URL(f.name),
                             f.name,
                             f.date,
+                            f.size,
                             bytesToKMGT(f.size)
                      );
         }
