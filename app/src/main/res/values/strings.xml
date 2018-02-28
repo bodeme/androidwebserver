@@ -79,8 +79,12 @@ Content-Range: bytes %3$d-%4$d/%5$d
 
     <style>
 .icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+}
+.icona {
+    width: 12px;
+    height: 12px;
 }
 td.date, td.size {
     padding-left: 0.7em;
@@ -90,7 +94,7 @@ td.size {
 }
 th {
     text-decoration: underline;
-    color: -webkit-link;
+    color: #0000ee;
 }
 tbody>tr:nth-child(odd) {
     background-color: #f0f0f0;
@@ -100,10 +104,7 @@ tbody>tr.hr {
 }
     </style>
     <script type=\"text/javascript\">
-    function sort(ascending, columnClassName) {
-        var tbody = document.getElementById('content-table').getElementsByTagName('tbody')[0];
-        var rows = tbody.getElementsByClassName('file_row');
-
+    function sortPart(ascending, columnClassName, tbody, rows) {
         var unsorted = true;
         while (unsorted) {
             unsorted = false
@@ -140,6 +141,13 @@ tbody>tr.hr {
                 }
             }
         }
+    }
+    function sort(ascending, columnClassName) {
+        var tbody = document.getElementById('content-table').getElementsByTagName('tbody')[0];
+        var rows = tbody.getElementsByClassName('file_row');
+        sortPart(ascending, columnClassName, tbody, rows)
+        var rows = tbody.getElementsByClassName('folder_row');
+        sortPart(ascending, columnClassName, tbody, rows)
     };
    function toggle(id) {
         var xlinkns = 'http://www.w3.org/1999/xlink';
@@ -176,13 +184,13 @@ tbody>tr.hr {
     </script>
 <svg style=\"display:none\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">
   <symbol viewBox=\"0 0 24 24\" id=\"downward\">
-    <path d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\"/>
+    <path fill=\"#0000ee\" d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\"/>
   </symbol>
   <symbol viewBox=\"0 0 24 24\" id=\"upward\">
-    <path d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/>
+    <path fill=\"#0000ee\" d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/>
   </symbol>
   <symbol viewBox=\"0 0 18 18\" id=\"file\">
-    <path fill=\"#000077\" d=\"M4 1c-.55 0-.99.45-.99 1L3 16c0 .55.44 1 1 1h10c.55 0 1-.45 1-1V6l-5-5H4zm6 5V2l4 4h-4z\"/>
+    <path d=\"\"/>
   </symbol>
   <symbol viewBox=\"0 0 18 18\" id=\"folder\">
     <path fill=\"#ffcc00\" d=\"M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z\"/>
@@ -202,13 +210,13 @@ tbody>tr.hr {
     <tr>
         <th></th>
         <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
-            Name<svg class=\"icon\"><use xlink:href=\"#upward\" /></svg>
+            Name<svg class=\"icona\"><use xlink:href=\"#upward\" /></svg>
         </th>
         <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
-            Date<svg class=\"icon\"><use xlink:href=\"#empty\" /></svg>
+            Date<svg class=\"icona\"><use xlink:href=\"#empty\" /></svg>
         </th>
         <th id=\"hsize\" onclick=\"javascript:toggle(this.id);\">
-            Size<svg class=\"icon\"><use xlink:href=\"#empty\" /></svg>
+            Size<svg class=\"icona\"><use xlink:href=\"#empty\" /></svg>
         </th>
     </tr>
     <tr><th colspan=\"4\"><hr /></th></tr>

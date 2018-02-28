@@ -374,12 +374,14 @@ class ServerHandler extends Thread {
                 dir.equals(documentRoot) ? "" : context.getString(R.string.dir_list_parent_dir)
         );
         
-        ArrayList <String> dirs = new ArrayList<String>();
+        ArrayList <FileInfo> dirs = new ArrayList<FileInfo>();
         ArrayList <FileInfo> files = new ArrayList<FileInfo>();
 
         for (File i : new File(dir).listFiles()) {
             if (i.isDirectory()) {
-                dirs.add(i.getName());
+                dirs.add(new FileInfo());
+                dirs.get(dirs.size() - 1).name = i.getName();
+                dirs.get(dirs.size() - 1).date = FLDF.format(i.lastModified());
             } else if (i.isFile()) {
                 files.add(new FileInfo());
                 files.get(files.size() - 1).name = i.getName();
@@ -403,16 +405,16 @@ class ServerHandler extends Thread {
                 return f1.name.compareToIgnoreCase(f2.name);
             }
         };
-        Collections.sort(dirs, strCmp);
+        Collections.sort(dirs, fileNameCmp);
         Collections.sort(files, fileNameCmp);
         
-        for (String s : dirs) {
+        for (FileInfo d : dirs) {
             html += context.getString(
                             R.string.dir_list_item,
                             "folder",
-                            fileName2URL(s) + "/",
-                            s + "/",
-                            "",
+                            fileName2URL(d.name) + "/",
+                            d.name + "/",
+                            d.date,
                             0,
                             "-"
                     );
