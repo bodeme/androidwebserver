@@ -449,6 +449,7 @@ class ServerHandler extends Thread {
                 put("jpg","image/jpeg");
                 put("bmp","image/bmp");
                 put("svg","image/svg+xml");
+                put("ico","image/x-icon");
                 put("zip","application/zip");
                 put("gz","application/gzip");
                 put("tgz","application/gzip");
