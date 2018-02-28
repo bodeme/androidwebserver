@@ -370,7 +370,8 @@ class ServerHandler extends Thread {
         String html = context.getString(
                 R.string.dir_list_top_html,
                 dir.replace(documentRoot,""),
-                dir.replace(documentRoot,"")
+                dir.replace(documentRoot,""),
+                dir.equals(documentRoot) ? "" : context.getString(R.string.dir_list_parent_dir)
         );
         
         ArrayList <String> dirs = new ArrayList<String>();

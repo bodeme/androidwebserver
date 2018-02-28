@@ -67,6 +67,7 @@ Content-Range: bytes %3$d-%4$d/%5$d
     <!-- Directory listing top part
     %1$s    HTML title
     %2$s    Title on page
+    %2$s    Parent Directory string
     -->
     <string name="dir_list_top_html"><![CDATA["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
@@ -77,25 +78,7 @@ Content-Range: bytes %3$d-%4$d/%5$d
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
 
     <style>
-th.downward {
-    background-repeat: no-repeat;
-    background-position: right top;
-    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAASklEQVR4Ac3KwQFAAAzF0LSLwx6wCewFAPgDVHJ9RNcu/wWZIONTTo2/kFOS8iplosJPtJHpRMoW9CHCSvrlD1E2LgtRpkTZcmwzxRole4MAT9IAAAAASUVORK5CYII=');
-}
-th.upward {
-    background-repeat: no-repeat;
-    background-position: right top;
-    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAUUlEQVR4AcXKQQ5AUAwA0amDS0+BheAoHExof9KVNN35M9tH79QuyWNrRW47YUEWLnvNmJMZ4bSFzVlGaAgG9i9TJieBGjsYSQoEAjXiL9S3F1+7JU/NtrjRAAAAAElFTkSuQmCC');
-}
-div.folder {
-    background-repeat:no-repeat;
-    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAKklEQVR4AWMYCHCS4T8cNuBQA5IkrOw/TniCGEX/kRSNKjqBU8lRBvoDAHnfmIpzw90rAAAAAElFTkSuQmCC');
-    width: 18px;
-    height: 18px;
-}
-div.file {
-    background-repeat:no-repeat;
-    background-image: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAANElEQVR4AWMgBZxk+I8EG7Ar+o+mqIGwIgaQMoKKIMoIKMKu7D92SDNFo4pOYFVylITEBgCOQqozpSFV0wAAAABJRU5ErkJggg==');
+.icon {
     width: 18px;
     height: 18px;
 }
@@ -109,7 +92,12 @@ th {
     text-decoration: underline;
     color: -webkit-link;
 }
-
+tbody>tr:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+tbody>tr.hr {
+    background-color: #fff;
+}
     </style>
     <script type=\"text/javascript\">
     function sort(ascending, columnClassName) {
@@ -153,57 +141,74 @@ th {
             }
         }
     };
-
-    function toggle(id) {
+   function toggle(id) {
+        var xlinkns = 'http://www.w3.org/1999/xlink';
         var headElement = document.getElementById(id);
         var order = false;
 
         var headers = ['hname', 'hdate', 'hsize'];
         for (s in headers) {
-            if (headers[s] !== id)
-                    document.getElementById(headers[s]).setAttribute('class', 'none');
+            if (headers[s] !== id) {
+                    document
+                        .getElementById(headers[s]).getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#empty');
+            }
         }
 
-        switch (headElement.getAttribute('class')) {
-            case 'none':
-                headElement.setAttribute('class', 'upward');
+        var svgRef = headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].getAttributeNS(xlinkns, 'href');
+        switch (svgRef) {
+            case '#empty':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#upward');
                 order = true;
                 break;
-            case 'downward':
-                headElement.setAttribute('class', 'upward');
+            case '#downward':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#upward');
                 order = true;
                 break;
-            case 'upward':
-                headElement.setAttribute('class', 'downward');
+            case '#upward':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#downward');
                 order = false;
                 break;
             default:
-                console.log('Ups!!! upward/downward');
+                console.log('Ups!!! upward/downward' + svgRef);
         }
         sort(order, id.substring(1));
     }
-
     </script>
-
+<svg style=\"display:none\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">
+  <symbol viewBox=\"0 0 24 24\" id=\"downward\">
+    <path d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\"/>
+  </symbol>
+  <symbol viewBox=\"0 0 24 24\" id=\"upward\">
+    <path d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/>
+  </symbol>
+  <symbol viewBox=\"0 0 18 18\" id=\"file\">
+    <path fill=\"#000077\" d=\"M4 1c-.55 0-.99.45-.99 1L3 16c0 .55.44 1 1 1h10c.55 0 1-.45 1-1V6l-5-5H4zm6 5V2l4 4h-4z\"/>
+  </symbol>
+  <symbol viewBox=\"0 0 18 18\" id=\"folder\">
+    <path fill=\"#ffcc00\" d=\"M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z\"/>
+  </symbol>
+  <symbol viewBox=\"0 0 18 18\" id=\"empty\">
+    <path d=\"\"/>
+  </symbol>
+</svg>
 </head>
 
 <body>
-<p>Index of <b>/%2$s</b></p>
-<a href=\"../\">Parent Directory</a>
+<p>Index of <b>/%2$s</b></p>%3$s
 <table id=\"content-table\">
 
     <thead>
     <tr><th colspan=\"4\"><hr /></th></tr>
     <tr>
         <th></th>
-        <th id=\"hname\" class=\"upward\" onclick=\"javascript:toggle(this.id);\">
-            Name
+        <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
+            Name<svg class=\"icon\"><use xlink:href=\"#upward\" /></svg>
         </th>
-        <th id=\"hdate\" class=\"none\" onclick=\"javascript:toggle(this.id);\">
-            Date
+        <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
+            Date<svg class=\"icon\"><use xlink:href=\"#empty\" /></svg>
         </th>
-        <th id=\"hsize\" class=\"none\" onclick=\"javascript:toggle(this.id);\">
-            Size
+        <th id=\"hsize\" onclick=\"javascript:toggle(this.id);\">
+            Size<svg class=\"icon\"><use xlink:href=\"#empty\" /></svg>
         </th>
     </tr>
     <tr><th colspan=\"4\"><hr /></th></tr>
@@ -215,12 +220,15 @@ th {
     <!-- Directory listing bottom part
     -->
     <string name="dir_list_bottom_html"><![CDATA["    </tbody>
-    <tr><th colspan=\"4\"><hr /></th></tr>
+    <tr class=\"hr\"><th colspan=\"4\"><hr /></th></tr>
 
 </table>
 </body>
 </html>
 "]]></string>
+
+<string name="dir_list_parent_dir"><![CDATA["
+<a href=\"../\">Parent Directory</a>"]]></string>
 
     <!-- File or directory entry template
     %1$s    type (file|folder)
@@ -230,7 +238,7 @@ th {
     %5$d    size
     %6$s    human readable size
     -->
-    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><div class=\"%1$s\" /></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
+    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"icon\"><use xlink:href=\"#%1$s\"/></svg></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
 "]]></string>
 
     <string name="rc500">500 Internal server error</string>
