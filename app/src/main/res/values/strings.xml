@@ -78,11 +78,11 @@ Content-Range: bytes %3$d-%4$d/%5$d
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
 
     <style>
-.icon {
+.icon_file {
     width: 16px;
     height: 16px;
 }
-.icona {
+.icon_arrow {
     width: 12px;
     height: 12px;
 }
@@ -98,9 +98,6 @@ th {
 }
 tbody>tr:nth-child(odd) {
     background-color: #f0f0f0;
-}
-tbody>tr.hr {
-    background-color: #fff;
 }
     </style>
     <script type=\"text/javascript\">
@@ -210,13 +207,13 @@ tbody>tr.hr {
     <tr>
         <th></th>
         <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
-            Name<svg class=\"icona\"><use xlink:href=\"#upward\" /></svg>
+            Name<svg class=\"icon_arrow\"><use xlink:href=\"#upward\" /></svg>
         </th>
         <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
-            Date<svg class=\"icona\"><use xlink:href=\"#empty\" /></svg>
+            Date<svg class=\"icon_arrow\"><use xlink:href=\"#empty\" /></svg>
         </th>
         <th id=\"hsize\" onclick=\"javascript:toggle(this.id);\">
-            Size<svg class=\"icona\"><use xlink:href=\"#empty\" /></svg>
+            Size<svg class=\"icon_arrow\"><use xlink:href=\"#empty\" /></svg>
         </th>
     </tr>
     <tr><th colspan=\"4\"><hr /></th></tr>
@@ -228,7 +225,9 @@ tbody>tr.hr {
     <!-- Directory listing bottom part
     -->
     <string name="dir_list_bottom_html"><![CDATA["    </tbody>
+    <tfoot>
     <tr class=\"hr\"><th colspan=\"4\"><hr /></th></tr>
+    </tfoot>
 
 </table>
 </body>
@@ -246,7 +245,7 @@ tbody>tr.hr {
     %5$d    size
     %6$s    human readable size
     -->
-    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"icon\"><use xlink:href=\"#%1$s\"/></svg></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
+    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"icon_file\"><use xlink:href=\"#%1$s\"/></svg></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
 "]]></string>
 
     <string name="rc500">500 Internal server error</string>
