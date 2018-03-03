@@ -190,7 +190,7 @@ tbody>tr:nth-child(odd) {
     <path d=\"\"/>
   </symbol>
   <symbol viewBox=\"0 0 18 18\" id=\"folder\">
-    <path fill=\"#ffcc00\" d=\"M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z\"/>
+    <path fill=\"#ffcc00\" stroke=\"black\" d=\"M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z\"/>
   </symbol>
   <symbol viewBox=\"0 0 18 18\" id=\"empty\">
     <path d=\"\"/>
