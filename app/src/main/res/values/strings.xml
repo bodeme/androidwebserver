@@ -78,13 +78,18 @@ Content-Range: bytes %3$d-%4$d/%5$d
     <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
 
     <style>
-.icon_file {
-    width: 16px;
-    height: 16px;
+.feather {
+    width: 24px;
+    height: 24px;
+    stroke: CurrentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    transform: scale(0.75);
 }
-.icon_arrow {
-    width: 12px;
-    height: 12px;
+.feather_arrow {
+    vertical-align: -0.4em;
 }
 td.date, td.size {
     padding-left: 0.7em;
@@ -179,21 +184,60 @@ tbody>tr:nth-child(odd) {
         sort(order, id.substring(1));
     }
     </script>
-<svg style=\"display:none\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">
-  <symbol viewBox=\"0 0 24 24\" id=\"downward\">
-    <path fill=\"#0000ee\" d=\"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z\"/>
+<svg  xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display:none\" viewBox=\"0 0 24 24\" class=\"feather\">
+  <symbol id=\"downward\">
+    <polyline points=\"7 13 12 18 17 13\" />
+    <polyline points=\"7 6 12 11 17 6\" />
   </symbol>
-  <symbol viewBox=\"0 0 24 24\" id=\"upward\">
-    <path fill=\"#0000ee\" d=\"M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z\"/>
+  <symbol id=\"upward\">
+    <polyline points=\"17 11 12 6 7 11\" />
+    <polyline points=\"17 18 12 13 7 18\" />
   </symbol>
-  <symbol viewBox=\"0 0 18 18\" id=\"file\">
-    <path d=\"\"/>
+  <symbol id=\"folder\">
+    <path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z\" />
   </symbol>
-  <symbol viewBox=\"0 0 18 18\" id=\"folder\">
-    <path fill=\"#ffcc00\" d=\"M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z\"/>
+  <symbol id=\"bin\">
+    <path d=\"M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\" />
+    <polyline points=\"13 2 13 9 20 9\" />
   </symbol>
-  <symbol viewBox=\"0 0 18 18\" id=\"empty\">
-    <path d=\"\"/>
+  <symbol id=\"web\">
+    <path d=\"M2,12 h20 M7,20.66 L17,3.34 M7,3.34 L17,20.66\" />
+    <polyline points=\"22,12 16.67,3.91 7.66,4.48 4,12 8.33,18.93 15.34,17.78 18,12 14.47,7.38 9.66,7.95 8,12\" />
+  </symbol>
+  <symbol id=\"text\">
+    <path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\" />
+    <polyline points=\"14 2 14 8 20 8\" />
+    <line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\" />
+    <line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\" />
+    <polyline points=\"10 9 9 9 8 9\"/>
+  </symbol>
+  <symbol id=\"audio\">
+    <path d=\"M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z\" />
+    <polyline points=\"9 17 9 5 21 3 21 15\" />
+  </symbol>
+  <symbol id=\"image\">
+    <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" ry=\"2\" />
+    <circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\" />
+    <polyline points=\"21 15 16 10 5 21\" />
+  </symbol>
+  <symbol id=\"video\">
+    <rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"2.18\" ry=\"2.18\" />
+    <line x1=\"7\" y1=\"2\" x2=\"7\" y2=\"22\" />
+    <line x1=\"17\" y1=\"2\" x2=\"17\" y2=\"22\" />
+    <line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\" />
+    <line x1=\"2\" y1=\"7\" x2=\"7\" y2=\"7\" />
+    <line x1=\"2\" y1=\"17\" x2=\"7\" y2=\"17\" />
+    <line x1=\"17\" y1=\"17\" x2=\"22\" y2=\"17\" />
+    <line x1=\"17\" y1=\"7\" x2=\"22\" y2=\"7\" />
+  </symbol>
+  <symbol id=\"arc\">
+    <path d=\"M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z\" />
+    <polyline points=\"2.32 6.16 12 11 21.68 6.16\" />
+    <line x1=\"12\" y1=\"22.76\" x2=\"12\" y2=\"11\" />
+    <line x1=\"7\" y1=\"3.5\" x2=\"17\" y2=\"8.5\" />
+  </symbol>
+  <symbol id=\"empty\">
+    <path d=\"M0 0\" />
   </symbol>
 </svg>
 </head>
@@ -207,13 +251,13 @@ tbody>tr:nth-child(odd) {
     <tr>
         <th></th>
         <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
-            Name<svg class=\"icon_arrow\"><use xlink:href=\"#upward\" /></svg>
+            Name<svg class=\"feather feather_arrow\"><use xlink:href=\"#upward\" /></svg>
         </th>
         <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
-            Date<svg class=\"icon_arrow\"><use xlink:href=\"#empty\" /></svg>
+            Date<svg class=\"feather feather_arrow\"><use xlink:href=\"#empty\" /></svg>
         </th>
         <th id=\"hsize\" onclick=\"javascript:toggle(this.id);\">
-            Size<svg class=\"icon_arrow\"><use xlink:href=\"#empty\" /></svg>
+            Size<svg class=\"feather feather_arrow\"><use xlink:href=\"#empty\" /></svg>
         </th>
     </tr>
     <tr><th colspan=\"4\"><hr /></th></tr>
@@ -240,12 +284,13 @@ tbody>tr:nth-child(odd) {
     <!-- File or directory entry template
     %1$s    type (file|folder)
     %2$s    name (need to add / for folder)
-    %3$s    url
-    %4$s    modification date
-    %5$d    size
-    %6$s    human readable size
+    %3$s    icon name
+    %4$s    url
+    %5$s    modification date
+    %6$d    size
+    %7$s    human readable size
     -->
-    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"icon_file\"><use xlink:href=\"#%1$s\"/></svg></td><td class=\"name\"><a href=\"%2$s\">%3$s</a></td><td class=\"date\">%4$s</td><td class=\"size\"><span value=\"%5$d\" />%6$s</td></tr>
+    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"feather\"><use xlink:href=\"#%2$s\"/></svg></td><td class=\"name\"><a href=\"%3$s\">%4$s</a></td><td class=\"date\">%5$s</td><td class=\"size\"><span value=\"%6$d\" />%7$s</td></tr>
 "]]></string>
 
     <string name="rc500">500 Internal server error</string>

@@ -48,10 +48,6 @@ lWS is licensed under the [GPLv3 License](LICENSE) because [original project](ht
 Directory listing sort based on [this project](https://github.com/wmentzel/table-sort) licensed under GPL-3.0
 
 ### Artwork
-* File and folder icons for directory listing used from Google Material Design Icons [project](https://github.com/google/material-design-icons/)(commit 7fbdfc4)  licensed by Apache License Version 2.0
-  * navigation/1x_web/ic_arrow_downward_black_18dp.png
-  * navigation/1x_web/ic_arrow_upward_black_18dp.png
-  * file/1x_web/ic_folder_black_18dp.png
-  * editor/1x_web/ic_insert_drive_file_black_18dp.png
+* File listing icons from [Feather project](https://feathericons.com/) released under MIT license.
 * Application icon designed specially for this application.
 

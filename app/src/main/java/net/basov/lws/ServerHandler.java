@@ -197,7 +197,7 @@ class ServerHandler extends Thread {
             if (rc == 200) {
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
-                contType = getMIMETypeForDocument(document);
+                contType = getMIMETypeForDocument(document).get(0);
             } else {
                 String errAsset = "";
                 AssetManager am = context.getAssets();
@@ -412,6 +412,7 @@ class ServerHandler extends Thread {
             html += context.getString(
                             R.string.dir_list_item,
                             "folder",
+                            "folder",
                             fileName2URL(d.name) + "/",
                             d.name + "/",
                             d.date,
@@ -423,6 +424,7 @@ class ServerHandler extends Thread {
             html += context.getString(
                             R.string.dir_list_item,
                             "file",
+                            getMIMETypeForDocument(f.name).get(1),
                             fileName2URL(f.name),
                             f.name,
                             f.date,
@@ -436,31 +438,31 @@ class ServerHandler extends Thread {
         return html;
     }
 
-    private String getMIMETypeForDocument(String document) {
-        final HashMap<String,String> MIME = new HashMap<String, String>(){
+    private ArrayList<String> getMIMETypeForDocument(String document) {
+        final HashMap<String,ArrayList<String>> MIME = new HashMap<String, ArrayList<String>>(){
             {
-                put("html","text/html; charset=utf-8");
-                put("css", "text/css; charset=utf-8");
-                put("js", "text/javascript; charset=utf-8");
-                put("txt","text/plain; charset=utf-8");
-                put("md","text/markdown; charset=utf-8");
-                put("gif", "image/gif");
-                put("png", "image/png");
-                put("jpg","image/jpeg");
-                put("bmp","image/bmp");
-                put("svg","image/svg+xml");
-                put("ico","image/x-icon");
-                put("zip","application/zip");
-                put("gz","application/gzip");
-                put("tgz","application/gzip");
-                put("pdf","application/pdf");
-                put("mp4","video/mp4");
-                put("avi","video/x-msvideo");
-                put("3gp","video/3gpp");
-                put("mp3","audio/mpeg");
-                put("ogg","audio/ogg");
-                put("wav","audio/wav");
-                put("flac","audio/flac");
+                put("html", new ArrayList<String>(Arrays.asList("text/html; charset=utf-8", "web")));
+                put("css", new ArrayList<String>(Arrays.asList("text/css; charset=utf-8", "text")));
+                put("js", new ArrayList<String>(Arrays.asList("text/javascript; charset=utf-8", "text")));
+                put("txt", new ArrayList<String>(Arrays.asList("text/plain; charset=utf-8", "text")));
+                put("md", new ArrayList<String>(Arrays.asList("text/markdown; charset=utf-8", "text")));
+                put("gif", new ArrayList<String>(Arrays.asList("image/gif", "image")));
+                put("png", new ArrayList<String>(Arrays.asList("image/png", "image")));
+                put("jpg", new ArrayList<String>(Arrays.asList("image/jpeg", "image")));
+                put("bmp", new ArrayList<String>(Arrays.asList("image/bmp", "image")));
+                put("svg", new ArrayList<String>(Arrays.asList("image/svg+xml", "image")));
+                put("ico", new ArrayList<String>(Arrays.asList("image/x-icon", "image")));
+                put("zip", new ArrayList<String>(Arrays.asList("application/zip", "arc")));
+                put("gz", new ArrayList<String>(Arrays.asList("application/gzip", "arc")));
+                put("tgz", new ArrayList<String>(Arrays.asList("application/gzip", "arc")));
+                put("pdf", new ArrayList<String>(Arrays.asList("application/pdf", "text")));
+                put("mp4", new ArrayList<String>(Arrays.asList("video/mp4", "video")));
+                put("avi", new ArrayList<String>(Arrays.asList("video/x-msvideo", "video")));
+                put("3gp", new ArrayList<String>(Arrays.asList("video/3gpp", "video")));
+                put("mp3", new ArrayList<String>(Arrays.asList("audio/mpeg", "audio")));
+                put("ogg", new ArrayList<String>(Arrays.asList("audio/ogg", "audio")));
+                put("wav", new ArrayList<String>(Arrays.asList("audio/wav", "audio")));
+                put("flac", new ArrayList<String>(Arrays.asList("audio/flac", "audio")));
 
             }
         };
@@ -470,7 +472,7 @@ class ServerHandler extends Thread {
         if (MIME.containsKey(fileExt))
             return MIME.get(fileExt);
         else
-            return "application/octet-stream";
+            return new ArrayList<String>(Arrays.asList("application/octet-stream", "bin"));
     }
     
     private String fileName2URL(String fn) {
