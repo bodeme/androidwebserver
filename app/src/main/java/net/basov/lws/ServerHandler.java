@@ -514,13 +514,13 @@ class ServerHandler extends Thread {
         if (size <= 1024)
             ret = String.format("%d b", size);
         else if (size > 1024 && size <= 1024*1024)
-            ret = String.format("%.2f Kb", (float) size/1024);
-        else if (size > 1024*1024 && size <= 1024*1024*1024)
+            ret = String.format("%.2f Kb", (float) size/1024.0);
+        else if (size > 1024.0*1024.0 && size <= 1024.0*1024.0*1024.0)
             ret = String.format("%.2f Mb", (float) size/(1024*1024));
-        else if (size > 1024*1024*1024 && size <= 1024*1024*1024*1024)
-            ret = String.format("%.2f Gb", (float) size/(1024*1024*1024));
+        else if (size > 1024.0*1024.0*1024.0 && size <= 1024.0*1024.0*1024.0*1024.0)
+            ret = String.format("%.2f Gb", (float) size/(1024.0*1024.0*1024.0));
         else // Yes. I am optimist :)
-            ret = String.format("%.2f Tb", (float) size/(1024*1024*1024*1024));
+            ret = String.format("%.2f Tb", (float) size/(1024.0*1024.0*1024.0*1024.0));
         return ret;
     }
 
