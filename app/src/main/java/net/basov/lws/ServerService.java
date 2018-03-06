@@ -76,7 +76,7 @@ public class ServerService extends Service {
             WifiManager wifiManager =
                     (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             // Check Tethering AP state
-            Boolean isWifiAPenabled = isSharingWiFi(wifiManager);                          
+            Boolean isWifiAPEnabled = isSharingWiFi(wifiManager);
             // Check WiFi state
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             if (
@@ -85,7 +85,7 @@ public class ServerService extends Service {
                             || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)
                             || (wifiInfo.getIpAddress() == 0)
                     )
-                    && !isWifiAPenabled
+                    && !isWifiAPEnabled
             ) {
                 mNM.cancel(NOTIFICATION_ID);
                 isRunning = false;
@@ -102,7 +102,7 @@ public class ServerService extends Service {
 
             // Start server
             isRunning = true;
-            if (isWifiAPenabled)
+            if (isWifiAPEnabled)
                 // Dirty hack.
                 ipAddress="192.168.43.1";
             else
@@ -123,7 +123,7 @@ public class ServerService extends Service {
             );
             server.start();
 
-            startForgroundService("Running on " + ipAddress + ":" + port);
+            startForegroundService("Running on " + ipAddress + ":" + port);
 
             StartActivity.putToLogScreen(
                     "I: Web server address http://"
@@ -206,7 +206,7 @@ public class ServerService extends Service {
         stopSelf();
     }
 
-    private void startForgroundService(String message) {
+    private void startForegroundService(String message) {
         if (null == message || message.length()==0) return;
 
         PendingIntent contentIntent = PendingIntent.getActivity(

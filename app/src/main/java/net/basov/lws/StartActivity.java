@@ -76,7 +76,7 @@ public class StartActivity extends Activity {
         viewScroll = (ScrollView) findViewById(R.id.ScrollView);
 
         findViewById(R.id.buttonSettings)
-                .setOnClickListener(makePrefListner(-1));
+                .setOnClickListener(makePrefListener(-1));
         
         try {
             android.content.pm.PackageInfo pInfo =
@@ -209,7 +209,7 @@ public class StartActivity extends Activity {
 
         documentRoot = getDocumentRoot();
         viewDirectoryRoot.setText(documentRoot);
-        viewDirectoryRoot.setOnClickListener(makePrefListner(1));
+        viewDirectoryRoot.setOnClickListener(makePrefListener(1));
 
         final String port = sharedPreferences.getString(
                 getString(R.string.pk_port),
@@ -217,7 +217,7 @@ public class StartActivity extends Activity {
         );
         viewPort.setText(port);
         
-        viewPort.setOnClickListener(makePrefListner(2));
+        viewPort.setOnClickListener(makePrefListener(2));
 
         if(mBoundService != null) {         
             btnStartStop.setChecked(mBoundService.isRunning());
@@ -281,7 +281,7 @@ public class StartActivity extends Activity {
                 });
                 btnQRCodeURL.setEnabled(true);
 
-                OnClickListener sendListner = new OnClickListener() {
+                OnClickListener sendListener = new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(Intent.ACTION_SEND);
@@ -292,9 +292,9 @@ public class StartActivity extends Activity {
                         startActivity(i);
                     }
                 };
-                btnSendURL.setOnClickListener(sendListner);
+                btnSendURL.setOnClickListener(sendListener);
                 btnSendURL.setEnabled(true);
-                viewAddress.setOnClickListener(sendListner);
+                viewAddress.setOnClickListener(sendListener);
 
             } else {
                 viewAddress.setText("not running");
@@ -366,7 +366,7 @@ public class StartActivity extends Activity {
                     bout.write(getString(R.string.def_doc_root_index, defaultDocumentRoot));
                     bout.flush();
                     bout.close();
-                    log("I: Default DocumentRoot HTML index file creted.");
+                    log("I: Default DocumentRoot HTML index file created.");
                 } else {
                     throw new Exception("Can't create document root.");
                 }
@@ -419,7 +419,7 @@ public class StartActivity extends Activity {
         msgHandler.sendMessage(msg);
     }
 
-    private OnClickListener makePrefListner(final int index) {
+    private OnClickListener makePrefListener(final int index) {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -222,7 +222,7 @@ class ServerHandler extends Thread {
 
                 contType = "text/html";
                 in = new BufferedInputStream(am.open(errAsset));
-                fileSize = Long.valueOf(in.available());
+                fileSize = (long) in.available();
                 fileModified = DF.format(new File("file:///android_asset/"+errAsset).lastModified()) + " GMT"; // workaround to avoid +00:00
 
             }
@@ -306,7 +306,7 @@ class ServerHandler extends Thread {
 
                     partialHeaderLength += boundaries[i].size + boundaries[i].header.length();
                 }
-                if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 4; // I dont know why + 4
+                if (ranges.length > 1) partialHeaderLength += context.getString(R.string.boundary_string).length() + 2 + 4; // I don't know why + 4
 
                 String headMark = requestHEAD ? "(HEAD)":"";
                 StartActivity.putToLogScreen(
@@ -316,7 +316,7 @@ class ServerHandler extends Thread {
                                 + clientIP
                                 + ", /"
                                 + document.replace(documentRoot, "")
-                                + ", Rnage: "
+                                + ", Range: "
                                 + Arrays.toString(ranges)
                                 + headMark,
                         msgHandler
@@ -367,12 +367,12 @@ class ServerHandler extends Thread {
     }
 
     private String directoryHTMLindex(String dir) {     
-        String html = context.getString(
+        StringBuilder html = new StringBuilder(context.getString(
                 R.string.dir_list_top_html,
-                dir.replace(documentRoot,""),
-                dir.replace(documentRoot,""),
+                dir.replace(documentRoot, ""),
+                dir.replace(documentRoot, ""),
                 dir.equals(documentRoot) ? "" : context.getString(R.string.dir_list_parent_dir)
-        );
+        ));
         
         ArrayList <FileInfo> dirs = new ArrayList<FileInfo>();
         ArrayList <FileInfo> files = new ArrayList<FileInfo>();
@@ -409,33 +409,33 @@ class ServerHandler extends Thread {
         Collections.sort(files, fileNameCmp);
         
         for (FileInfo d : dirs) {
-            html += context.getString(
-                            R.string.dir_list_item,
-                            "folder",
-                            "folder",
-                            fileName2URL(d.name) + "/",
-                            d.name,
-                            d.date,
-                            0,
-                            "-"
-                    );
+            html.append(context.getString(
+                    R.string.dir_list_item,
+                    "folder",
+                    "folder",
+                    fileName2URL(d.name) + "/",
+                    d.name,
+                    d.date,
+                    0,
+                    "-"
+            ));
         }
         for (FileInfo f : files) {
-            html += context.getString(
-                            R.string.dir_list_item,
-                            "file",
-                            getMIMETypeForDocument(f.name).get(1),
-                            fileName2URL(f.name),
-                            f.name,
-                            f.date,
-                            f.size,
-                            bytesToKMGT(f.size)
-                     );
+            html.append(context.getString(
+                    R.string.dir_list_item,
+                    "file",
+                    getMIMETypeForDocument(f.name).get(1),
+                    fileName2URL(f.name),
+                    f.name,
+                    f.date,
+                    f.size,
+                    bytesToKMGT(f.size)
+            ));
         }
         
-        html += context.getString(R.string.dir_list_bottom_html);
+        html.append(context.getString(R.string.dir_list_bottom_html));
         
-        return html;
+        return html.toString();
     }
 
     private ArrayList<String> getMIMETypeForDocument(String document) {
@@ -490,7 +490,7 @@ class ServerHandler extends Thread {
 
             String header = context.getString(R.string.header,
                     context.getString(R.string.rc500),
-                    Long.valueOf(in.available()),
+                    (long) in.available(),
                     DF.format(new Date()) + " GMT", // workaround to avoid +00:00
                     "text/html"
             );

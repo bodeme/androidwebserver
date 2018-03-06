@@ -25,7 +25,7 @@ package net.basov.lws;
 
 final class Constants {
     public static final String LOG_TAG = "lWS";
-    public static final String ACTION_STOP = "net.basov.lws.stop_servce";
+    public static final String ACTION_STOP = "net.basov.lws.stop_service";
     public static final int NOTIFICATION_ID = 690927;
     public static final int DIRECTORY_REQUEST = 170;
     public static final int MAIN_SCREEN_REQUEST = 171;

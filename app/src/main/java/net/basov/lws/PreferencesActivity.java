@@ -62,8 +62,8 @@ public class PreferencesActivity extends PreferenceActivity implements
         Preference prefPort = findPreference(getString(R.string.pk_port));
         prefPort.setSummary(defSharedPref.getString(getString(R.string.pk_port), "8080"));
         
-        Intent incoingIntent = getIntent();
-        Bundle incomingExtras = incoingIntent.getExtras();
+        Intent incomingIntent = getIntent();
+        Bundle incomingExtras = incomingIntent.getExtras();
         if (incomingExtras != null) {
             int incomingIndex = incomingExtras.getInt("item");
             if (incomingIndex >= 0 && incomingIndex <= 2 ) {
@@ -168,8 +168,8 @@ public class PreferencesActivity extends PreferenceActivity implements
                 Log.w("lWS", "Document root doesn't exists. Set to default.");
                 prefEdit.putString(getString(R.string.pk_document_root), defaultDocumentRoot).apply();
             } else if (documentRoot.charAt(docRootLength - 1) != '/') {
-                // existig directory readable with and witout trailing slash
-                // but slash need for correct flename forming             
+                // existing directory readable with and without trailing slash
+                // but slash need for correct filename forming
                 documentRoot = documentRoot + "/";
                 prefEdit.putString(getString(R.string.pk_document_root), documentRoot).apply();
             }

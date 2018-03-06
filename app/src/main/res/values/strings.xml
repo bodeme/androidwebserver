@@ -62,7 +62,7 @@ Content-Range: bytes %3$d-%4$d/%5$d
 
 "]]></string>
 
-    <string name="boundary_string">da_zarasti_ono_ramashkami</string>
+    <string name="boundary_string">da_zarasti_ono_romashkami</string>
 
     <!-- Directory listing top part
     %1$s    HTML title
