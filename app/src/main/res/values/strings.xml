@@ -81,7 +81,7 @@ Content-Range: bytes %3$d-%4$d/%5$d
 .feather {
     width: 24px;
     height: 24px;
-    stroke: CurrentColor;
+    stroke: #333;
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -89,6 +89,7 @@ Content-Range: bytes %3$d-%4$d/%5$d
     transform: scale(0.75);
 }
 .feather_arrow {
+    stroke: CurrentColor;
     vertical-align: -0.4em;
 }
 td.date, td.size {
@@ -200,7 +201,7 @@ tbody>tr:nth-child(odd) {
     <path d=\"M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\" />
     <polyline points=\"13 2 13 9 20 9\" />
   </symbol>
-  <symbol id=\"web\">
+  <symbol id=\"web\"  stroke-width=\"1.5\">
     <path d=\"M2,12 h20 M7,20.66 L17,3.34 M7,3.34 L17,20.66\" />
     <polyline points=\"22,12 16.67,3.91 7.66,4.48 4,12 8.33,18.93 15.34,17.78 18,12 14.47,7.38 9.66,7.95 8,12\" />
   </symbol>
@@ -279,7 +280,7 @@ tbody>tr:nth-child(odd) {
 "]]></string>
 
 <string name="dir_list_parent_dir"><![CDATA["
-<a href=\"../\">Parent Directory</a>"]]></string>
+&nbsp;&nbsp;..&nbsp;<a href=\"../\">Parent Folder</a>"]]></string>
 
     <!-- File or directory entry template
     %1$s    type (file|folder)

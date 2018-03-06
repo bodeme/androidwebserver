@@ -414,7 +414,7 @@ class ServerHandler extends Thread {
                             "folder",
                             "folder",
                             fileName2URL(d.name) + "/",
-                            d.name + "/",
+                            d.name,
                             d.date,
                             0,
                             "-"
