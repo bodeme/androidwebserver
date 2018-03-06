@@ -113,7 +113,7 @@ class ServerHandler extends Thread {
     private void send(String text) {
         String header = context.getString(R.string.header,
                 context.getString(R.string.rc200),
-                text.length(),
+                text.getBytes().length,
                 DF.format(new Date()) + " GMT", // workaround to avoid +00:00
                 "text/html"
         );
