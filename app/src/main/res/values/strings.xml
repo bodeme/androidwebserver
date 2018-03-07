@@ -186,6 +186,10 @@ tbody>tr:nth-child(odd) {
     }
     </script>
 <svg  xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display:none\" viewBox=\"0 0 24 24\" class=\"feather\">
+  <symbol id=\"arrow-up-left\">
+    <line x1=\"17\" y1=\"17\" x2=\"7\" y2=\"7\" />
+    <polyline points=\"7 17 7 7 17 7\" />
+  </symbol>
   <symbol id=\"downward\">
     <polyline points=\"7 13 12 18 17 13\" />
     <polyline points=\"7 6 12 11 17 6\" />
@@ -248,10 +252,10 @@ tbody>tr:nth-child(odd) {
 </head>
 
 <body>
-<p>Index of <b>/%2$s</b></p>%3$s
+<p>Index of <b>/%2$s</b></p>
 <table id=\"content-table\">
 
-    <thead>
+    <thead>%3$s
     <tr><th colspan=\"4\"><hr /></th></tr>
     <tr>
         <th></th>
@@ -284,7 +288,7 @@ tbody>tr:nth-child(odd) {
 "]]></string>
 
 <string name="dir_list_parent_dir"><![CDATA["
-&nbsp;&nbsp;..&nbsp;<a href=\"../\">Parent Folder</a>"]]></string>
+    <tr class=\"parent_dir\"><td><svg class=\"feather\"><use xlink:href=\"#arrow-up-left\"/></svg></td><td><a href=\"../\">Parent Folder</a></td><td></td><td></td></tr>"]]></string>
 
     <!-- File or directory entry template
     %1$s    type (file|folder)
