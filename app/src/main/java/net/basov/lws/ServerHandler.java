@@ -21,6 +21,7 @@
 
 package net.basov.lws;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Handler;
@@ -162,7 +163,8 @@ class ServerHandler extends Thread {
 
         try {
             if (!new File(document).exists()) {
-                if (document.replace(documentRoot, "").equals("/favicon.ico")) {
+                if (document.replace(documentRoot, "").equals("favicon.ico")) {
+                    // set fake rc for default favicon.ico
                     rc = -2;
                 } else {
                     rc = 404;
@@ -204,11 +206,15 @@ class ServerHandler extends Thread {
                 rcStr = context.getString(R.string.rc200);
                 contType = getMIMETypeForDocument(document).get(0);
             } else if (rc == -2) {
+                // favicon.ico doesn't exist. Send application icon instead.
+                @SuppressLint("ResourceType")
                 final AssetFileDescriptor raw = context
                         .getResources()
                         .openRawResourceFd(R.mipmap.lws_ic);
                 in = new BufferedInputStream(raw.createInputStream());
                 fileSize = (long) in.available();
+                // mipmap resource modification time difficult to obtain
+                // and has no meaning. Set current date instead.
                 fileModified = DF.format(new Date());
                 rcStr = context.getString(R.string.rc200);
                 contType = getMIMETypeForDocument(document).get(0);
