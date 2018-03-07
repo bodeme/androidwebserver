@@ -186,6 +186,11 @@ tbody>tr:nth-child(odd) {
     }
     </script>
 <svg  xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display:none\" viewBox=\"0 0 24 24\" class=\"feather\">
+  <symbol id=\"corner-up-left\">
+    <polyline points=\"9 14 4 9 9 4\" />
+    <path d=\"M20 20v-7a4 4 0 0 0-4-4H4\" />
+
+  </symbol>
   <symbol id=\"arrow-up-left\">
     <line x1=\"17\" y1=\"17\" x2=\"7\" y2=\"7\" />
     <polyline points=\"7 17 7 7 17 7\" />
@@ -288,7 +293,7 @@ tbody>tr:nth-child(odd) {
 "]]></string>
 
 <string name="dir_list_parent_dir"><![CDATA["
-    <tr class=\"parent_dir\"><td><svg class=\"feather\"><use xlink:href=\"#arrow-up-left\"/></svg></td><td><a href=\"../\">Parent Folder</a></td><td></td><td></td></tr>"]]></string>
+    <tr class=\"parent_dir\"><td><svg class=\"feather\"><use xlink:href=\"#corner-up-left\"/></svg></td><td><a href=\"../\">Parent Directory</a></td><td></td><td></td></tr>"]]></string>
 
     <!-- File or directory entry template
     %1$s    type (file|folder)
