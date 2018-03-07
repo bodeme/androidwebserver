@@ -168,15 +168,15 @@ tbody>tr:nth-child(odd) {
         var svgRef = headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].getAttributeNS(xlinkns, 'href');
         switch (svgRef) {
             case '#empty':
-                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#upward');
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-up');
                 order = true;
                 break;
-            case '#downward':
-                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#upward');
+            case '#chevrons-down':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-up');
                 order = true;
                 break;
-            case '#upward':
-                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#downward');
+            case '#chevrons-up':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-down');
                 order = false;
                 break;
             default:
@@ -190,18 +190,18 @@ tbody>tr:nth-child(odd) {
     <line x1=\"17\" y1=\"17\" x2=\"7\" y2=\"7\" />
     <polyline points=\"7 17 7 7 17 7\" />
   </symbol>
-  <symbol id=\"downward\">
+  <symbol id=\"chevrons-down\">
     <polyline points=\"7 13 12 18 17 13\" />
     <polyline points=\"7 6 12 11 17 6\" />
   </symbol>
-  <symbol id=\"upward\">
+  <symbol id=\"chevrons-up\">
     <polyline points=\"17 11 12 6 7 11\" />
     <polyline points=\"17 18 12 13 7 18\" />
   </symbol>
   <symbol id=\"folder\">
     <path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z\" />
   </symbol>
-  <symbol id=\"bin\">
+  <symbol id=\"file\">
     <path d=\"M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\" />
     <polyline points=\"13 2 13 9 20 9\" />
   </symbol>
@@ -209,7 +209,7 @@ tbody>tr:nth-child(odd) {
     <path d=\"M2,12 h20 M7,20.66 L17,3.34 M7,3.34 L17,20.66\" />
     <polyline points=\"22,12 16.67,3.91 7.66,4.48 4,12 8.33,18.93 15.34,17.78 18,12 14.47,7.38 9.66,7.95 8,12\" />
   </symbol>
-  <symbol id=\"text\">
+  <symbol id=\"file-text\">
     <path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\" />
     <polyline points=\"14 2 14 8 20 8\" />
     <line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\" />
@@ -239,7 +239,7 @@ tbody>tr:nth-child(odd) {
     <line x1=\"17\" y1=\"17\" x2=\"22\" y2=\"17\" />
     <line x1=\"17\" y1=\"7\" x2=\"22\" y2=\"7\" />
   </symbol>
-  <symbol id=\"arc\">
+  <symbol id=\"package\">
     <path d=\"M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z\" />
     <polyline points=\"2.32 6.16 12 11 21.68 6.16\" />
     <line x1=\"12\" y1=\"22.76\" x2=\"12\" y2=\"11\" />
@@ -260,7 +260,7 @@ tbody>tr:nth-child(odd) {
     <tr>
         <th></th>
         <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
-            Name<svg class=\"feather feather_arrow\"><use xlink:href=\"#upward\" /></svg>
+            Name<svg class=\"feather feather_arrow\"><use xlink:href=\"#chevrons-up\" /></svg>
         </th>
         <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
             Date<svg class=\"feather feather_arrow\"><use xlink:href=\"#empty\" /></svg>

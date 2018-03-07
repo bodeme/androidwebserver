@@ -456,25 +456,25 @@ class ServerHandler extends Thread {
                 put("html", new ArrayList<String>(Arrays.asList("text/html; charset=utf-8", "web")));
                 put("css", new ArrayList<String>(Arrays.asList("text/css; charset=utf-8", "code")));
                 put("js", new ArrayList<String>(Arrays.asList("text/javascript; charset=utf-8", "code")));
-                put("txt", new ArrayList<String>(Arrays.asList("text/plain; charset=utf-8", "text")));
-                put("md", new ArrayList<String>(Arrays.asList("text/markdown; charset=utf-8", "text")));
+                put("txt", new ArrayList<String>(Arrays.asList("text/plain; charset=utf-8", "file-text")));
+                put("md", new ArrayList<String>(Arrays.asList("text/markdown; charset=utf-8", "file-text")));
                 put("gif", new ArrayList<String>(Arrays.asList("image/gif", "image")));
                 put("png", new ArrayList<String>(Arrays.asList("image/png", "image")));
                 put("jpg", new ArrayList<String>(Arrays.asList("image/jpeg", "image")));
                 put("bmp", new ArrayList<String>(Arrays.asList("image/bmp", "image")));
                 put("svg", new ArrayList<String>(Arrays.asList("image/svg+xml", "image")));
                 put("ico", new ArrayList<String>(Arrays.asList("image/x-icon", "image")));
-                put("zip", new ArrayList<String>(Arrays.asList("application/zip", "arc")));
-                put("gz", new ArrayList<String>(Arrays.asList("application/gzip", "arc")));
-                put("tgz", new ArrayList<String>(Arrays.asList("application/gzip", "arc")));
-                put("pdf", new ArrayList<String>(Arrays.asList("application/pdf", "text")));
+                put("zip", new ArrayList<String>(Arrays.asList("application/zip", "package")));
+                put("gz", new ArrayList<String>(Arrays.asList("application/gzip", "package")));
+                put("tgz", new ArrayList<String>(Arrays.asList("application/gzip", "package")));
+                put("pdf", new ArrayList<String>(Arrays.asList("application/pdf", "file-text")));
                 put("mp4", new ArrayList<String>(Arrays.asList("video/mp4", "video")));
                 put("avi", new ArrayList<String>(Arrays.asList("video/x-msvideo", "video")));
                 put("3gp", new ArrayList<String>(Arrays.asList("video/3gpp", "video")));
-                put("mp3", new ArrayList<String>(Arrays.asList("audio/mpeg", "audio")));
-                put("ogg", new ArrayList<String>(Arrays.asList("audio/ogg", "audio")));
-                put("wav", new ArrayList<String>(Arrays.asList("audio/wav", "audio")));
-                put("flac", new ArrayList<String>(Arrays.asList("audio/flac", "audio")));
+                put("mp3", new ArrayList<String>(Arrays.asList("audio/mpeg", "music")));
+                put("ogg", new ArrayList<String>(Arrays.asList("audio/ogg", "music")));
+                put("wav", new ArrayList<String>(Arrays.asList("audio/wav", "music")));
+                put("flac", new ArrayList<String>(Arrays.asList("audio/flac", "music")));
                 put("java", new ArrayList<String>(Arrays.asList("text/plain", "code")));
                 put(".c", new ArrayList<String>(Arrays.asList("text/plain", "code")));
                 put(".cpp", new ArrayList<String>(Arrays.asList("text/plain", "code")));
@@ -489,7 +489,7 @@ class ServerHandler extends Thread {
         if (MIME.containsKey(fileExt))
             return MIME.get(fileExt);
         else
-            return new ArrayList<String>(Arrays.asList("application/octet-stream", "bin"));
+            return new ArrayList<String>(Arrays.asList("application/octet-stream", "file"));
     }
     
     private String fileName2URL(String fn) {
