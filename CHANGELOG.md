@@ -1,3 +1,23 @@
+#### v03.06.00b (g372ca97)
+* Default favicon.ico
+* Prepare code for release
+
+#### v03.05.00b (g4ccb846)
+* New design of directory index page
+* Fix bug with non ASCII file names v03.04.00b (g0efab1b)
+* Tweak directory listing design
+
+#### v03.03.00b (g6897fe2)
+* Directory listing sort
+
+#### v03.02.00b (g13af687)
+Since this version incremental download is possible.
+* Support Last-Modified
+* Support HEAD request
+
+#### v03.01.00b (g6141abe)
+* Support partial content (allow to seek video).
+
 ### v03.00.00 (g579b06e)
 * Add share URL by QR code.
 * Offer to install external program if need
