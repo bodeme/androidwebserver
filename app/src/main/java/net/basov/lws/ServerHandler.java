@@ -23,6 +23,7 @@ package net.basov.lws;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.os.Handler;
 import android.util.Log;
@@ -50,7 +51,6 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 import static net.basov.lws.Constants.*;
-import android.content.res.*;
 
 class ServerHandler extends Thread {
     private final Socket toClient;
@@ -411,18 +411,9 @@ class ServerHandler extends Thread {
             }
         }
         
-        Comparator<String> strCmp =  new Comparator<String>(){
-            @Override
-            public int compare(String text1, String text2)
-            {
-                return text1.compareToIgnoreCase(text2);
-            }
-        };
-
         Comparator<FileInfo> fileNameCmp =  new Comparator<FileInfo>(){
             @Override
-            public int compare(FileInfo f1, FileInfo f2)
-            {
+            public int compare(FileInfo f1, FileInfo f2) {
                 return f1.name.compareToIgnoreCase(f2.name);
             }
         };
