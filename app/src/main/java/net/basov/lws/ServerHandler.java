@@ -454,8 +454,8 @@ class ServerHandler extends Thread {
         final HashMap<String,ArrayList<String>> MIME = new HashMap<String, ArrayList<String>>(){
             {
                 put("html", new ArrayList<String>(Arrays.asList("text/html; charset=utf-8", "web")));
-                put("css", new ArrayList<String>(Arrays.asList("text/css; charset=utf-8", "text")));
-                put("js", new ArrayList<String>(Arrays.asList("text/javascript; charset=utf-8", "text")));
+                put("css", new ArrayList<String>(Arrays.asList("text/css; charset=utf-8", "code")));
+                put("js", new ArrayList<String>(Arrays.asList("text/javascript; charset=utf-8", "code")));
                 put("txt", new ArrayList<String>(Arrays.asList("text/plain; charset=utf-8", "text")));
                 put("md", new ArrayList<String>(Arrays.asList("text/markdown; charset=utf-8", "text")));
                 put("gif", new ArrayList<String>(Arrays.asList("image/gif", "image")));
