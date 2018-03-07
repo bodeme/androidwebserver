@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 import static net.basov.lws.Constants.*;
+import android.content.res.*;
 
 class ServerHandler extends Thread {
     private final Socket toClient;
@@ -161,7 +162,11 @@ class ServerHandler extends Thread {
 
         try {
             if (!new File(document).exists()) {
-                rc = 404;
+                if (document.replace(documentRoot, "").equals("/favicon.ico")) {
+                    rc = -2;
+                } else {
+                    rc = 404;
+                }
             } else if(document.charAt(document.length()-1) == '/') {
                 // This is directory
                 if (new File(document+"index.html").exists()) {
@@ -198,6 +203,16 @@ class ServerHandler extends Thread {
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
                 contType = getMIMETypeForDocument(document).get(0);
+            } else if (rc == -2) {
+                final AssetFileDescriptor raw = context
+                        .getResources()
+                        .openRawResourceFd(R.mipmap.lws_ic);
+                in = new BufferedInputStream(raw.createInputStream());
+                fileSize = (long) in.available();
+                fileModified = DF.format(new Date());
+                rcStr = context.getString(R.string.rc200);
+                contType = getMIMETypeForDocument(document).get(0);
+                rc = 200;
             } else {
                 String errAsset = "";
                 AssetManager am = context.getAssets();
