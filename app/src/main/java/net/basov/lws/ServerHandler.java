@@ -484,6 +484,11 @@ class ServerHandler extends Thread {
                 put("ogg", new ArrayList<String>(Arrays.asList("audio/ogg", "audio")));
                 put("wav", new ArrayList<String>(Arrays.asList("audio/wav", "audio")));
                 put("flac", new ArrayList<String>(Arrays.asList("audio/flac", "audio")));
+                put("java", new ArrayList<String>(Arrays.asList("text/plain", "code")));
+                put(".c", new ArrayList<String>(Arrays.asList("text/plain", "code")));
+                put(".cpp", new ArrayList<String>(Arrays.asList("text/plain", "code")));
+                put(".sh", new ArrayList<String>(Arrays.asList("text/plain", "code")));
+                put(".py", new ArrayList<String>(Arrays.asList("text/plain", "code")));
 
             }
         };

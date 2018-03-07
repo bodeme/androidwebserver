@@ -212,6 +212,10 @@ tbody>tr:nth-child(odd) {
     <line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\" />
     <polyline points=\"10 9 9 9 8 9\"/>
   </symbol>
+  <symbol id=\"code\">
+    <polyline points=\"16 18 22 12 16 6\" />
+    <polyline points=\"8 6 2 12 8 18\" />
+  </symbol>
   <symbol id=\"audio\">
     <path d=\"M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z\" />
     <polyline points=\"9 17 9 5 21 3 21 15\" />
