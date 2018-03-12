@@ -1,3 +1,10 @@
+### v04.00.00 (gd747f64)
+* HEAD request and Last modified (incremental download)
+* Multipart range (video seek)
+* Directory index sort by name, date and size. New icons.
+* Add MIME types for audio files
+* Several fixes.
+
 #### v03.06.00b (g372ca97)
 * Default favicon.ico
 * Prepare code for release
