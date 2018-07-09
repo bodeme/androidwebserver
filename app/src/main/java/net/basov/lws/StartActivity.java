@@ -257,11 +257,20 @@ public class StartActivity extends Activity {
                         try {
                             pm.getPackageInfo(getString(R.string.qrPluginPackage), 0);
                             Intent i = new Intent(getString(R.string.qrIntentAction));
+                            
                             i.putExtra("ENCODE_DATA", url);
-                            i.putExtra("ENCODE_SIZE", "256");
-                            i.putExtra("ENCODE_DARK", "#000");
-                            i.putExtra("ENCODE_LIGHT", "#e0ffff");
+                            i.putExtra("ENCODE_LABEL", "Open lWS page<br/>(" + url + ")");
                             i.putExtra("ENCODE_CORRECTION", "L");
+                            i.putExtra("ENCODE_MODULE_SIZE", 6);
+                            i.putExtra("ENCODE_MASK", -1);
+                            i.putExtra("ENCODE_MIN_VERSION", 1);
+                            
+//                            i.putExtra("ENCODE_DATA", url);
+//                            i.putExtra("ENCODE_SIZE", "256");
+//                            i.putExtra("ENCODE_DARK", "#000");
+//                            i.putExtra("ENCODE_LIGHT", "#e0ffff");
+//                            i.putExtra("ENCODE_CORRECTION", "L");
+
                             startActivity(i);
                         } catch (PackageManager.NameNotFoundException e_lws_qr) {
                             try {
