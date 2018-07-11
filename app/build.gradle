@@ -39,7 +39,7 @@ android {
 
 // End of strings reserved for F-Droid patch
         minSdkVersion 16
-        targetSdkVersion 21
+        targetSdkVersion 26
 
         versionCode 40010
         versionName "04.01.00"
