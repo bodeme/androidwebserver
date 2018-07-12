@@ -1,3 +1,9 @@
+#### v04.02.00  
+* Increase target API from 21 to 26
+
+#### v04.01.00 (g1bda4e4)
+* Change lWS.QR call according to new API
+
 ### v04.00.00 (gd747f64)
 * HEAD request and Last modified (incremental download)
 * Multipart range (video seek)
