@@ -1,4 +1,4 @@
-#### v04.02.00  
+#### v04.02.00 (g7a05764)
 * Increase target API from 21 to 26
 
 #### v04.01.00 (g1bda4e4)
