@@ -37,8 +37,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
 
-        versionCode 50100
-        versionName "05.01.00"
+        versionCode 50101
+        versionName "05.01.01"
     }
 
     signingConfigs {
