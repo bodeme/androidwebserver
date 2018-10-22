@@ -1,6 +1,7 @@
 ## lightweight Web Server (lWS) for Android
 
 <a href="https://play.google.com/store/apps/details?id=net.basov.lws.r"><img src="google-play-badge.png" width="215" height="83" alt="Available on Google Play"/></a>
+<a href="https://f-droid.org/en/packages/net.basov.lws.fdroid/"><img src="f-droid-badge.png" width="215" height="83" alt="Available on F-Droid"/></a>
 
 <table>
   <tr>
