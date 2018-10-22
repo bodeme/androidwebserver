@@ -24,7 +24,7 @@ android {
     }
 
     compileSdkVersion 26
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
 // Keep two lines arround applicationId unchanged to allow use patch for F-Droid build
@@ -37,8 +37,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
 
-        versionCode 50101
-        versionName "05.01.01"
+        versionCode 50102
+        versionName "05.01.02"
     }
 
     signingConfigs {
