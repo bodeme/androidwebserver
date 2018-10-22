@@ -307,6 +307,14 @@ tbody>tr:nth-child(odd) {
     <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"feather\"><use xlink:href=\"#%2$s\"/></svg></td><td class=\"name\"><a href=\"%3$s\">%4$s</a></td><td class=\"date\">%5$s</td><td class=\"size\"><span value=\"%6$d\" />%7$s</td></tr>
 "]]></string>
 
+    <!-- place holder for fdroid patch -->
+
+
+    <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
+
+
+    <!-- end of place holder for fdroid patch -->
+
     <string name="rc500">500 Internal server error</string>
     <string name="rc404">404 File not found</string>
     <string name="rc403">403 Forbidden</string>
@@ -318,12 +326,5 @@ tbody>tr:nth-child(odd) {
     <string name="pk_pref_changed">prefChanged</string>
     <string name="pk_use_directory_pick">prefUseDirectoryPick</string>
     <string name="qrIntentAction">net.basov.lws.qr.ENCODE</string>
-    <!-- place holder for fdroid patch -->
-
-
-    <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
     <string name="rc416">416 Range Not Satisfiable</string>
-
-
-    <!-- end of place holder for fdroid patch -->
 </resources>
