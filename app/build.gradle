@@ -41,20 +41,6 @@ android {
         versionName "06.00.00"
     }
 
-    signingConfigs {
-        release {
-            keyAlias 'mvb_key'
-            storeFile file('../../.keys/mvb-release.keystore')
-            v2SigningEnabled false
-        }
-        debug {
-            storeFile file('../../.keys/mvb-debug.keystore')
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-            storePassword 'android'
-        }
-    }
-    
     buildTypes {
         release {
             minifyEnabled true
@@ -64,7 +50,6 @@ android {
             applicationIdSuffix '.r'
             versionNameSuffix "r-g" + current_commit
             resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
-            signingConfig signingConfigs.release
         }
         betta {
             minifyEnabled true
@@ -74,13 +59,11 @@ android {
             versionNameSuffix "b-g" + current_commit
             debuggable false
             resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
-            signingConfig signingConfigs.debug
         }
         debug {
             debuggable true
             versionNameSuffix 'a-' + commit_count + "-g" + current_commit
             resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
-            signingConfig signingConfigs.debug
         }
     }
 }
