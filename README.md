@@ -1,8 +1,8 @@
 ## lightweight Web Server (lWS) for Android
 
-<a href="https://travis-ci.org/mvbasov/lWS"><img src="https://travis-ci.org/mvbasov/lWS.svg?branch=master" width="180" height="40" alt="Build Status" /></a>
-<a href="https://play.google.com/store/apps/details?id=net.basov.lws.r"><img src="google-play-badge.png" width="215" height="83" alt="Available on Google Play" /></a>
-<a href="https://f-droid.org/en/packages/net.basov.lws.fdroid/"><img src="f-droid-badge.png" width="215" height="83" alt="Available on F-Droid" /></a>
+<a href="https://travis-ci.org/mvbasov/lWS"><img src="https://travis-ci.org/mvbasov/lWS.svg?branch=master" height="40" alt="Build Status" /></a>
+<a href="https://play.google.com/store/apps/details?id=net.basov.lws.r"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="80" alt="Available on Google Play" /></a>
+<a href="https://f-droid.org/en/packages/net.basov.lws.fdroid/"><img src="https://f-droid.org/badge/get-it-on.png" height="80" alt="Available on F-Droid" /></a>
 
 <table>
   <tr>
