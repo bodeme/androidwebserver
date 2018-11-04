@@ -37,6 +37,7 @@ import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -223,18 +224,19 @@ public class ServerService extends Service {
                 stopIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.lws_ic)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.lws_ic))
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(message)
-                .setWhen(System.currentTimeMillis())
-                .setContentIntent(contentIntent)
-                .addAction(0, "Stop service", stopPendingIntent)
-                .setOngoing(true)
-                .build();
-        startForeground(NOTIFICATION_ID, notification);
-
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            Notification notification = new Notification.Builder(this)
+                    .setSmallIcon(R.mipmap.lws_ic)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.lws_ic))
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(message)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(contentIntent)
+                    .addAction(0, "Stop service", stopPendingIntent)
+                    .setOngoing(true)
+                    .build();
+            startForeground(NOTIFICATION_ID, notification);
+        }
     }
 
     @Override
