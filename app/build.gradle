@@ -34,7 +34,7 @@ android {
 
 
 // End of strings reserved for F-Droid patch
-        minSdkVersion 16
+        minSdkVersion 10
         targetSdkVersion 26
 
         versionCode 60000

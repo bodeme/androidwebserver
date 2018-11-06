@@ -166,12 +166,12 @@ public class PreferencesActivity extends PreferenceActivity implements
                         Toast.LENGTH_LONG
                 ).show();
                 Log.w("lWS", "Document root doesn't exists. Set to default.");
-                prefEdit.putString(getString(R.string.pk_document_root), defaultDocumentRoot).apply();
+                prefEdit.putString(getString(R.string.pk_document_root), defaultDocumentRoot).commit();
             } else if (documentRoot.charAt(docRootLength - 1) != '/') {
                 // existing directory readable with and without trailing slash
                 // but slash need for correct filename forming
                 documentRoot = documentRoot + "/";
-                prefEdit.putString(getString(R.string.pk_document_root), documentRoot).apply();
+                prefEdit.putString(getString(R.string.pk_document_root), documentRoot).commit();
             }
             prefEdit.putBoolean(getString(R.string.pk_pref_changed), true).commit();
             pref.setSummary(documentRoot);
@@ -195,7 +195,7 @@ public class PreferencesActivity extends PreferenceActivity implements
                         Toast.LENGTH_LONG
                 ).show();
                 Log.w("lWS", "Port less then 1024 or grate then 65535. Set to default.");
-                prefEdit.putString(getString(R.string.pk_port), portAsString).apply();
+                prefEdit.putString(getString(R.string.pk_port), portAsString).commit();
             }
             prefEdit.putBoolean(getString(R.string.pk_pref_changed), true).commit();
             pref.setSummary(portAsString);
