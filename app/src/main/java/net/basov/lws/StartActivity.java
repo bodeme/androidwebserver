@@ -44,6 +44,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +100,20 @@ public class StartActivity extends Activity {
 
         if(null == documentRoot) {
             log("E: Document-Root could not be found.");
+        }
+
+        /**
+         * Hide QR Code plugin call button if run on SdkVersion older then 16
+         * because plugin doesn't operate on older versions
+         * If version is higher set total button group weight to 3 else set to 2
+         */
+        LinearLayout btnGroup = findViewById(R.id.buttonsBlock);
+        View btnQR = findViewById(R.id.buttonQRCodeURL);
+        if (Build.VERSION.SDK_INT < 16) {
+            btnQR.setVisibility(View.GONE);
+            btnGroup.setWeightSum(2f);
+        } else {
+            btnGroup.setWeightSum(3f);
         }
 
         btnStartStop.setOnClickListener(new OnClickListener() {
