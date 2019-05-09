@@ -315,7 +315,8 @@ public class StartActivity extends Activity {
                         }
                     }
                 });
-                btnQRCodeURL.setEnabled(true);
+                if (!ipAddress.equals("127.0.0.1"))
+                    btnQRCodeURL.setEnabled(true);
 
                 OnClickListener sendListener = new OnClickListener() {
                     @Override
@@ -328,9 +329,11 @@ public class StartActivity extends Activity {
                         startActivity(i);
                     }
                 };
-                btnSendURL.setOnClickListener(sendListener);
-                btnSendURL.setEnabled(true);
-                viewAddress.setOnClickListener(sendListener);
+                if (!ipAddress.equals("127.0.0.1")) {
+                    btnSendURL.setOnClickListener(sendListener);
+                    btnSendURL.setEnabled(true);
+                    viewAddress.setOnClickListener(sendListener);
+                }
 
             } else {
                 viewAddress.setText("not running");

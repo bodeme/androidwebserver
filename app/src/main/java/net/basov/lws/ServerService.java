@@ -81,24 +81,7 @@ public class ServerService extends Service {
             Boolean isWifiAPEnabled = isSharingWiFi(wifiManager);
             // Check WiFi state
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if (
-                    (
-                            (!wifiManager.isWifiEnabled())
-                            || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)
-                            || (wifiInfo.getIpAddress() == 0)
-                    )
-                    && !isWifiAPEnabled
-            ) {
-                mNM.cancel(NOTIFICATION_ID);
-                isRunning = false;
-                StartActivity.putToLogScreen(
-                        "Please connect to a WiFi-network or start Tethering.",
-                        gHandler,
-                        true
-                );
-                return;
-            }
-
+ 
             final SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -116,6 +99,22 @@ public class ServerService extends Service {
                     )
             );
 
+            if (
+                (
+                (!wifiManager.isWifiEnabled())
+                || (wifiInfo.getSupplicantState() != SupplicantState.COMPLETED)
+                || (wifiInfo.getIpAddress() == 0)
+                )
+                && !isWifiAPEnabled
+                ) {
+                ipAddress="127.0.0.1";
+                StartActivity.putToLogScreen(
+                        "Connected to loopback interface (127.0.0.1)\nTo change it connect to a WiFi-network or start Tethering.",
+                        gHandler,
+                        true
+                );
+            }
+            
             server = new Server(
                     gHandler,
                     sharedPreferences.getString(getString(R.string.pk_document_root), ""),
@@ -141,6 +140,8 @@ public class ServerService extends Service {
                     @Override
                     public void onReceive(Context context, Intent intent) {
 
+                        if (getIpAddress().equals("127.0.0.1")) return;
+                        
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (info != null && info.getState() == NetworkInfo.State.DISCONNECTED) {
                             StartActivity.putToLogScreen(
