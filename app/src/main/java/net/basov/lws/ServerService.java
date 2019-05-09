@@ -227,18 +227,19 @@ public class ServerService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            Notification notification = new Notification.Builder(this)
-                    .setSmallIcon(R.mipmap.lws_ic)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.lws_ic))
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText(message)
-                    .setWhen(System.currentTimeMillis())
-                    .setContentIntent(contentIntent)
-                    .addAction(0, "Stop service", stopPendingIntent)
-                    .setOngoing(true)
-                    .setChannelId(this.getString(R.string.notif_ch_id))
-                    .build();          
-            startForeground(NOTIFICATION_ID, notification);
+            Notification.Builder notificationBuilder = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.lws_ic)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.lws_ic))
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message)
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(contentIntent)
+                .addAction(0, "Stop service", stopPendingIntent)
+                .setOngoing(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {              
+                notificationBuilder.setChannelId(this.getString(R.string.notif_ch_id));
+            }        
+            startForeground(NOTIFICATION_ID, notificationBuilder.build());
         }
     }
 
