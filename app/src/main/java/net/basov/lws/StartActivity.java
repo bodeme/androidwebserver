@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.NotificationChannel;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -129,6 +131,16 @@ public class StartActivity extends Activity {
                 refreshMainScreen();
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);               
+            NotificationChannel channel = new NotificationChannel(
+                    this.getString(R.string.notif_ch_id),
+                    this.getString(R.string.notif_ch_hr), 
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            mNM.createNotificationChannel(channel);
+        }
 
         mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {

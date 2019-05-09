@@ -22,6 +22,7 @@
 package net.basov.lws;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -234,7 +235,8 @@ public class ServerService extends Service {
                     .setContentIntent(contentIntent)
                     .addAction(0, "Stop service", stopPendingIntent)
                     .setOngoing(true)
-                    .build();
+                    .setChannelId(this.getString(R.string.notif_ch_id))
+                    .build();          
             startForeground(NOTIFICATION_ID, notification);
         }
     }
