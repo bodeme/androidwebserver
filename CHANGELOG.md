@@ -1,4 +1,9 @@
-#### v06.01.00b (g)
+#### v06.02.00b (g)
+* Request permission if need
+* FOREGROUND_SERVICE permission if need
+* Fix UTF-8 encoded document root
+
+#### v06.01.00b (g728324c)
 * Fix notification for Android 9 (P) (API 28)
 * Bind to loopback as fallback
 * minSdk is 10
