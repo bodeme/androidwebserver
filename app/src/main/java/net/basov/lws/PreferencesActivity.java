@@ -37,6 +37,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import static net.basov.lws.Constants.*;
 
@@ -117,6 +119,11 @@ public class PreferencesActivity extends PreferenceActivity implements
                 if (path.toLowerCase().startsWith("file://")) {
                     newValue = path.replace("file://","") + "/";
                 }
+            }
+            try {
+                newValue = URLDecoder.decode(newValue, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.e("lWS", "Invalid document root picked up (URLDecoder)", e);
             }
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
