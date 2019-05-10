@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
@@ -183,6 +184,20 @@ public class StartActivity extends Activity {
                     Toast.LENGTH_SHORT
             ).show();
         } else {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                String defaultDocumentRoot = StartActivity.getFilesDir(this).getPath() + "/html/";
+                if (!documentRoot.equals(defaultDocumentRoot)) {
+                    if (
+                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                    != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions(
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                GRANT_WRITE_EXTERNAL_STORAGE
+                        );
+                    }
+                }
+            }
             mBoundService.startServer(handler);
         }
     }
