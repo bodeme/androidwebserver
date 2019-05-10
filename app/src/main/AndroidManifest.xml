@@ -11,6 +11,9 @@
         android:name="android.permission.INTERNET"/>
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission
+        android:minSdkVersion="28"
+        android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application android:icon="@mipmap/lws_ic"
         android:theme="@style/AppTheme"
