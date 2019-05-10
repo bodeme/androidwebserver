@@ -1,3 +1,19 @@
+#### v06.01.00b (g)
+* Fix notification for Android 9 (P) (API 28)
+* Bind to loopback as fallback
+* minSdk is 10
+
+#### v06.00.00f (gbf50d54)
+#### v05.01.02f (g64632fd)
+#### v05.01.01f (g9538229)
+* Fake versions to trigger F-Driod publish
+
+#### v05.01.00b (g462fd90)
+* Update gradle configuration for Android Studio 3.2
+
+#### v05.00.00 (g2145b67)
+* Change lWS.QR call according to new API
+
 #### v04.02.00 (g7a05764)
 * Increase target API from 21 to 26
 

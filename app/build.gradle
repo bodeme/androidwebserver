@@ -23,7 +23,7 @@ android {
 
     }
 
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
@@ -35,10 +35,10 @@ android {
 
 // End of strings reserved for F-Droid patch
         minSdkVersion 10
-        targetSdkVersion 26
+        targetSdkVersion 28
 
-        versionCode 60000
-        versionName "06.00.00"
+        versionCode 60100
+        versionName "06.01.00"
     }
 
     buildTypes {
