@@ -45,6 +45,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import static net.basov.lws.Constants.*;
 
@@ -87,10 +91,9 @@ public class ServerService extends Service {
 
             // Start server
             isRunning = true;
-            if (isWifiAPEnabled)
-                // Dirty hack.
-                ipAddress="192.168.43.1";
-            else
+            if (isWifiAPEnabled){             
+                ipAddress = getAPIpAddress();            
+            }else
                 ipAddress = intToIp(wifiInfo.getIpAddress());
             int port = Integer.valueOf(
                     sharedPreferences.getString(
@@ -109,7 +112,7 @@ public class ServerService extends Service {
                 ) {
                 ipAddress="127.0.0.1";
                 StartActivity.putToLogScreen(
-                        "Connected to loopback interface (127.0.0.1)\nTo change it connect to a WiFi-network or start Tethering.",
+                        "Connected to loopback interface (127.0.0.1)\nTo change it connect to a WiFi-network or start Tethering, then restart server.",
                         gHandler,
                         true
                 );
@@ -287,5 +290,32 @@ public class ServerService extends Service {
         }
         catch (final Throwable ignored) { }
         return false;
+    }
+    
+    // Code from https://stackoverflow.com/questions/17302220/android-get-ip-address-of-a-hotspot-providing-device
+    // Get IP address in WiFi hotspot (tethering) mode
+    private String getAPIpAddress() {
+        String ip = "";
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
+                .getNetworkInterfaces();
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces
+                    .nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface
+                    .getInetAddresses();
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (inetAddress.isSiteLocalAddress()) {
+                        ip += inetAddress.getHostAddress();
+                    }
+                }
+            }
+
+        } catch (SocketException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
+        return ip;
     }
 }
