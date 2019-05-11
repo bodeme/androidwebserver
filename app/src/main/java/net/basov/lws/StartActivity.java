@@ -299,7 +299,7 @@ public class StartActivity extends Activity {
                         try {
                             pm.getPackageInfo(getString(R.string.qrPluginPackage), 0);
                             Intent i = new Intent(getString(R.string.qrIntentAction));
-                            
+                            i.setData(Uri.parse("createqr:"));
                             i.putExtra("ENCODE_DATA", url);
                             i.putExtra("ENCODE_LABEL", "Open lWS page<br/>(" + url + ")");
                             i.putExtra("ENCODE_CORRECTION", "L");
