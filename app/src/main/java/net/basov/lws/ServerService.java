@@ -91,10 +91,11 @@ public class ServerService extends Service {
 
             // Start server
             isRunning = true;
-            if (isWifiAPEnabled){             
-                ipAddress = getAPIpAddress();            
-            }else
+            if (isWifiAPEnabled) {
+                ipAddress = getAPIpAddress();         
+            } else {
                 ipAddress = intToIp(wifiInfo.getIpAddress());
+            }
             int port = Integer.valueOf(
                     sharedPreferences.getString(
                             getString(R.string.pk_port),
@@ -307,8 +308,10 @@ public class ServerService extends Service {
                 while (enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
 
-                    if (inetAddress.isSiteLocalAddress()) {
-                        ip += inetAddress.getHostAddress();
+                    if (inetAddress.isSiteLocalAddress()
+                           && networkInterface.getName().toLowerCase().contains("wlan")
+                       ) {
+                        ip = inetAddress.getHostAddress();
                     }
                 }
             }
