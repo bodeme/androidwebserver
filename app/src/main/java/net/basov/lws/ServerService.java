@@ -309,7 +309,10 @@ public class ServerService extends Service {
                     InetAddress inetAddress = enumInetAddress.nextElement();
 
                     if (inetAddress.isSiteLocalAddress()
-                           && networkInterface.getName().toLowerCase().contains("wlan")
+                           && (
+                               networkInterface.getName().toLowerCase().contains("wlan")
+                               || networkInterface.getName().toLowerCase().contains("ap")
+                           )
                        ) {
                         ip = inetAddress.getHostAddress();
                     }
