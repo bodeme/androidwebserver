@@ -238,6 +238,13 @@ public class StartActivity extends Activity {
         refreshMainScreen();
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // Called then status bar pulled up
+        if (hasFocus) refreshMainScreen();
+        super.onWindowFocusChanged(hasFocus);
+    }
+
     private void refreshMainScreen() {
         final TextView viewDirectoryRoot = (TextView) findViewById(R.id.document_root);
         final TextView viewAddress = (TextView) findViewById(R.id.address);
