@@ -1,4 +1,8 @@
-#### v06.02.00b (g)
+#### v06.03.00b (g)
+* Fix get AP IP address
+* Fix screen state after switcing off service from notification
+
+#### v06.02.00b (g521f4fb)
 * Request permission if need
 * FOREGROUND_SERVICE permission if need
 * Fix UTF-8 encoded document root
