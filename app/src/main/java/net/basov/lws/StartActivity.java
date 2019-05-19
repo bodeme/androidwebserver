@@ -140,6 +140,7 @@ public class StartActivity extends Activity {
                     this.getString(R.string.notif_ch_hr), 
                     NotificationManager.IMPORTANCE_DEFAULT
             );
+            channel.setSound(null, null);
             mNM.createNotificationChannel(channel);
         }
 
