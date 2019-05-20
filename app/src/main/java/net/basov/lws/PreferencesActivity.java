@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 Mikhail Basov
+ * Copyright (C) 2017-2019 Mikhail Basov
  *
  * Licensed under the GNU General Public License v3
  *
