@@ -37,8 +37,8 @@ android {
         minSdkVersion 10
         targetSdkVersion 28
 
-        versionCode 60300
-        versionName "06.03.00"
+        versionCode 70000
+        versionName "07.03.00"
     }
 
     buildTypes {

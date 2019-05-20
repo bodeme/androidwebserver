@@ -1,4 +1,9 @@
-#### v06.03.00b (g)
+#### v07.00.00 (g)
+* Support Android O/P
+* Fallback bind to loopback
+* Several fixes
+
+#### v06.03.00b (g1b3161b)
 * Fix get AP IP address
 * Fix screen state after switcing off service from notification
 

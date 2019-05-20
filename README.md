@@ -16,7 +16,8 @@
   <li>... open. <a href="https://github.com/mvbasov/lWS">Source code</a> released under GPL-3.0.</li>
   <li>... personal solution. It is not optimized/tested for many parallel connections and large file transfer.</li>
   <li>... network state responsive. Require WiFi connected or tethering enabled. Service stop automatically if network disconnected.</li>
-      </ul>
+  <li>... connect to lopback interface if no other available.</li>
+  </ul>
     </td>
   </tr>
 </table>
