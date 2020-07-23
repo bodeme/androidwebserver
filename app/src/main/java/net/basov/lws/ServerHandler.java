@@ -170,7 +170,7 @@ class ServerHandler extends Thread {
                 if (new File(document+"index.html").exists()) {
                     document = document + "index.html";
                 } else {
-                    send(directoryHTMLindex(document));
+                    send(directoryHtmlIndex(document));
                     StartActivity.putToLogScreen(
                             "rc: "
                                     + rc
@@ -200,7 +200,7 @@ class ServerHandler extends Thread {
             if (rc == 200) {
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
-                contType = getMIMETypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).get(0);
             } else if (rc == -2) {
                 // favicon.ico doesn't exist. Send application icon instead.
                 @SuppressLint("ResourceType")
@@ -213,7 +213,7 @@ class ServerHandler extends Thread {
                 // and has no meaning. Set current date instead.
                 fileModified = DF.format(new Date());
                 rcStr = context.getString(R.string.rc200);
-                contType = getMIMETypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).get(0);
                 rc = 200;
             } else {
                 String errAsset;
@@ -383,7 +383,7 @@ class ServerHandler extends Thread {
         }
     }
 
-    private String directoryHTMLindex(String dir) {     
+    private String directoryHtmlIndex(String dir) {
         StringBuilder html = new StringBuilder(context.getString(
                 R.string.dir_list_top_html,
                 dir.replace(documentRoot, ""),
@@ -432,7 +432,7 @@ class ServerHandler extends Thread {
             html.append(context.getString(
                     R.string.dir_list_item,
                     "file",
-                    getMIMETypeForDocument(f.name).get(1),
+                    getMimeTypeForDocument(f.name).get(1),
                     fileName2URL(f.name),
                     f.name,
                     f.date,
@@ -446,7 +446,7 @@ class ServerHandler extends Thread {
         return html.toString();
     }
 
-    private ArrayList<String> getMIMETypeForDocument(String document) {
+    private ArrayList<String> getMimeTypeForDocument(String document) {
         final HashMap<String,ArrayList<String>> MIME = new HashMap<String, ArrayList<String>>(){
             {
                 put("html", new ArrayList<String>(Arrays.asList("text/html; charset=utf-8", "web")));
