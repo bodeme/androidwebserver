@@ -130,7 +130,7 @@ class ServerHandler extends Thread {
     }
 
     private void showHtml(String document, String[] ranges) {
-        Integer rc = 200;
+        int rc = 200;
         Long fileSize = 0L;
         String fileModified = "";
         String clientIP = "";
@@ -140,7 +140,7 @@ class ServerHandler extends Thread {
                 && toClient.getRemoteSocketAddress().toString().length() > 2
                 ) {
             clientIP = toClient.getRemoteSocketAddress().toString().substring(1);
-            Integer clientIPColon = clientIP.indexOf(':');
+            int clientIPColon = clientIP.indexOf(':');
             if (clientIPColon > 0)
                 clientIP = clientIP.substring(0, clientIPColon);
         }
@@ -218,7 +218,7 @@ class ServerHandler extends Thread {
                 contType = getMIMETypeForDocument(document).get(0);
                 rc = 200;
             } else {
-                String errAsset = "";
+                String errAsset;
                 AssetManager am = context.getAssets();
                 switch (rc) {
                     case 404:
@@ -262,7 +262,7 @@ class ServerHandler extends Thread {
                 outStream.write(header.getBytes());
                 if (!requestHEAD) {
                     byte[] fileBuffer = new byte[8192];
-                    int bytesCount = 0;
+                    int bytesCount;
                     while ((bytesCount = in.read(fileBuffer)) != -1) {
                         outStream.write(fileBuffer, 0, bytesCount);
                     }
@@ -282,7 +282,7 @@ class ServerHandler extends Thread {
                 // TODO: range error processing
                 // TODO: number conversion error processing
                 rc = 206;
-                Long partialHeaderLength = 0L;
+                long partialHeaderLength = 0L;
                 PartialRange[] boundaries = new PartialRange[ranges.length];
 
                 for (int i = 0; i < ranges.length; i++) {
@@ -356,7 +356,7 @@ class ServerHandler extends Thread {
                             outStream.write(b.header.getBytes());
                         }
                         byte[] fileBuffer = new byte[8192];
-                        int bytesCount = 0;
+                        int bytesCount;
                         Long currentPosition = b.begin;
                         in = new BufferedInputStream(new FileInputStream(document));
                         in.skip(currentPosition);
@@ -513,7 +513,7 @@ class ServerHandler extends Thread {
             outStream.write(header.getBytes());
 
             byte[] fileBuffer = new byte[8192];
-            int bytesCount = 0;
+            int bytesCount;
             while ((bytesCount = in.read(fileBuffer)) != -1) {
                 outStream.write(fileBuffer, 0, bytesCount);
             }
