@@ -389,11 +389,12 @@ class ServerHandler extends Thread {
                 dir.replace(documentRoot, ""),
                 dir.equals(documentRoot) ? "" : context.getString(R.string.dir_list_parent_dir)
         ));
-        
-        ArrayList <FileInfo> dirs = new ArrayList<FileInfo>();
-        ArrayList <FileInfo> files = new ArrayList<FileInfo>();
 
-        for (File i : new File(dir).listFiles()) {
+        File[] allFiles = new File(dir).listFiles();
+        ArrayList <FileInfo> dirs = new ArrayList<FileInfo>(allFiles.length);
+        ArrayList <FileInfo> files = new ArrayList<FileInfo>(allFiles.length);
+
+        for (File i : allFiles) {
             if (i.isDirectory()) {
                 dirs.add(new FileInfo());
                 dirs.get(dirs.size() - 1).name = i.getName();
@@ -447,7 +448,7 @@ class ServerHandler extends Thread {
 
     private MimeType getMimeTypeForDocument(String document) {
         String fileExt = document.substring(
-                document.lastIndexOf(".")+1
+                document.lastIndexOf('.')+1
         ).toLowerCase();
         MimeType mimeType = MIME.get(fileExt);
         if (mimeType == null) {
