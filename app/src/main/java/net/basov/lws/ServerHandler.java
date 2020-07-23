@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import static net.basov.lws.Constants.*;
@@ -445,14 +446,14 @@ class ServerHandler extends Thread {
         return html.toString();
     }
 
-    private ArrayList<String> getMimeTypeForDocument(String document) {
+    private List<String> getMimeTypeForDocument(String document) {
         String fileExt = document.substring(
                 document.lastIndexOf(".")+1
         ).toLowerCase();
         if (MIME.containsKey(fileExt))
             return MIME.get(fileExt);
         else
-            return new ArrayList<String>(Arrays.asList("application/octet-stream", "file"));
+            return Arrays.asList("application/octet-stream", "file");
     }
     
     private String fileName2URL(String fn) {
