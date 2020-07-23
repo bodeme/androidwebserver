@@ -47,7 +47,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import static net.basov.lws.Constants.*;
@@ -200,7 +199,7 @@ class ServerHandler extends Thread {
             if (rc == 200) {
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
-                contType = getMimeTypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).contentType;
             } else if (rc == -2) {
                 // favicon.ico doesn't exist. Send application icon instead.
                 @SuppressLint("ResourceType")
@@ -213,7 +212,7 @@ class ServerHandler extends Thread {
                 // and has no meaning. Set current date instead.
                 fileModified = DF.format(new Date());
                 rcStr = context.getString(R.string.rc200);
-                contType = getMimeTypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).contentType;
                 rc = 200;
             } else {
                 String errAsset;
@@ -432,7 +431,7 @@ class ServerHandler extends Thread {
             html.append(context.getString(
                     R.string.dir_list_item,
                     "file",
-                    getMimeTypeForDocument(f.name).get(1),
+                    getMimeTypeForDocument(f.name).kind,
                     fileName2URL(f.name),
                     f.name,
                     f.date,
@@ -446,14 +445,15 @@ class ServerHandler extends Thread {
         return html.toString();
     }
 
-    private List<String> getMimeTypeForDocument(String document) {
+    private MimeType getMimeTypeForDocument(String document) {
         String fileExt = document.substring(
                 document.lastIndexOf(".")+1
         ).toLowerCase();
-        if (MIME.containsKey(fileExt))
-            return MIME.get(fileExt);
-        else
-            return Arrays.asList("application/octet-stream", "file");
+        MimeType mimeType = MIME.get(fileExt);
+        if (mimeType == null) {
+            return mimeType;
+        } else
+            return MIME_OCTAL;
     }
     
     private String fileName2URL(String fn) {
