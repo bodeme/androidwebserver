@@ -56,16 +56,16 @@ class ServerHandler extends Thread {
     private final Socket toClient;
     private final String documentRoot;
     private final Context context;
-    private static Handler msgHandler;
-    private DateFormat DF;
-    private DateFormat FLDF;
+    private final Handler msgHandler;
+    private final DateFormat DF;
+    private final DateFormat FLDF;
     private Boolean requestHEAD = false;
 
-    public ServerHandler(String d, Context c, Socket s, Handler h) {
-        toClient = s;
-        documentRoot = d;
-        context = c;
-        msgHandler = h;
+    public ServerHandler(String documentRoot, Context context, Socket toClient, Handler msgHandler) {
+        this.toClient = toClient;
+        this.documentRoot = documentRoot;
+        this.context = context;
+        this.msgHandler = msgHandler;
         DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         DF.setTimeZone(TimeZone.getTimeZone("GMT"));
         FLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -546,14 +546,14 @@ class ServerHandler extends Thread {
         return src.replaceAll("\\n|\\r|\\n\\r", "\r\n");
     }
 
-    class PartialRange {
+    static class PartialRange {
         Long begin;
         Long end;
         Long size;
         String header;
     }
 
-    class FileInfo {
+    static class FileInfo {
         String name;
         Long size;
         String date;
