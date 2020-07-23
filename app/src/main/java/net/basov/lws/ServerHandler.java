@@ -48,10 +48,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import static net.basov.lws.Constants.*;
 
 class ServerHandler extends Thread {
+    private static final Pattern LINE_ENDINGS = Pattern.compile("\\n|\\r|\\n\\r");
+    private static final Pattern FOLDERS = Pattern.compile("[/]+");
     private final Socket toClient;
     private final String documentRoot;
     private final Context context;
@@ -89,7 +92,7 @@ class ServerHandler extends Thread {
                 if (s.startsWith("GET") || s.startsWith("HEAD")) {
                     int leerstelle = s.indexOf(" HTTP/");
                     document = s.substring(5,leerstelle);
-                    document = document.replaceAll("[/]+","/");
+                    document = FOLDERS.matcher(document).replaceAll("/");
                     document = URLDecoder.decode(document, "UTF-8");
                 }
                 if (s.startsWith("Range:")) {
@@ -154,7 +157,7 @@ class ServerHandler extends Thread {
 
         // Search for files in document root
         document = documentRoot + document;
-        document = document.replaceAll("[/]+","/");
+        document = FOLDERS.matcher(document).replaceAll("/");
 
         try {
             if (!new File(document).exists()) {
@@ -446,7 +449,7 @@ class ServerHandler extends Thread {
         return html.toString();
     }
 
-    private MimeType getMimeTypeForDocument(String document) {
+    static MimeType getMimeTypeForDocument(String document) {
         String fileExt = document.substring(
                 document.lastIndexOf('.')+1
         ).toLowerCase();
@@ -510,7 +513,7 @@ class ServerHandler extends Thread {
     }
 
     private String normalizeLineEnd (String src) {
-        return src.replaceAll("\\n|\\r|\\n\\r", "\r\n");
+        return LINE_ENDINGS.matcher(src).replaceAll("\r\n");
     }
 
     static class PartialRange {
