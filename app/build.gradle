@@ -68,6 +68,10 @@ android {
     }
 }
 
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+}
+
 static def getGitRevParseInfo (what) {
     def cmd = "git " + what + " HEAD"
     def proc = cmd.execute ()

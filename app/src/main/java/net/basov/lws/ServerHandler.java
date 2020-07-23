@@ -460,7 +460,7 @@ class ServerHandler extends Thread {
             return MIME_OCTAL;
     }
     
-    private String fileName2URL(String fn) {
+    static String fileName2URL(String fn) {
         String ref = "";
         try {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
