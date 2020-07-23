@@ -69,7 +69,6 @@ class ServerHandler extends Thread {
         DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         DF.setTimeZone(TimeZone.getTimeZone("GMT"));
         FLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     }
 
     public void run() {
@@ -90,13 +89,13 @@ class ServerHandler extends Thread {
 
                 if (s.startsWith("HEAD"))
                     requestHEAD = true;
-                if (s.substring(0, 3).equals("GET") || s.substring(0, 4).equals("HEAD")) {
+                if (s.startsWith("GET") || s.startsWith("HEAD")) {
                     int leerstelle = s.indexOf(" HTTP/");
                     document = s.substring(5,leerstelle);
                     document = document.replaceAll("[/]+","/");
                     document = URLDecoder.decode(document, "UTF-8");
                 }
-                if (s.substring(0,6).equals("Range:")) {
+                if (s.startsWith("Range:")) {
                     rangesArray = s
                             .split("=", 2)[1]
                             .split(",");
@@ -107,7 +106,7 @@ class ServerHandler extends Thread {
             try {
                 toClient.close();
             }
-            catch (Exception ex){}
+            catch (Exception ignored){}
         }
         showHtml(document, rangesArray);
     }
@@ -126,8 +125,7 @@ class ServerHandler extends Thread {
             out.flush();
             Server.remove(toClient);
             toClient.close();
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
 
@@ -496,7 +494,8 @@ class ServerHandler extends Thread {
         String ref = "";
         try {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
-        } catch (UnsupportedEncodingException e) {}
+        } catch (UnsupportedEncodingException ignored) {
+        }
         return ref;
     }
 
