@@ -78,9 +78,7 @@ class ServerHandler extends Thread {
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
-
             // Receive data
-
             while (true) {
                 String s = in.readLine().trim();
                     if (s.equals("")) {
@@ -131,7 +129,7 @@ class ServerHandler extends Thread {
 
     private void showHtml(String document, String[] ranges) {
         int rc = 200;
-        Long fileSize = 0L;
+        long fileSize = 0L;
         String fileModified = "";
         String clientIP = "";
         if(toClient != null
@@ -291,13 +289,13 @@ class ServerHandler extends Thread {
                     boundaries[i] = new PartialRange();
                     try {
                         if (strRangeBegin.length() != 0 && strRangeEnd.length() != 0) {
-                            boundaries[i].begin = Long.valueOf(strRangeBegin);
-                            boundaries[i].end = Long.valueOf(strRangeEnd);
+                            boundaries[i].begin = Long.parseLong(strRangeBegin);
+                            boundaries[i].end = Long.parseLong(strRangeEnd);
                         } else if (strRangeBegin.length() != 0 && strRangeEnd.length() == 0) {
-                            boundaries[i].begin = Long.valueOf(strRangeBegin);
+                            boundaries[i].begin = Long.parseLong(strRangeBegin);
                             boundaries[i].end = fileSize - 1;
                         } else if (strRangeBegin.length() == 0 && strRangeEnd.length() != 0) {
-                            boundaries[i].begin = fileSize - Long.valueOf(strRangeEnd);
+                            boundaries[i].begin = fileSize - Long.parseLong(strRangeEnd);
                             boundaries[i].end = fileSize - 1;
                         }
                     } catch (NumberFormatException e ) {
@@ -357,7 +355,7 @@ class ServerHandler extends Thread {
                         }
                         byte[] fileBuffer = new byte[8192];
                         int bytesCount;
-                        Long currentPosition = b.begin;
+                        long currentPosition = b.begin;
                         in = new BufferedInputStream(new FileInputStream(document));
                         in.skip(currentPosition);
                         while ((bytesCount = in.read(fileBuffer)) != -1) {
@@ -547,15 +545,15 @@ class ServerHandler extends Thread {
     }
 
     static class PartialRange {
-        Long begin;
-        Long end;
-        Long size;
+        long begin;
+        long end;
+        long size;
         String header;
     }
 
     static class FileInfo {
         String name;
-        Long size;
+        long size;
         String date;
     }
 }
