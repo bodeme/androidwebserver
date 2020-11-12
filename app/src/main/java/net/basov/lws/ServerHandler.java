@@ -47,29 +47,30 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import static net.basov.lws.Constants.*;
 
 class ServerHandler extends Thread {
+    private static final Pattern LINE_ENDINGS = Pattern.compile("\\n|\\r|\\n\\r");
+    private static final Pattern FOLDERS = Pattern.compile("[/]+");
     private final Socket toClient;
     private final String documentRoot;
     private final Context context;
-    private static Handler msgHandler;
-    private DateFormat DF;
-    private DateFormat FLDF;
+    private final Handler msgHandler;
+    private final DateFormat DF;
+    private final DateFormat FLDF;
     private Boolean requestHEAD = false;
 
-    public ServerHandler(String d, Context c, Socket s, Handler h) {
-        toClient = s;
-        documentRoot = d;
-        context = c;
-        msgHandler = h;
+    public ServerHandler(String documentRoot, Context context, Socket toClient, Handler msgHandler) {
+        this.toClient = toClient;
+        this.documentRoot = documentRoot;
+        this.context = context;
+        this.msgHandler = msgHandler;
         DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         DF.setTimeZone(TimeZone.getTimeZone("GMT"));
         FLDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     }
 
     public void run() {
@@ -79,9 +80,7 @@ class ServerHandler extends Thread {
 
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(toClient.getInputStream()));
-
             // Receive data
-
             while (true) {
                 String s = in.readLine().trim();
                     if (s.equals("")) {
@@ -90,13 +89,13 @@ class ServerHandler extends Thread {
 
                 if (s.startsWith("HEAD"))
                     requestHEAD = true;
-                if (s.substring(0, 3).equals("GET") || s.substring(0, 4).equals("HEAD")) {
+                if (s.startsWith("GET") || s.startsWith("HEAD")) {
                     int leerstelle = s.indexOf(" HTTP/");
                     document = s.substring(5,leerstelle);
-                    document = document.replaceAll("[/]+","/");
+                    document = FOLDERS.matcher(document).replaceAll("/");
                     document = URLDecoder.decode(document, "UTF-8");
                 }
-                if (s.substring(0,6).equals("Range:")) {
+                if (s.startsWith("Range:")) {
                     rangesArray = s
                             .split("=", 2)[1]
                             .split(",");
@@ -107,7 +106,7 @@ class ServerHandler extends Thread {
             try {
                 toClient.close();
             }
-            catch (Exception ex){}
+            catch (Exception ignored){}
         }
         showHtml(document, rangesArray);
     }
@@ -126,14 +125,13 @@ class ServerHandler extends Thread {
             out.flush();
             Server.remove(toClient);
             toClient.close();
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
 
     private void showHtml(String document, String[] ranges) {
-        Integer rc = 200;
-        Long fileSize = 0L;
+        int rc = 200;
+        long fileSize = 0L;
         String fileModified = "";
         String clientIP = "";
         if(toClient != null
@@ -142,7 +140,7 @@ class ServerHandler extends Thread {
                 && toClient.getRemoteSocketAddress().toString().length() > 2
                 ) {
             clientIP = toClient.getRemoteSocketAddress().toString().substring(1);
-            Integer clientIPColon = clientIP.indexOf(':');
+            int clientIPColon = clientIP.indexOf(':');
             if (clientIPColon > 0)
                 clientIP = clientIP.substring(0, clientIPColon);
         }
@@ -159,7 +157,7 @@ class ServerHandler extends Thread {
 
         // Search for files in document root
         document = documentRoot + document;
-        document = document.replaceAll("[/]+","/");
+        document = FOLDERS.matcher(document).replaceAll("/");
 
         try {
             if (!new File(document).exists()) {
@@ -174,7 +172,7 @@ class ServerHandler extends Thread {
                 if (new File(document+"index.html").exists()) {
                     document = document + "index.html";
                 } else {
-                    send(directoryHTMLindex(document));
+                    send(directoryHtmlIndex(document));
                     StartActivity.putToLogScreen(
                             "rc: "
                                     + rc
@@ -204,7 +202,7 @@ class ServerHandler extends Thread {
             if (rc == 200) {
                 in = new BufferedInputStream(new FileInputStream(document));
                 rcStr = context.getString(R.string.rc200);
-                contType = getMIMETypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).contentType;
             } else if (rc == -2) {
                 // favicon.ico doesn't exist. Send application icon instead.
                 @SuppressLint("ResourceType")
@@ -217,10 +215,10 @@ class ServerHandler extends Thread {
                 // and has no meaning. Set current date instead.
                 fileModified = DF.format(new Date());
                 rcStr = context.getString(R.string.rc200);
-                contType = getMIMETypeForDocument(document).get(0);
+                contType = getMimeTypeForDocument(document).contentType;
                 rc = 200;
             } else {
-                String errAsset = "";
+                String errAsset;
                 AssetManager am = context.getAssets();
                 switch (rc) {
                     case 404:
@@ -264,7 +262,7 @@ class ServerHandler extends Thread {
                 outStream.write(header.getBytes());
                 if (!requestHEAD) {
                     byte[] fileBuffer = new byte[8192];
-                    int bytesCount = 0;
+                    int bytesCount;
                     while ((bytesCount = in.read(fileBuffer)) != -1) {
                         outStream.write(fileBuffer, 0, bytesCount);
                     }
@@ -284,7 +282,7 @@ class ServerHandler extends Thread {
                 // TODO: range error processing
                 // TODO: number conversion error processing
                 rc = 206;
-                Long partialHeaderLength = 0L;
+                long partialHeaderLength = 0L;
                 PartialRange[] boundaries = new PartialRange[ranges.length];
 
                 for (int i = 0; i < ranges.length; i++) {
@@ -293,13 +291,13 @@ class ServerHandler extends Thread {
                     boundaries[i] = new PartialRange();
                     try {
                         if (strRangeBegin.length() != 0 && strRangeEnd.length() != 0) {
-                            boundaries[i].begin = Long.valueOf(strRangeBegin);
-                            boundaries[i].end = Long.valueOf(strRangeEnd);
+                            boundaries[i].begin = Long.parseLong(strRangeBegin);
+                            boundaries[i].end = Long.parseLong(strRangeEnd);
                         } else if (strRangeBegin.length() != 0 && strRangeEnd.length() == 0) {
-                            boundaries[i].begin = Long.valueOf(strRangeBegin);
+                            boundaries[i].begin = Long.parseLong(strRangeBegin);
                             boundaries[i].end = fileSize - 1;
                         } else if (strRangeBegin.length() == 0 && strRangeEnd.length() != 0) {
-                            boundaries[i].begin = fileSize - Long.valueOf(strRangeEnd);
+                            boundaries[i].begin = fileSize - Long.parseLong(strRangeEnd);
                             boundaries[i].end = fileSize - 1;
                         }
                     } catch (NumberFormatException e ) {
@@ -358,8 +356,8 @@ class ServerHandler extends Thread {
                             outStream.write(b.header.getBytes());
                         }
                         byte[] fileBuffer = new byte[8192];
-                        int bytesCount = 0;
-                        Long currentPosition = b.begin;
+                        int bytesCount;
+                        long currentPosition = b.begin;
                         in = new BufferedInputStream(new FileInputStream(document));
                         in.skip(currentPosition);
                         while ((bytesCount = in.read(fileBuffer)) != -1) {
@@ -387,18 +385,19 @@ class ServerHandler extends Thread {
         }
     }
 
-    private String directoryHTMLindex(String dir) {     
+    private String directoryHtmlIndex(String dir) {
         StringBuilder html = new StringBuilder(context.getString(
                 R.string.dir_list_top_html,
                 dir.replace(documentRoot, ""),
                 dir.replace(documentRoot, ""),
                 dir.equals(documentRoot) ? "" : context.getString(R.string.dir_list_parent_dir)
         ));
-        
-        ArrayList <FileInfo> dirs = new ArrayList<FileInfo>();
-        ArrayList <FileInfo> files = new ArrayList<FileInfo>();
 
-        for (File i : new File(dir).listFiles()) {
+        File[] allFiles = new File(dir).listFiles();
+        ArrayList <FileInfo> dirs = new ArrayList<FileInfo>(allFiles.length);
+        ArrayList <FileInfo> files = new ArrayList<FileInfo>(allFiles.length);
+
+        for (File i : allFiles) {
             if (i.isDirectory()) {
                 dirs.add(new FileInfo());
                 dirs.get(dirs.size() - 1).name = i.getName();
@@ -436,7 +435,7 @@ class ServerHandler extends Thread {
             html.append(context.getString(
                     R.string.dir_list_item,
                     "file",
-                    getMIMETypeForDocument(f.name).get(1),
+                    getMimeTypeForDocument(f.name).kind,
                     fileName2URL(f.name),
                     f.name,
                     f.date,
@@ -450,53 +449,23 @@ class ServerHandler extends Thread {
         return html.toString();
     }
 
-    private ArrayList<String> getMIMETypeForDocument(String document) {
-        final HashMap<String,ArrayList<String>> MIME = new HashMap<String, ArrayList<String>>(){
-            {
-                put("html", new ArrayList<String>(Arrays.asList("text/html; charset=utf-8", "web")));
-                put("css", new ArrayList<String>(Arrays.asList("text/css; charset=utf-8", "code")));
-                put("js", new ArrayList<String>(Arrays.asList("text/javascript; charset=utf-8", "code")));
-                put("txt", new ArrayList<String>(Arrays.asList("text/plain; charset=utf-8", "file-text")));
-                put("md", new ArrayList<String>(Arrays.asList("text/markdown; charset=utf-8", "file-text")));
-                put("gif", new ArrayList<String>(Arrays.asList("image/gif", "image")));
-                put("png", new ArrayList<String>(Arrays.asList("image/png", "image")));
-                put("jpg", new ArrayList<String>(Arrays.asList("image/jpeg", "image")));
-                put("bmp", new ArrayList<String>(Arrays.asList("image/bmp", "image")));
-                put("svg", new ArrayList<String>(Arrays.asList("image/svg+xml", "image")));
-                put("ico", new ArrayList<String>(Arrays.asList("image/x-icon", "image")));
-                put("zip", new ArrayList<String>(Arrays.asList("application/zip", "package")));
-                put("gz", new ArrayList<String>(Arrays.asList("application/gzip", "package")));
-                put("tgz", new ArrayList<String>(Arrays.asList("application/gzip", "package")));
-                put("pdf", new ArrayList<String>(Arrays.asList("application/pdf", "file-text")));
-                put("mp4", new ArrayList<String>(Arrays.asList("video/mp4", "video")));
-                put("avi", new ArrayList<String>(Arrays.asList("video/x-msvideo", "video")));
-                put("3gp", new ArrayList<String>(Arrays.asList("video/3gpp", "video")));
-                put("mp3", new ArrayList<String>(Arrays.asList("audio/mpeg", "music")));
-                put("ogg", new ArrayList<String>(Arrays.asList("audio/ogg", "music")));
-                put("wav", new ArrayList<String>(Arrays.asList("audio/wav", "music")));
-                put("flac", new ArrayList<String>(Arrays.asList("audio/flac", "music")));
-                put("java", new ArrayList<String>(Arrays.asList("text/plain", "code")));
-                put(".c", new ArrayList<String>(Arrays.asList("text/plain", "code")));
-                put(".cpp", new ArrayList<String>(Arrays.asList("text/plain", "code")));
-                put(".sh", new ArrayList<String>(Arrays.asList("text/plain", "code")));
-                put(".py", new ArrayList<String>(Arrays.asList("text/plain", "code")));
-
-            }
-        };
+    static MimeType getMimeTypeForDocument(String document) {
         String fileExt = document.substring(
-                document.lastIndexOf(".")+1
+                document.lastIndexOf('.')+1
         ).toLowerCase();
-        if (MIME.containsKey(fileExt))
-            return MIME.get(fileExt);
-        else
-            return new ArrayList<String>(Arrays.asList("application/octet-stream", "file"));
+        MimeType mimeType = MIME.get(fileExt);
+        if (mimeType == null) {
+            return mimeType;
+        } else
+            return MIME_OCTAL;
     }
     
-    private String fileName2URL(String fn) {
+    static String fileName2URL(String fn) {
         String ref = "";
         try {
             ref = URLEncoder.encode(fn, "UTF-8").replace("+", "%20");
-        } catch (UnsupportedEncodingException e) {}
+        } catch (UnsupportedEncodingException ignored) {
+        }
         return ref;
     }
 
@@ -514,7 +483,7 @@ class ServerHandler extends Thread {
             outStream.write(header.getBytes());
 
             byte[] fileBuffer = new byte[8192];
-            int bytesCount = 0;
+            int bytesCount;
             while ((bytesCount = in.read(fileBuffer)) != -1) {
                 outStream.write(fileBuffer, 0, bytesCount);
             }
@@ -544,19 +513,19 @@ class ServerHandler extends Thread {
     }
 
     private String normalizeLineEnd (String src) {
-        return src.replaceAll("\\n|\\r|\\n\\r", "\r\n");
+        return LINE_ENDINGS.matcher(src).replaceAll("\r\n");
     }
 
-    class PartialRange {
-        Long begin;
-        Long end;
-        Long size;
+    static class PartialRange {
+        long begin;
+        long end;
+        long size;
         String header;
     }
 
-    class FileInfo {
+    static class FileInfo {
         String name;
-        Long size;
+        long size;
         String date;
     }
 }
