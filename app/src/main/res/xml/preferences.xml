@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="@string/pk_use_directory_pick"
+        android:singleLine="true"
+        android:title="Use OI File Manager"
+        android:defaultValue="false"
+        android:summary="to directory pick"/>
+    <EditTextPreference
+        android:key="@string/pk_document_root"
+        android:singleLine="true"
+        android:title="Document root" />
+    <EditTextPreference
+        android:key="@string/pk_port"
+        android:numeric="integer"
+        android:defaultValue="8080"
+        android:title="Port" />
+
+</PreferenceScreen>

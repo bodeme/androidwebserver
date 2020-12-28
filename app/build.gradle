@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+android {
+    def last_tag = getGitRevParseInfo("describe --tags --abbrev=0")
+    def commit_count = getGitRevParseInfo("rev-list --count ${last_tag}..")
+    def current_commit = getGitRevParseInfo("rev-parse --short")
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "lWS.${variant.versionName}.apk"
+            if (variant.getBuildType().isMinifyEnabled()) {
+                variant.assemble.doLast{
+                    copy {
+                        from variant.mappingFile
+                        into output.outputFile.parent 
+                        rename { String fileName ->
+                            "lWS." + versionName + "_mapping.txt"
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+// Keep two lines around applicationId unchanged to allow use patch for F-Droid build
+
+
+        applicationId "net.basov.lws"
+
+
+// End of strings reserved for F-Droid patch
+        minSdkVersion 10
+        targetSdkVersion 28
+
+        versionCode 70000
+        versionName "07.00.00"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true 
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            zipAlignEnabled true
+            applicationIdSuffix '.r'
+            versionNameSuffix "r-g" + current_commit
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+        }
+        betta {
+            minifyEnabled true
+            shrinkResources true 
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            applicationIdSuffix '.b'
+            versionNameSuffix "b-g" + current_commit
+            debuggable false
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+        }
+        debug {
+            debuggable true
+            versionNameSuffix 'a-' + commit_count + "-g" + current_commit
+            resValue "string", "git_describe", getGitRevParseInfo("describe --tags --abbrev=1")
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+}
+
+static def getGitRevParseInfo (what) {
+    def cmd = "git " + what + " HEAD"
+    def proc = cmd.execute ()
+    proc.text.trim ()
+}
