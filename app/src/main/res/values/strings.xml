@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">lWS</string>
+    <string name="hello">lightweight Web Server (lWS)</string>
+
+    <!-- Default document root index
+    %1$d    default document root path
+    -->
+    <string name="def_doc_root_index"><![CDATA["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+    <head>
+        <title>lightweight Web Server</title>
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+        <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+    </head>
+    <body>
+        <h4>lightweight Web Server (lWS) for Android.</h4>
+        <p>Default document root is %1$s</p>    
+        <p>Source code available on <a href=\"https://github.com/mvbasov/lWS\">GitHub</a></p>
+    </body>
+</html>
+"]]></string>
+
+    <!-- HTTP header
+    %1$d    result code
+    %2%d    content length
+    %3$s    last modified
+    %4$s    content type
+    -->
+    <string name="header"><![CDATA["HTTP/1.1 %1$s
+Server: lWS/1.0
+Accept-Ranges: bytes
+Content-Length: %2$d
+Last-Modified: %3$s
+Connection: close
+Content-Type: %4$s
+
+"]]></string>
+
+    <!-- HTTP header with partial content
+    %1$d    result code
+    %2$d    content range
+    %3$d    content length
+    %4$s    content type
+    -->
+    <string name="header_partial"><![CDATA["HTTP/1.1 %1$s%2$s
+Content-Length: %3$d
+Content-Type: %4$s
+
+"]]></string>
+
+    <!-- Range header
+    %1$s    boundary string
+    %2$s    content type
+    %3$d    begin
+    %4$d    end
+    %5$d    length
+    -->
+    <string name="range_header"><![CDATA["--%1$s
+Content-Type: %2$s
+Content-Range: bytes %3$d-%4$d/%5$d
+
+"]]></string>
+
+    <string name="boundary_string">da_zarasti_ono_romashkami</string>
+
+    <!-- Directory listing top part
+    %1$s    HTML title
+    %2$s    Title on page
+    %2$s    Parent Directory string
+    -->
+    <string name="dir_list_top_html"><![CDATA["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+
+<head>
+    <title>Index of /%1$s</title>
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
+
+    <style>
+.feather {
+    width: 24px;
+    height: 24px;
+    stroke: #333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    transform: scale(0.75);
+}
+.feather_arrow {
+    stroke: CurrentColor;
+    vertical-align: -0.4em;
+}
+td.date, td.size {
+    padding-left: 0.7em;
+}
+td.size {
+    text-align: right;
+}
+th {
+    text-decoration: underline;
+    color: #0000ee;
+}
+tbody>tr:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+    </style>
+    <script type=\"text/javascript\">
+    function sortPart(ascending, columnClassName, tbody, rows) {
+        var unsorted = true;
+        while (unsorted) {
+            unsorted = false
+
+            for (var r = 0; r < rows.length - 1; r++) {
+                var row = rows[r];
+                var nextRow = rows[r + 1];
+
+                switch(columnClassName) {
+                    case 'name':
+                        var value = row.getElementsByClassName(columnClassName)[0].getElementsByTagName('a')[0].innerHTML;
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].getElementsByTagName('a')[0].innerHTML;
+                        break;
+                    case 'date':
+                        var value = row.getElementsByClassName(columnClassName)[0].innerHTML;
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].innerHTML;
+                        break;
+                    case 'size':
+                        var value = row.getElementsByClassName(columnClassName)[0].getElementsByTagName('span')[0].getAttribute('value');
+                        var nextValue = nextRow.getElementsByClassName(columnClassName)[0].getElementsByTagName('span')[0].getAttribute('value');
+                        if (!isNaN(value)) {
+                            value = parseInt(value);
+                            nextValue = parseInt(nextValue);
+                        }
+
+                        break;
+                    default:
+                        console.log('Ups!!! header id');
+                }
+
+                if (ascending ? value > nextValue : value < nextValue) {
+                    tbody.insertBefore(nextRow, row);
+                    unsorted = true;
+                }
+            }
+        }
+    }
+    function sort(ascending, columnClassName) {
+        var tbody = document.getElementById('content-table').getElementsByTagName('tbody')[0];
+        var rows = tbody.getElementsByClassName('file_row');
+        sortPart(ascending, columnClassName, tbody, rows)
+        var rows = tbody.getElementsByClassName('folder_row');
+        sortPart(ascending, columnClassName, tbody, rows)
+    };
+   function toggle(id) {
+        var xlinkns = 'http://www.w3.org/1999/xlink';
+        var headElement = document.getElementById(id);
+        var order = false;
+
+        var headers = ['hname', 'hdate', 'hsize'];
+        for (s in headers) {
+            if (headers[s] !== id) {
+                    document
+                        .getElementById(headers[s]).getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#empty');
+            }
+        }
+
+        var svgRef = headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].getAttributeNS(xlinkns, 'href');
+        switch (svgRef) {
+            case '#empty':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-up');
+                order = true;
+                break;
+            case '#chevrons-down':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-up');
+                order = true;
+                break;
+            case '#chevrons-up':
+                headElement.getElementsByTagName('svg')[0].getElementsByTagName('use')[0].setAttributeNS(xlinkns, 'href', '#chevrons-down');
+                order = false;
+                break;
+            default:
+                console.log('Ups!!! upward/downward' + svgRef);
+        }
+        sort(order, id.substring(1));
+    }
+    </script>
+<svg  xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display:none\" viewBox=\"0 0 24 24\" class=\"feather\">
+  <symbol id=\"corner-up-left\">
+    <polyline points=\"9 14 4 9 9 4\" />
+    <path d=\"M20 20v-7a4 4 0 0 0-4-4H4\" />
+
+  </symbol>
+  <symbol id=\"arrow-up-left\">
+    <line x1=\"17\" y1=\"17\" x2=\"7\" y2=\"7\" />
+    <polyline points=\"7 17 7 7 17 7\" />
+  </symbol>
+  <symbol id=\"chevrons-down\">
+    <polyline points=\"7 13 12 18 17 13\" />
+    <polyline points=\"7 6 12 11 17 6\" />
+  </symbol>
+  <symbol id=\"chevrons-up\">
+    <polyline points=\"17 11 12 6 7 11\" />
+    <polyline points=\"17 18 12 13 7 18\" />
+  </symbol>
+  <symbol id=\"folder\">
+    <path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z\" />
+  </symbol>
+  <symbol id=\"file\">
+    <path d=\"M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\" />
+    <polyline points=\"13 2 13 9 20 9\" />
+  </symbol>
+  <symbol id=\"web\"  stroke-width=\"1.5\">
+    <path d=\"M2,12 h20 M7,20.66 L17,3.34 M7,3.34 L17,20.66\" />
+    <polyline points=\"22,12 16.67,3.91 7.66,4.48 4,12 8.33,18.93 15.34,17.78 18,12 14.47,7.38 9.66,7.95 8,12\" />
+  </symbol>
+  <symbol id=\"file-text\">
+    <path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\" />
+    <polyline points=\"14 2 14 8 20 8\" />
+    <line x1=\"16\" y1=\"13\" x2=\"8\" y2=\"13\" />
+    <line x1=\"16\" y1=\"17\" x2=\"8\" y2=\"17\" />
+    <polyline points=\"10 9 9 9 8 9\"/>
+  </symbol>
+  <symbol id=\"code\">
+    <polyline points=\"16 18 22 12 16 6\" />
+    <polyline points=\"8 6 2 12 8 18\" />
+  </symbol>
+  <symbol id=\"audio\">
+    <path d=\"M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z\" />
+    <polyline points=\"9 17 9 5 21 3 21 15\" />
+  </symbol>
+  <symbol id=\"image\">
+    <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" ry=\"2\" />
+    <circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\" />
+    <polyline points=\"21 15 16 10 5 21\" />
+  </symbol>
+  <symbol id=\"video\">
+    <rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"2.18\" ry=\"2.18\" />
+    <line x1=\"7\" y1=\"2\" x2=\"7\" y2=\"22\" />
+    <line x1=\"17\" y1=\"2\" x2=\"17\" y2=\"22\" />
+    <line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\" />
+    <line x1=\"2\" y1=\"7\" x2=\"7\" y2=\"7\" />
+    <line x1=\"2\" y1=\"17\" x2=\"7\" y2=\"17\" />
+    <line x1=\"17\" y1=\"17\" x2=\"22\" y2=\"17\" />
+    <line x1=\"17\" y1=\"7\" x2=\"22\" y2=\"7\" />
+  </symbol>
+  <symbol id=\"package\">
+    <path d=\"M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z\" />
+    <polyline points=\"2.32 6.16 12 11 21.68 6.16\" />
+    <line x1=\"12\" y1=\"22.76\" x2=\"12\" y2=\"11\" />
+    <line x1=\"7\" y1=\"3.5\" x2=\"17\" y2=\"8.5\" />
+  </symbol>
+  <symbol id=\"empty\">
+    <path d=\"M0 0\" />
+  </symbol>
+</svg>
+</head>
+
+<body>
+<p>Index of <b>/%2$s</b></p>
+<table id=\"content-table\">
+
+    <thead>%3$s
+    <tr><th colspan=\"4\"><hr /></th></tr>
+    <tr>
+        <th></th>
+        <th id=\"hname\" onclick=\"javascript:toggle(this.id);\">
+            Name<svg class=\"feather feather_arrow\"><use xlink:href=\"#chevrons-up\" /></svg>
+        </th>
+        <th id=\"hdate\" onclick=\"javascript:toggle(this.id);\">
+            Date<svg class=\"feather feather_arrow\"><use xlink:href=\"#empty\" /></svg>
+        </th>
+        <th id=\"hsize\" onclick=\"javascript:toggle(this.id);\">
+            Size<svg class=\"feather feather_arrow\"><use xlink:href=\"#empty\" /></svg>
+        </th>
+    </tr>
+    <tr><th colspan=\"4\"><hr /></th></tr>
+    </thead>
+
+    <tbody>
+"]]></string>
+
+    <!-- Directory listing bottom part
+    -->
+    <string name="dir_list_bottom_html"><![CDATA["    </tbody>
+    <tfoot>
+    <tr class=\"hr\"><th colspan=\"4\"><hr /></th></tr>
+    </tfoot>
+
+</table>
+</body>
+</html>
+"]]></string>
+
+<string name="dir_list_parent_dir"><![CDATA["
+    <tr class=\"parent_dir\"><td><svg class=\"feather\"><use xlink:href=\"#corner-up-left\"/></svg></td><td><a href=\"../\">Parent Directory</a></td><td></td><td></td></tr>"]]></string>
+
+    <!-- File or directory entry template
+    %1$s    type (file|folder)
+    %2$s    name (need to add / for folder)
+    %3$s    icon name
+    %4$s    url
+    %5$s    modification date
+    %6$d    size
+    %7$s    human readable size
+    -->
+    <string name="dir_list_item"><![CDATA["    <tr class=\"%1$s_row\"><td><svg class=\"feather\"><use xlink:href=\"#%2$s\"/></svg></td><td class=\"name\"><a href=\"%3$s\">%4$s</a></td><td class=\"date\">%5$s</td><td class=\"size\"><span value=\"%6$d\" />%7$s</td></tr>
+"]]></string>
+
+    <!-- place holder for fdroid patch -->
+
+
+    <string name="qrPluginPackage">net.basov.lws.qr.gpm</string>
+
+
+    <!-- end of place holder for fdroid patch -->
+
+    <string name="rc500">500 Internal server error</string>
+    <string name="rc404">404 File not found</string>
+    <string name="rc403">403 Forbidden</string>
+    <string name="rc200">200 OK</string>
+    <string name="rc206">206 Partial Content</string>
+    <string name="rc416">416 Range Not Satisfiable</string>
+
+    <string name="pk_document_root">prefDocumentRoot</string>
+    <string name="pk_port">prefPort</string>
+    <string name="pk_pref_changed">prefChanged</string>
+    <string name="pk_use_directory_pick">prefUseDirectoryPick</string>
+    <string name="qrIntentAction">net.basov.lws.qr.ENCODE</string>
+    <string name="notif_ch_id">lWS_notification_channel</string>
+    <string name="notif_ch_hr">lWS operation status</string>
+</resources>
